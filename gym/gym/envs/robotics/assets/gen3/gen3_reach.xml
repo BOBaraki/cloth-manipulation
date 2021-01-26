@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mujoco model="JACO3_XML_V11">
+	<compiler angle="radian" coordinate="local" meshdir="../stls/gen3/"></compiler>
+	<size njmax="500" nconmax="100"/>
+	<asset>
+		<!-- Gen3 Arm Meshes -->
+		<mesh name="Base_Link" file="arm/Base_Link.stl"/>
+		<mesh name="Shoulder_Link" file="arm/Shoulder_Link.stl"/>
+		<mesh name="HalfArm1_Link" file="arm/HalfArm1_Link.stl"/>
+		<mesh name="HalfArm2_Link" file="arm/HalfArm2_Link.stl"/>
+		<mesh name="ForeArm_Link" file="arm/ForeArm_Link.stl"/>
+		<mesh name="SphericalWrist1_Link" file="arm/SphericalWrist1_Link.stl"/>
+		<mesh name="SphericalWrist2_Link" file="arm/SphericalWrist2_Link.stl"/>
+		<mesh name="Bracelet_Link" file="arm/Bracelet_Link.stl"/>
+		<!-- Robotiq Hand Meshes -->
+		<mesh name="robotiq_85_base_link_coarse" file="robotiq/robotiq_85_base_link_coarse.stl"/>
+		<mesh name="outer_knuckle_coarse" file="robotiq/outer_knuckle_coarse.stl"/>
+		<mesh name="outer_finger_coarse" file="robotiq/outer_finger_coarse.stl"/>
+		<mesh name="inner_knuckle_coarse" file="robotiq/inner_knuckle_coarse.stl"/>
+		<mesh name="inner_finger_coarse" file="robotiq/inner_finger_coarse.stl"/>
+		<material name="BeigeMaterial" specular="0" shininess="0" reflectance="0" rgba="0.26 0.16 0.16796875 1" emission="0" />
+	</asset>
+
+	<actuator>
+		<motor name="Shoulder_Link_motor" joint="Actuator1" gear="1 0 0 0 0 0" ctrlrange="0 0.8727" forcerange="-39 39"/>
+		<motor name="HalfArm1_Link_motor" joint="Actuator2" gear="1 0 0 0 0 0" ctrlrange="0 0.8727" forcerange="-39 39"/>
+		<motor name="HalfArm2_Link_motor" joint="Actuator3" gear="1 0 0 0 0 0" ctrlrange="0 0.8727" forcerange="-39 39"/>
+		<motor name="ForeArm_Link_motor" joint="Actuator4" gear="1 0 0 0 0 0" ctrlrange="0 0.8727" forcerange="-39 39"/>
+		<motor name="SphericalWrist1_Link_motor" joint="Actuator5" gear="1 0 0 0 0 0" ctrlrange="0 0.8727" forcerange="-9 9"/>
+		<motor name="SphericalWrist2_Link_motor" joint="Actuator6" gear="1 0 0 0 0 0" ctrlrange="0 0.8727" forcerange="-9 9"/>
+		<motor name="Bracelet_Link_motor" joint="Actuator7" gear="1 0 0 0 0 0" ctrlrange="0 0.8727" forcerange="-9 9"/>
+	</actuator>
+
+	<worldbody>
+ 		<geom name="floor" pos="0 0 -0.66" size="10 10 1" type="plane" rgba="1 0.83 0.61 1" material="BeigeMaterial" />
+        <geom name="wall_1" pos="0 -2.5 1" size="2.5 2.5 1" type="plane" quat="0.707107 -0.707107 0 0" rgba="0.95 0.95 0.95 1" material="BeigeMaterial" />
+        <geom name="wall_2" pos="-2.5 0 1" size="2.5 2.5 1" type="plane" quat="0.707107 0 0.707107 0" rgba="0.95 0.95 0.95 1" material="BeigeMaterial" />		
+        
+		<!-- <include file="Gen3Robotiq.xml"></include> -->
+		<include file="Gen3Robotiq.xml"></include>
+
+		<light directional="false" cutoff="90" exponent="1" diffuse="1 1 1" specular="0 0 0" pos="1 0 1.5" dir="-1 0 -2.5"/>
+	</worldbody>
+</mujoco>
+

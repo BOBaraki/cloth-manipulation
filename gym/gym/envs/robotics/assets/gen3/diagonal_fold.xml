@@ -1,0 +1,62 @@
+<mujoco>
+	<compiler angle="radian" />
+	<size nconmax="4000" njmax="8000" nstack="1000000" />
+	
+
+	
+
+	<compiler angle="radian" coordinate="local" meshdir="../stls/gen3" texturedir="../textures" />
+	<option solver="Newton" timestep="0.001">
+		<flag warmstart="enable" />
+	</option>
+	<include file="shared.xml" />
+
+	<worldbody>
+		<geom condim="3" material="floor_mat" name="floor0" pos="0.8 0.75 0" size="10.85 10.8 1" type="plane" />
+		<body name="floor0" pos="0.8 0.75 0">
+			<site name="target0" pos="0 0 0.8" rgba="0 1 0 0.4" size="0.01 0.01 0.01" type="sphere" />
+		</body>
+
+		<include file="robot.xml"></include>
+
+
+		<body name="table0" pos="0.8 0.75 0.2">
+			<geom mass="2000" material="floor_mat_1" size="0.6 0.6 0.2" type="box" />
+		</body>
+
+	    <body name="CB0_10" pos="0.8 0.9 0.4">
+		    <freejoint name="cloth" />
+		    <composite count="11 11 1" flatinertia="0.030512" prefix="C" spacing="0.027424" type="cloth">
+		        <joint damping="0.000500" kind="main" stiffness="0.001000" />
+		        <tendon damping="0.000500" kind="shear" stiffness="0.001000" width="0.001" />
+        		<skin inflate="0.002" material="matsponge" subgrid="2" texcoord="true" />
+		        <geom friction="1.3000001.3000001.300000" mass="0.010000" material="floor_mat_1" rgba=".8 .2 .1 1" size="0.004" type="sphere" />
+		    </composite>
+	    </body>
+
+
+		
+		<light ambient="0.2 0.2 0.2" castshadow="true" diffuse="0.8 0.8 0.8" dir="0 0 -1" directional="true" name="light0" pos="0 0 4" specular="0.3 0.3 0.3" />
+		<light ambient="0.2 0.2 0.2" castshadow="true" diffuse="0.8 0.8 0.8" dir="0 0 -1" directional="true" name="light1" pos="0 4 0" specular="0.3 0.3 0.3" />
+		<light ambient="0.2 0.2 0.2" castshadow="true" diffuse="0.8 0.8 0.8" dir="0 0 -1" directional="true" name="light2" pos="0 4 4" specular="0.3 0.3 0.3" />
+		<light ambient="0.2 0.2 0.2" castshadow="true" diffuse="0.8 0.8 0.8" dir="0 0 -1" directional="true" name="light3" pos="4 0 4" specular="0.3 0.3 0.3" />
+		<camera euler="0 0.77 1.57" fovy="45" name="camera1" pos="1.8 0.75 1.2" />
+	</worldbody>
+	
+
+
+	<equality>
+		<weld active="false" body1="gripper_central" body2="CB0_0" name="grasp" relpose="0.0 0.0 0.0 0 0 0 0" solimp="0.1 0.4 0.001 0.5 2" solref="0.005 1.0" />
+	</equality>
+
+	<actuator>
+		<position ctrllimited="true" ctrlrange="0 0.45" joint="robot1:right_knuckle_joint" kp="30000" name="robot1:right_knuckle_joint" user="1" />
+		<position ctrllimited="true" ctrlrange="0 0.45" joint="robot1:left_knuckle_joint" kp="30000" name="robot1:left_knuckle_joint" user="1" />
+		
+		
+		
+		
+        
+        
+	</actuator>
+</mujoco>

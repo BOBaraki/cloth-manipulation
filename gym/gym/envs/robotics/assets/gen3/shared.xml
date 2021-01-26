@@ -1,0 +1,110 @@
+<mujoco>
+    <asset>
+        <texture type="skybox" builtin="gradient" rgb1="0.44 0.85 0.56" rgb2="0.46 0.87 0.58" width="32" height="32"></texture>
+        <texture name="texture_block" file="block.png" gridsize="3 4" gridlayout=".U..LFRB.D.."></texture>
+
+        <texture builtin="flat" name="tex_floor" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
+        <texture builtin="flat" name="tex_floor_1" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
+        <texture builtin="flat" name="tex_geom" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
+        <texture builtin="flat" name="tex_gripper" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
+        <texture builtin="flat" name="tex_arm" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
+        <texture builtin="flat" name="tex_gri" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
+        <texture builtin="flat" name="tex_light" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
+        <texture builtin="flat" name="tex_cloth" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
+
+        <texture name="texsponge" type="2d" file="/home/gtzelepis/gen3-mujoco/gym/gym/envs/robotics/assets/gen3/cloth_red.png"/>
+
+        <material name="matsponge" texture="texsponge" specular="0.3"/>
+    
+
+
+        <material name="floor_mat" specular="0" shininess="0.5" reflectance="0" rgba="0.2 0.2 0.2 1" texture="tex_floor"></material>
+        <material name="cloth_mat" specular="0" shininess="0.5" reflectance="0" rgba="0.2 0.2 0.9 1" texture="tex_cloth"></material>
+        <material name="floor_mat_1" specular="0" shininess="0.5" reflectance="0" rgba="0.2 0.2 0.2 1" texture="tex_floor_1"></material>
+        <material name="robot1:geomMat" shininess="0.03" specular="0.4" texture="tex_geom"></material>
+        <material name="robot1:gripper_mat" shininess="0.5" specular="0.9" reflectance="0" texture="tex_gripper"></material>
+        <material name="robot1:arm_mat" shininess="0.03" specular="0.4" reflectance="0" texture="tex_arm"></material>
+        <!-- <material name="block_mat" specular="0" shininess="0.5" reflectance="0" rgba="0.2 0.2 0.2 1" texture="tex_geom"></material>
+        <material name="puck_mat" specular="0" shininess="0.5" reflectance="0" rgba="0.2 0.2 0.2 1" texture="tex_geom"></material> -->
+
+        <material name="Light" specular="0" shininess="0.6" reflectance="0.9" rgba="0.5 0.5 1 1" emission="0.7" texture="tex_light"/>
+        <material name="GriMat" specular="0.9" shininess="0.5" reflectance="0" rgba="0.1 0.1 0.1 1" emission="0.1" texture="tex_gri"/>
+        <!-- Gen3 Arm Meshes -->
+        <mesh name="robot1:Base_Link" file="arm/Base_Link.stl"/>
+        <mesh name="robot1:Shoulder_Link" file="arm/Shoulder_Link.stl"/>
+        <mesh name="robot1:HalfArm1_Link" file="arm/HalfArm1_Link.stl"/>
+        <mesh name="robot1:HalfArm2_Link" file="arm/HalfArm2_Link.stl"/>
+        <mesh name="robot1:ForeArm_Link" file="arm/ForeArm_Link.stl"/>
+        <mesh name="robot1:SphericalWrist1_Link" file="arm/SphericalWrist1_Link.stl"/>
+        <mesh name="robot1:SphericalWrist2_Link" file="arm/SphericalWrist2_Link.stl"/>
+        <mesh name="robot1:Bracelet_Link" file="arm/Bracelet_Link.stl"/>
+        <!-- Robotiq Hand Meshes -->
+        <mesh name="robot1:robotiq_85_base_link_coarse" file="robotiq/robotiq_85_base_link_coarse.stl"/>
+        <mesh name="robot1:outer_knuckle_coarse" file="robotiq/outer_knuckle_coarse.stl"/>
+        <mesh name="robot1:outer_finger_coarse" file="robotiq/outer_finger_coarse.stl"/>
+        <mesh name="robot1:inner_knuckle_coarse" file="robotiq/inner_knuckle_coarse.stl"/>
+        <mesh name="robot1:inner_finger_coarse" file="robotiq/inner_finger_coarse.stl"/>
+
+        <!-- Robotiq Hand Meshes(Finer) from robotiq-UR5 -->
+        <mesh name="robot1:kinova_robotiq_coupler" file="robotiq/kinova_robotiq_coupler.stl" />
+        <mesh name="robot1:robotiq_85_base_link" file="robotiq/robotiq_85_base_link.stl" />
+        <mesh name="robot1:robotiq_85_finger_tip_link" file="robotiq/robotiq_85_finger_tip_link.stl" />
+        <mesh name="robot1:robotiq_85_finger_link" file="robotiq/robotiq_85_finger_link.stl" />
+        <mesh name="robot1:robotiq_85_inner_knuckle_link" file="robotiq/robotiq_85_inner_knuckle_link.stl" />
+        <mesh name="robot1:robotiq_85_knuckle_link" file="robotiq/robotiq_85_knuckle_link.stl" />
+        <!-- 
+        <mesh file="base_link_collision.stl" name="robot1:base_link"></mesh>
+        <mesh file="bellows_link_collision.stl" name="robot1:bellows_link"></mesh>
+        <mesh file="elbow_flex_link_collision.stl" name="robot1:elbow_flex_link"></mesh>
+        <mesh file="estop_link.stl" name="robot1:estop_link"></mesh>
+        <mesh file="forearm_roll_link_collision.stl" name="robot1:forearm_roll_link"></mesh>
+        <mesh file="gripper_link.stl" name="robot1:gripper_link"></mesh>
+        <mesh file="head_pan_link_collision.stl" name="robot1:head_pan_link"></mesh>
+        <mesh file="head_tilt_link_collision.stl" name="robot1:head_tilt_link"></mesh>
+        <mesh file="l_wheel_link_collision.stl" name="robot1:l_wheel_link"></mesh>
+        <mesh file="laser_link.stl" name="robot1:laser_link"></mesh>
+        <mesh file="r_wheel_link_collision.stl" name="robot1:r_wheel_link"></mesh>
+        <mesh file="torso_lift_link_collision.stl" name="robot1:torso_lift_link"></mesh>
+        <mesh file="shoulder_pan_link_collision.stl" name="robot1:shoulder_pan_link"></mesh>
+        <mesh file="shoulder_lift_link_collision.stl" name="robot1:shoulder_lift_link"></mesh>
+        <mesh file="upperarm_roll_link_collision.stl" name="robot1:upperarm_roll_link"></mesh>
+        <mesh file="wrist_flex_link_collision.stl" name="robot1:wrist_flex_link"></mesh>
+        <mesh file="wrist_roll_link_collision.stl" name="robot1:wrist_roll_link"></mesh>
+        <mesh file="torso_fixed_link.stl" name="robot1:torso_fixed_link"></mesh> -->
+    </asset>
+
+    <equality>
+        <weld body1="robot1:mocap" body2="robot1:ee_link" solimp="0.9 0.95 0.001" solref="0.02 1"></weld>
+        <weld body1="robot2:mocap" body2="robot2:ee_link" solimp="0.9 0.95 0.001" solref="0.02 1"></weld>
+        <!-- <weld body1="robot1:mocap" body2="robot1:robotiq_85_base_link" solimp="0.9 0.95 0.001" solref="0.02 1"></weld> -->
+    </equality>
+    
+<!--     <contact>
+        <exclude body1="robot1:r_gripper_finger_link" body2="robot1:l_gripper_finger_link"></exclude>
+        <exclude body1="robot1:torso_lift_link" body2="robot1:torso_fixed_link"></exclude>
+        <exclude body1="robot1:torso_lift_link" body2="robot1:shoulder_pan_link"></exclude>
+    </contact> -->
+    
+    <default>
+        <default class="robot1:gen3">
+            <geom margin="0.001" material="robot1:geomMat" rgba="0.79216 0.81961 0.93333 1" solimp="0.99 0.99 0.01" solref="0.01 1" type="mesh" user="0"></geom>
+            <joint armature="1" damping="50" frictionloss="0" stiffness="0"></joint>
+            
+            <default class="robot1:robotiqGripper">
+                <!-- <geom condim="4" margin="0.001" type="box" user="0" rgba="0.356 0.361 0.376 1.0"></geom> -->
+                <geom condim="4" margin="0.001" type="box" user="0" rgba="0.1 0.1 0.1 1"></geom>
+                <joint armature="100" damping="1000" limited="true" solimplimit="0.99 0.999 0.01" solreflimit="0.01 1" type="slide"></joint>
+            </default>
+
+            <default class="robot1:black">
+                <geom rgba="0.1 0.1 0.1 1"></geom>
+            </default>
+            <default class="robot1:white">
+                <geom rgba="0.75294 0.75294 0.75294 1"></geom>
+            </default>
+            <default class="robot1:blue">
+                <geom rgba="0.086 0.506 0.767 1.0"></geom>
+            </default>
+        </default>
+    </default>
+</mujoco>

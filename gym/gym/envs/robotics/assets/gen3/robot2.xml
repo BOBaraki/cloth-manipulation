@@ -1,0 +1,202 @@
+<mujoco>
+	<body mocap="true" name="robot2:mocap" pos="0 0 0">
+		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.7" size="0.005 0.005 0.005" type="box"></geom>
+		<!-- x: red, y: green, z: blue -->
+		<!-- <geom conaffinity="0" contype="0" pos="0 0 0" rgba="1 0 0 0.1" size="1 0.005 0.005" type="box"></geom>
+		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 1 0 0.1" size="0.005 1 0.001" type="box"></geom>
+		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0 1 0.1" size="0.005 0.005 1" type="box"></geom> -->
+		<!-- <geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="1 0.005 0.005" type="box"></geom>
+		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="0.005 1 0.001" type="box"></geom>
+		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="0.005 0.005 1" type="box"></geom> -->
+	</body>
+
+	<!-- NOTE: Might need to change pos -->
+	<body childclass="robot1:gen3" name="robot2:Base_Link" pos="1.2 0.75 0.4">
+		<!-- 		<joint armature="0.0001" axis="1 0 0" damping="1e+11" name="robot1:slide0" pos="0 0 0" type="slide"></joint>
+		<joint armature="0.0001" axis="0 1 0" damping="1e+11" name="robot1:slide1" pos="0 0 0" type="slide"></joint>
+		<joint armature="0.0001" axis="0 0 1" damping="1e+11" name="robot1:slide2" pos="0 0 0" type="slide"></joint> -->
+		<inertial pos="-0.000648 -0.000166 0.084487" mass="1.697353" fullinertia="0.004622 0.004495 0.002079 -9E-06 -6E-05 -9E-06"/>
+		<geom mesh="robot1:Base_Link" name="robot2:Base_Link" material="robot1:arm_mat"></geom>
+
+		<body name="robot2:Shoulder_Link" pos="6.1995e-05 0 0.15643" quat="-3.67321e-06 -1 0 0">
+			<inertial pos="-2.3e-05 -0.010364 -0.07336" quat="0.707051 0.0451246 -0.0453544 0.704263" mass="1.37735" fullinertia="0.00457 0.004831 0.001409 -1E-06 -2E-06 -0.000448"></inertial>
+			<joint name="robot2:Actuator1" pos="0 0 0" axis="0 0 1"></joint>
+			<geom mesh="robot1:Shoulder_Link" name="robot2:Shoulder_Link" material="robot1:arm_mat" class="robot1:white"></geom>
+			<!-- <geom type="mesh" rgba="0.75294 0.75294 0.75294 1" mesh="Shoulder_Link"/> -->
+
+			<body name="robot2:HalfArm1_Link" pos="0 0.005375 -0.12838" quat="0.707105 0.707108 0 0">
+				<inertial pos="-4.4e-05 -0.09958 -0.013278" quat="0.482348 0.516286 -0.516862 0.483366" mass="1.16367" diaginertia="0.0113017 0.011088 0.00102532"></inertial>
+				<joint name="robot2:Actuator2" pos="0 0 0" axis="0 0 1" limited="true" range="-2.2 2.2"></joint>
+				<geom mesh="robot1:HalfArm1_Link" name="robot2:HalfArm1_Link" material="robot1:arm_mat" class="robot1:white"></geom>
+
+				<body name="robot2:HalfArm2_Link" pos="0 -0.21038 -0.006375" quat="0.707105 -0.707108 0 0">
+					<inertial pos="-4.4e-05 -0.006641 -0.117892" quat="0.706144 0.0213722 -0.0209128 0.707437" mass="1.16366" diaginertia="0.0111633 0.010932 0.00100671"></inertial>
+					<joint name="robot2:Actuator3" pos="0 0 0" axis="0 0 1"></joint>
+					<!-- <joint axis="0 1 0" damping="1000" name="robot1:head_tilt_joint" range="-0.76 1.45" ref="0.06"></joint> -->
+					<geom mesh="robot1:HalfArm2_Link" name="robot2:HalfArm2_Link" material="robot1:arm_mat" class="robot1:white"></geom>
+
+					<body name="robot2:ForeArm_Link" pos="0 0.006375 -0.21038" quat="0.707105 0.707108 0 0">
+						<inertial pos="-1.8e-05 -0.075478 -0.015006" quat="0.483678 0.515961 -0.515859 0.483455" mass="0.930287" diaginertia="0.00834839 0.008147 0.000598606"></inertial>
+						<joint name="robot2:Actuator4" pos="0 0 0" axis="0 0 1" limited="true" range="-2.5656 2.5656"></joint>
+						<geom mesh="robot1:ForeArm_Link" name="robot2:ForeArm_Link" material="robot1:arm_mat" class="robot1:white"></geom>
+
+						<body name="robot2:SphericalWrist1_Link" pos="0 -0.20843 -0.006375" quat="0.707105 -0.707108 0 0">
+							<inertial pos="1e-06 -0.009432 -0.063883" quat="0.703558 0.0707492 -0.0707492 0.703558" mass="0.678106" diaginertia="0.00165901 0.001596 0.000346988"></inertial>
+							<joint name="robot2:Actuator5" pos="0 0 0" axis="0 0 1"/>
+							<geom mesh="robot1:SphericalWrist1_Link" name="robot2:SphericalWrist1_Link" material="robot1:arm_mat" class="robot1:white"></geom>
+
+							<body name="robot2:SphericalWrist2_Link" pos="0 0.00017505 -0.10593" quat="0.707105 0.707108 0 0">
+								<inertial pos="1e-06 -0.045483 -0.00965" quat="0.44426 0.550121 -0.550121 0.44426" mass="0.678106" diaginertia="0.00170087 0.001641 0.00035013"></inertial>
+								<joint name="robot2:Actuator6" pos="0 0 0" axis="0 0 1" limited="true" range="-2.05 2.05"></joint>
+								<!-- <joint armature="2.7538" axis="1 0 0" damping="3.5247" frictionloss="0" limited="false" name="robot1:forearm_roll_joint" stiffness="10"></joint> -->
+								<geom mesh="robot1:SphericalWrist2_Link" name="robot2:SphericalWrist2_Link" material="robot1:arm_mat" class="robot1:white"></geom>
+
+								<body name="robot2:Bracelet_Link" pos="0 -0.10593 -0.00017505" quat="0.707105 -0.707108 0 0">
+									<inertial pos="-0.000281 -0.011402 -0.03108" quat="0.592556 0.413116 -0.393675 0.568536" mass="0.500657" diaginertia="0.000650457 0.00056985 0.000310694"></inertial>
+									<joint name="robot2:Actuator7" pos="0 0 0" axis="0 0 1"/>
+									<!-- <joint axis="0 1 0" name="robot1:wrist_flex_joint" range="-2.16 2.16"></joint> -->
+									<geom mesh="robot1:Bracelet_Link" name="robot2:Bracelet_Link" material="robot1:arm_mat" class="robot1:white"></geom>
+
+									<!-- Robotiq Gripper Links -->
+									<!-- <body name="robot1:ee_link" pos="0 0 -0.064" quat="0.707105 0.707105 0.707105 -0.707105"> -->
+										<!-- <inertial pos="-0.01 0 0" mass="0.001" diaginertia="1.66667e-08 1.66667e-08 1.66667e-08" />
+										<geom size="0.005 0.005 0.005" friction="0.8 0.8 0.8" pos="-0.01 0 0" type="box" /> -->
+									<body childclass="robot1:robotiqGripper" name="robot2:ee_link" pos="0 0 -0.06" quat="0 0.7071068 0.7071068 0 ">
+										<inertial pos="0 0.0823 0" quat="0.707107 -0.707107 0 0" mass="0" diaginertia="0 0 0" />
+
+										<!-- The LED indicator on the gripper -->
+										<geom name="light_1_" type="sphere" size="0.005" pos="0.035 0 0.0166"  material="Light" rgba="0.5 0.5 1 1"/>
+										<geom name="light_2_" type="sphere" size="0.005" pos="-0.035 0 0.0166" material="Light" rgba="0.5 0.5 1 1"/>
+										<!-- <geom name="robot1:kinova_robotiq_coupler_mesh" type="mesh" mesh="robot1:kinova_robotiq_coupler" pos="0 0 0.0466" material="GriMat" /> -->
+										<geom name="robot2:robotiq_85_base_link_mesh" type="mesh" mesh="robot1:robotiq_85_base_link" pos="0 0 0.0016" quat="0.707107 0 -0.707107 0" material="GriMat" />
+										<!-- <body name="robot1:robotiq_85_base_link" pos="0 0 0" quat="0 -0.707108 0 0">
+											<inertial pos="0.00021987 -2.3546e-10 0.030163" quat="0.707058 0.00723369 0.00723345 0.707081" mass="0.30915" diaginertia="0.00030737 0.000289758 0.000199102"></inertial>
+											<geom mesh="robot1:robotiq_85_base_link" name="robot1:robotiq_85_base_link_mesh" friction="0.8 0.8 0.8" material="GriMat"></geom> -->
+
+                                        <body name="right_driver2" pos="0 -0.0306011 0.054904" quat="0.707107 0 -0.707107 0">
+                                            <geom name="right_driver_mesh2" type="mesh" mesh="robot1:robotiq_85_knuckle_link" material="GriMat" contype="0" conaffinity="0" />
+                                            <joint name="robot2:right_knuckle_joint" axis="0 0 1" type="hinge" limited="true" range="0 0.872664626" />
+
+                                        
+                                            <body name="right_coupler2" pos="0 -0.0315 0">
+                                                <geom name="right_coupler_mesh2" type="mesh" mesh="robot1:robotiq_85_finger_link" material="GriMat" contype="0" conaffinity="0" />
+                                                <joint name="robot2:right_finger_joint" axis="0 0 1" type="hinge" limited="true" range="0 2.967059728" />
+
+                                                <body name="right_follower_link2" pos="0.0475 -0.006 0">
+                                                    <geom name="right_follower_mesh2" pos="0.0025 0.021 0" type="mesh" mesh="robot1:robotiq_85_finger_tip_link" material="GriMat"/>
+                                                    <joint name="robot2:right_fingertip_joint" axis="0 0 1" type="hinge" limited="true" range="0 2.967059728" />
+                                                </body>
+
+                                            </body>
+
+                                        </body>
+
+                                        <body name="right_spring_link2" pos="0.0016 -0.012 0.0614" quat="0.707107 0 -0.707107 0">
+                                            <geom name="right_spring_mesh2" type="mesh" pos="0 -0.0005 0.0016" mesh="robot1:robotiq_85_inner_knuckle_link" material="GriMat" contype="0" conaffinity="0" />
+                                            <joint name="robot2:right_spring_joint" axis="0 0 1" type="hinge" limited="true" range="0 1" />
+                                        </body>
+
+                                        <body name="gripper_central2" pos="0.0 0.00 0.18" quat="0.707107 0 -0.707107 0">
+                                        </body>
+
+                                        <body name="left_driver2" pos="0 0.0306011 0.054904" quat="0 0.707107 0 0.707107">
+                                            <geom name="left_driver_mesh2" type="mesh" mesh="robot1:robotiq_85_knuckle_link" material="GriMat" contype="0" conaffinity="0" />
+                                            <joint name="robot2:left_knuckle_joint" axis="0 0 1" type="hinge" limited="true" range="0 0.872664626" />
+
+                                        
+                                            <body name="left_coupler2" pos="0 -0.0315 0">
+                                                <geom name="left_coupler_mesh2" type="mesh" mesh="robot1:robotiq_85_finger_link" material="GriMat" contype="0" conaffinity="0" />
+                                                <joint name="robot2:left_finger_joint" axis="0 0 1" type="hinge" limited="true" range="0 2.967059728" />
+
+                                                <body name="left_follower_link2" pos="0.0475 -0.006 0">
+                                                    <geom name="left_follower_mesh2" pos="0.0025 0.021 0" type="mesh" mesh="robot1:robotiq_85_finger_tip_link" material="GriMat" />
+                                                    <joint name="robot2:left_fingertip_joint" axis="0 0 1" type="hinge" limited="true" range="0 2.967059728" />
+                                                </body>
+
+                                            </body>
+
+                                        </body>
+
+                                        <body name="left_spring_link2" pos="0.0016 0.012 0.0614" quat="0 0.707107 0 0.707107">
+                                            <geom name="left_spring_mesh2" type="mesh" pos="0 0.0005 0.0016" mesh="robot1:robotiq_85_inner_knuckle_link" material="GriMat" contype="0" conaffinity="0" />
+                                            <joint name="robot2:left_spring_joint" axis="0 0 1" type="hinge" limited="true" range="0 1" />
+                                        </body>
+
+											<!-- <body childclass="robot1:robotiqGripper" name="robot1:left_outer_knuckle" pos="0.0306011 0 0.062792">
+												<inertial pos="0.0178332 3.68915e-11 0.00214425" quat="0.463241 0.534235 0.534235 0.463241" mass="0.00684839" diaginertia="1.38892e-06 1.28691e-06 2.45951e-07"></inertial>
+												<geom mesh="robot1:outer_knuckle_coarse" name="robot1:left_outer_knuckle" friction="0.8 0.8 0.8" material="robot1:gripper_mat" class="robot1:black"></geom>
+												<body name="robot1:left_outer_finger" pos="0.031691 0 -0.00193396">
+													<inertial pos="0.00131452 0 0.0215404" quat="0.999536 0 -0.0304703 0" mass="0.0273094" diaginertia="8.53972e-06 6.91333e-06 2.22664e-06"></inertial>
+													<geom mesh="robot1:outer_finger_coarse" name="robot1:left_outer_finger" friction="0.8 0.8 0.8" material="robot1:gripper_mat" class="robot1:black"></geom>
+												</body>
+											</body> -->
+
+											<!-- <body childclass="robot1:robotiqGripper" name="robot1:left_inner_knuckle" pos="0.0127 0 0.0693075">
+												<inertial pos="0.0170975 -3.93809e-10 0.0224918" quat="0.947655 0 -0.319297 0" mass="0.0110931" diaginertia="5.59353e-06 3.96549e-06 1.88108e-06"></inertial>
+												<geom mesh="robot1:inner_knuckle_coarse" name="robot1:left_inner_knuckle" friction="0.2 0. 0.4" material="robot1:gripper_mat" class="robot1:black"></geom>
+												<body name="robot1:left_inner_finger" pos="0.0127 0 0.0693075">
+													<inertial pos="0.00602756 0 0.00669926" quat="0.699065 0.106339 0.106339 0.699065" mass="0.00724255" diaginertia="1.70064e-06 1.58577e-06 3.69621e-07"></inertial>
+													<geom mesh="robot1:inner_finger_coarse" name="robot1:left_inner_finger" friction="0.8 0.8 0.8" material="robot1:gripper_mat" class="robot1:black"></geom>
+													<joint axis="1 0 0" name="robot1:left_inner_finger_joint" range="0 0.05"></joint>
+												</body>
+											</body> -->
+
+											<!-- <body childclass="robot1:robotiqGripper" name="robot1:right_inner_knuckle" pos="-0.0127 0 0.0693075" quat="0 0 0 1">
+												<inertial pos="0.0168606 3.93808e-10 0.02267" quat="0.949317 0 -0.314322 0" mass="0.0110931" diaginertia="5.59353e-06 3.96549e-06 1.88108e-06"></inertial>
+												<geom mesh="robot1:inner_knuckle_coarse" name="robot1:right_inner_knuckle" friction="0.2 0. 0.4" material="robot1:gripper_mat" class="robot1:black"></geom>
+												<body name="robot1:right_inner_finger" pos="0.034106 0 0.0458574">
+													<inertial pos="0.00602756 0 0.00669926" quat="0.699065 0.106339 0.106339 0.699065" mass="0.00724255" diaginertia="1.70064e-06 1.58577e-06 3.69621e-07"></inertial>
+													<geom mesh="robot1:inner_finger_coarse" name="robot1:right_inner_finger" friction="0.8 0.8 0.8" material="robot1:gripper_mat" class="robot1:black"></geom>
+													<joint axis="-1 0 0" name="robot1:right_inner_finger_joint" range="0 0.05"></joint>
+												</body>
+											</body> -->
+
+											<!-- <body childclass="robot1:robotiqGripper" name="robot1:right_outer_knuckle" pos="-0.0306011 0 0.062792" quat="0 0 0 1">
+												<inertial pos="0.0178097 3.60493e-11 0.00233123" quat="0.460432 0.536658 0.536658 0.460432" mass="0.00684839" diaginertia="1.38892e-06 1.28691e-06 2.45951e-07"></inertial>
+												<geom mesh="robot1:outer_knuckle_coarse" name="robot1:right_outer_knuckle" friction="0.8 0.8 0.8" material="robot1:gripper_mat" class="robot1:black"></geom>
+												<body name="robot1:right_outer_finger" pos="0.0317096 0 -0.00160136">
+													<inertial pos="0.00108844 0 0.021553" quat="0.999682 0 -0.0252262 0" mass="0.0273094" diaginertia="8.53972e-06 6.91333e-06 2.22664e-06"></inertial>
+													<geom mesh="robot1:outer_finger_coarse" name="robot1:right_outer_finger" friction="0.8 0.8 0.8" material="robot1:gripper_mat" class="robot1:black"></geom>
+													
+												</body>
+											</body> -->
+
+											<!-- <body childclass="robot1:robotiqGripper" name="robot1:r_gripper_finger_link" pos="0 0.0159 0">
+												<inertial diaginertia="0.1 0.1 0.1" mass="4" pos="-0.01 0 0"></inertial>
+												<joint axis="0 1 0" name="robot1:r_gripper_finger_joint" range="0 0.05"></joint>
+												<geom pos="0 -0.008 0" size="0.0385 0.007 0.0135" type="box" name="robot1:r_gripper_finger_link" material="robot1:gripper_mat" condim="4" friction="1 0.05 0.01"></geom>
+											</body>
+
+											<body childclass="robot1:robotiqGripper" name="robot1:l_gripper_finger_link" pos="0 -0.0159 0">
+												<inertial diaginertia="0.1 0.1 0.1" mass="4" pos="-0.01 0 0"></inertial>
+												<joint axis="0 -1 0" name="robot1:l_gripper_finger_joint" range="0 0.05"></joint>
+												<geom pos="0 0.008 0" size="0.0385 0.007 0.0135" type="box" name="robot1:l_gripper_finger_link" material="robot1:gripper_mat" condim="4" friction="1 0.05 0.01"></geom>
+											</body> -->
+											<site name="robot2:grip" pos="0.02 0 0" rgba="0 0 0 0" size="0.02 0.02 0.02"></site>
+										<!-- </body> -->
+									</body>
+								</body>
+							</body>
+						</body>
+					</body>
+				</body>
+			</body>
+			<!-- <body name="robot1:estop_link" pos="-0.1246 0.2389 0.3113" quat="0.7071 0.7071 0 0">
+					<inertial diaginertia="0 0 0" mass="0.002" pos="0.0024 -0.0033 0.0067" quat="0.3774 -0.1814 0.1375 0.8977"></inertial>
+					<geom mesh="robot1:estop_link" rgba="0.8 0 0 1" name="robot1:estop_link"></geom>
+				</body>
+				<body name="robot1:laser_link" pos="0.235 0 0.2878" quat="0 1 0 0">
+					<inertial diaginertia="0 0 0" mass="0.0083" pos="-0.0306 0.0007 0.0552" quat="0.5878 0.5378 -0.4578 0.3945"></inertial>
+					<geom mesh="robot1:laser_link" rgba="0.7922 0.8196 0.9333 1" name="robot1:laser_link"></geom>
+					<camera euler="1.55 -1.55 3.14" fovy="25" name="lidar" pos="0 0 0.02"></camera>
+				</body>
+				<body name="robot1:torso_fixed_link" pos="-0.0869 0 0.3774">
+					<inertial diaginertia="0.3865 0.3394 0.1009" mass="13.2775" pos="-0.0722 0.0057 0.2656" quat="0.9995 0.0249 0.0177 0.011"></inertial>
+					<geom mesh="robot1:torso_fixed_link" name="robot1:torso_fixed_link" class="robot1:blue"></geom>
+				</body>
+				<body name="robot1:external_camera_body_0" pos="0 0 0">
+					<camera euler="0 0.75 1.57" fovy="43.3" name="external_camera_0" pos="1.3 0 1.2"></camera>
+				</body> -->
+		</body>
+	</body>
+</mujoco>
