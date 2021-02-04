@@ -89,16 +89,20 @@
 
 	<equality>
 <!--		<weld name="grasp" active="false" body1="gripper_central" body2="CB0_0" relpose="0.0 0.0 0.0 0 0 0 0" solimp= "0.1 0.4 0.001 0.5 2" solref="0.005 1.0"/>-->
-		<weld name="grasp2" active="false" body1="gripper_central2" body2="CB0_10" relpose="0.0 0.0 0.0 0 0 0 0" solimp= "0.1 0.4 0.001 0.5 2" solref="0.005 1.0"/>
+		<weld name="grasp2" active="false" body1="gripper_central2" body2="CB0_0" relpose="0.0 0.0 0.0 0 0 0 0" solimp= "0.1 0.4 0.001 0.5 2" solref="0.005 1.0"/>
+	</equality>
+
+	<equality>
+		<weld name="grasp" active="false" body1="gripper_central" body2="CB0_0" relpose="0.0 0.0 0.0 0 0 0 0" solimp= "0.1 0.4 0.001 0.5 2" solref="0.005 1.0"/>
 	</equality>
 
 
 
 	<actuator>
-		<position ctrllimited="true" ctrlrange="0 0.45" joint="robot2:right_knuckle_joint" kp="30000" name="robot1:right_knuckle_joint" user="1"></position>
-		<position ctrllimited="true" ctrlrange="0 0.45" joint="robot2:left_knuckle_joint" kp="30000" name="robot1:left_knuckle_joint" user="1"></position>
-		<position ctrllimited="true" ctrlrange="0 0.45" joint="robot1:right_knuckle_joint" kp="30000" name="robot2:right_knuckle_joint" user="1"></position>
-		<position ctrllimited="true" ctrlrange="0 0.45" joint="robot1:left_knuckle_joint" kp="30000" name="robot2:left_knuckle_joint" user="1"></position>
+		<position ctrllimited="true" ctrlrange="0 0.45" joint="robot1:right_knuckle_joint" kp="30000" name="robot1:right_knuckle_joint" user="1"></position>
+		<position ctrllimited="true" ctrlrange="0 0.45" joint="robot1:left_knuckle_joint" kp="30000" name="robot1:left_knuckle_joint" user="1"></position>
+		<position ctrllimited="true" ctrlrange="0 0.45" joint="robot2:right_knuckle_joint" kp="30000" name="robot2:right_knuckle_joint" user="1"></position>
+		<position ctrllimited="true" ctrlrange="0 0.45" joint="robot2:left_knuckle_joint" kp="30000" name="robot2:left_knuckle_joint" user="1"></position>
 		<!-- <position ctrllimited="true" ctrlrange="0 0.45" joint="robot1:right_finger_joint" kp="30000" name="robot1:right_finger_jointt" user="1"></position>
 		<position ctrllimited="true" ctrlrange="0 0.45" joint="robot1:left_finger_joint" kp="30000" name="robot1:left_finger_joint" user="1"></position> -->
 		<!-- <position ctrllimited="true" ctrlrange="0 0.45" joint="robot1:right_fingertip_joint" kp="30000" name="robot1:right_fingertip_joint" user="1"></position>

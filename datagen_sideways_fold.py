@@ -96,7 +96,9 @@ def generate_demos(obs, render, max_episode_steps):
             action[i] = object_oriented_goal[i]
 
         actionRescaled = rescale_action(action, speed, noise_param)
-        
+
+        # pdb.set_trace()
+
         obs, reward, done, info = env.step(actionRescaled)
         episodeAcs.append(actionRescaled)
         episodeObs.append(obs)

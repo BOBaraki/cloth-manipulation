@@ -6,6 +6,7 @@ try:
 except ImportError as e:
     raise error.DependencyNotInstalled("{}. (HINT: you need to install mujoco_py, and also perform the setup instructions here: https://github.com/openai/mujoco-py/.)".format(e))
 
+import pdb
 
 def robot_get_obs(sim):
     """Returns all joint positions and velocities associated with
@@ -36,13 +37,15 @@ def ctrl_set_action(sim, action):
 
 def grasp(sim, action, point):
     if action[0]>=0.5:
-        #print("all eq constraints", sim.model.body_id2name(sim.model.eq_obj2id[-1]))
+
+        # print("all eq constraints", sim.model.body_id2name(sim.model.eq_obj2id[-1]))
+        # pdb.set_trace()
         sim.model.eq_obj2id[-1] = sim.model.body_name2id(point)
-        sim.model.eq_active[-1] = True
-        sim.model.eq_data[-1, :] = np.array(
+        sim.model.eq_active[-2] = True
+        sim.model.eq_data[-2, :] = np.array(
                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
     else:
-        sim.model.eq_active[-1] = False
+        sim.model.eq_active[-2] = False
 
 def mocap_set_action(sim, action):
     """The action controls the robot using mocaps. Specifically, bodies
@@ -57,7 +60,7 @@ def mocap_set_action(sim, action):
         action, _ = np.split(action, (sim.model.nmocap * 7, ))
         action = action.reshape(sim.model.nmocap, 7)
         # print(action)
-
+        # pdb.set_trace()
         pos_delta = action[:, :3]
         quat_delta = action[:, 3:]
 
@@ -88,8 +91,11 @@ def reset_mocap2body_xpos(sim):
         return
 
     eq_type = sim.model.eq_type[-2]
-    obj1_id = sim.model.eq_obj1id[-2]
-    obj2_id = sim.model.eq_obj2id[-2]
+    obj1_id = sim.model.eq_obj1id[-3]
+    obj2_id = sim.model.eq_obj2id[-3]
+
+    # import pdb
+    # pdb.set_trace()
 
     # for obj1_id, obj2_id in zip(sim.model.eq_obj1id,
     #                                      sim.model.eq_obj2id):

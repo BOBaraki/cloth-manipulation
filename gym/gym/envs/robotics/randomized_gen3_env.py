@@ -14,6 +14,7 @@ import mujoco_py
 from mujoco_py.modder import TextureModder, MaterialModder, LightModder, CameraModder
 import cv2
 import matplotlib.pyplot as plt
+import pdb
 
 DEBUG = False
 closed_pos = [1.12810781, -0.59798289, -0.53003607]
@@ -354,11 +355,13 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         closest, dist_closest = self.find_closest_indice(self.grip_pos)
         # Only allow gripping if in proximity
         if dist_closest<=0.001:
+            # pdb.set_trace()
             utils.grasp(self.sim, gripper_ctrl, closest)
         if self.block_gripper:
             gripper_ctrl = np.zeros_like(gripper_ctrl)
 
         action = np.concatenate([pos_ctrl, rot_ctrl, gripper_ctrl])
+        print
         utils.ctrl_set_action(self.sim, action)
         utils.mocap_set_action(self.sim, action)
         
@@ -372,6 +375,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         # grip_velp = self.sim.data.get_body_xvelp('robot1:ee_link') * dt
 
         #add second agent
+
         grip_pos = self.sim.data.get_body_xpos('gripper_central2')
         self.grip_pos = grip_pos
         dt = self.sim.nsubsteps * self.sim.model.opt.timestep
@@ -385,6 +389,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             object_rot = rotations.mat2euler(self.sim.data.get_site_xmat('object0'))
             # velocities
             object_velp = self.sim.data.get_site_xvelp('object0') * dt
+            pdb.set_trace()
             object_velr = self.sim.data.get_site_xvelr('object0') * dt
             # gripper state
             object_rel_pos = object_pos - grip_pos
@@ -406,8 +411,11 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             vertice_rel_pos = vertice_pos.copy()
             vertice_rel_pos -= grip_pos
             vertice_velp -= grip_velp
+
+            
         else:
             object_pos = object_rot = object_velp = object_velr = object_rel_pos = np.zeros(0)
+            pdb.set_trace()
 
         # if not using a fake gripper
         # gripper_state = robot_qpos[-2:]
@@ -521,6 +529,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             ])
             
         self._index += 1
+        pdb.set_trace()
         return {
             'observation': obs.copy(),
             'achieved_goal': achieved_goal.copy(),
