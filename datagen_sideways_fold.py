@@ -73,22 +73,32 @@ def generate_demos(obs, render, max_episode_steps):
     
     episodeObs.append(obs)
 
-    pick_up_object = 0
-    place_pos = 3
+    pick_up_object = 1
+    place_pos = 2
 
     while True:
         print("Approaching air", timeStep)
         if render: env.render(mode=render_mode)
         obsDataNew = obs.copy()
+        #obsDataNew will change since it will get data from the second gripper as well
         objectPos = np.array([obsDataNew['observation'][7:10].copy() , obsDataNew['observation'][10:13].copy(), obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
+        #New gripperPos and gripperState
         gripperPos = obsDataNew['observation'][:3].copy()
         gripperState = obsDataNew['observation'][3]
 
+
+
+        #Need to add the following data for both grippers
         object_rel_pos = objectPos - gripperPos
         object_oriented_goal = object_rel_pos[pick_up_object].copy()
+        #the following might not be needed
         object_oriented_goal[2] += 0.1
+        #These conditions need to change and also add what happens if a gripper completes it's own goal first(it will have to do nothing so we might have to alter the action)
         if np.linalg.norm(object_oriented_goal) <= reach_threshold or timeStep >= max_episode_steps: break
-        
+
+        #Increase the action space for two agents
+        # action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
+        #           random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001)]
         action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001)]
         speed = 1.0 # cap action to whatever speed you want
 
@@ -120,7 +130,7 @@ def generate_demos(obs, render, max_episode_steps):
         object_oriented_goal[2] += 0.02
 
         if np.linalg.norm(object_oriented_goal) <= grasp_threshold or timeStep >= max_episode_steps: break
-        
+
         action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001)]
         speed = 1.0 # cap action to whatever speed you want
 
@@ -128,7 +138,7 @@ def generate_demos(obs, render, max_episode_steps):
             action[i] = object_oriented_goal[i]
 
         actionRescaled = rescale_action(action, speed, noise_param)
-        
+
         obs, reward, done, info = env.step(actionRescaled)
         episodeAcs.append(actionRescaled)
         episodeObs.append(obs)
@@ -178,8 +188,8 @@ def generate_demos(obs, render, max_episode_steps):
         episodeInfo.append(info)
 
         timeStep += 1
-
-    # pdb.set_trace()
+    #
+    # # pdb.set_trace()
     # while True:
     #     print("LIFTING UP", timeStep)
     #     if render: env.render(mode=render_mode)
@@ -217,8 +227,8 @@ def generate_demos(obs, render, max_episode_steps):
     #     episodeInfo.append(info)
     #
     #     timeStep += 1
-
-
+    #
+    #
     while True:
         print("Taking", timeStep)
         if render: env.render(mode=render_mode)
@@ -250,7 +260,7 @@ def generate_demos(obs, render, max_episode_steps):
         episodeInfo.append(info)
 
         timeStep += 1
-
+    #
     while True:
         print("Taking", timeStep)
         if render: env.render(mode=render_mode)
@@ -282,7 +292,7 @@ def generate_demos(obs, render, max_episode_steps):
         episodeInfo.append(info)
 
         timeStep += 1
-
+    #
     while (timeStep)< max_episode_steps:
         #print("WAITING", timeStep)
         if render: env.render(mode=render_mode)
@@ -293,7 +303,7 @@ def generate_demos(obs, render, max_episode_steps):
         episodeObs.append(obs)
         episodeInfo.append(info)
         timeStep += 1
-
+    #
     return [episodeAcs, episodeObs, episodeInfo]
 
 if __name__ == '__main__':
@@ -311,6 +321,7 @@ if __name__ == '__main__':
     env = envs.make(args.env)
     #env = RandomizedEnvWrapper(envs.make(args.env), seed=1)
     action_space = env.action_space
+    # pdb.set_trace()
     mode = args.mode
     render = args.render
     print('Input render', render, args.render)
@@ -359,8 +370,14 @@ if __name__ == '__main__':
         infos = []
         numItr = 500
         fileName = "data_mujoco" + "_" + "fold_sideways" + "_" + str(numItr) + "_T_100_" + "L_11_" + "all_randomized_explicit" ".npz"
-
+        #change the actionDull for two agents
+        # actionDull = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
+        #               random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
+        #               random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
+        #               random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001)
+        #               ]
         actionDull = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001)]
+        # pdb.set_trace()
         obs = env.reset()
         if render:
             image_output = env.render(mode=render_mode)
@@ -371,6 +388,7 @@ if __name__ == '__main__':
         traj_success = 0
         while len(actions) < numItr:
             episodeAcs, episodeObs, episodeInfo = generate_demos(obs, render, max_episode_steps)
+            # pdb.set_trace()
             actions.append(episodeAcs)
             observations.append(episodeObs)
             #env.randomize(['random', 'random', 'random', 'random', 'random', 'random', 'random', 'random', 'random'])
