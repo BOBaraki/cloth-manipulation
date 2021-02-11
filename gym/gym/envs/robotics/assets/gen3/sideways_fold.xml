@@ -25,7 +25,7 @@
 
 
 		<body pos="0.8 0.75 0.2" name="table0">
-			<geom size="0.6 0.6 0.2" type="box" mass="2000" material="floor_mat_1"></geom>
+			<geom size="1 1 0.2" type="box" mass="2000" material="floor_mat_1"></geom>
 		</body>
 
 

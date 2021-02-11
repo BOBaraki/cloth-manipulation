@@ -636,9 +636,9 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                 joint_vertice = 'CB0'+'_'+str(self.cloth_length-1)
             new_position = self.sim.data.get_body_xpos(joint_vertice)
             # Make the joint to be the first point
-            randomness = self.np_random.uniform(-self.randomize_cloth, self.randomize_cloth, size=2)
-            new_position[0] = new_position[0] + randomness[0]
-            new_position[1] = new_position[1] + randomness[1]
+            # randomness = self.np_random.uniform(-self.randomize_cloth, self.randomize_cloth, size=2)
+            # new_position[0] = new_position[0] + randomness[0]
+            # new_position[1] = new_position[1] + randomness[1]
             new_position = np.append(new_position, [1, 0, 0, 0])
             gripper_ctrl = np.array([0.0, 0.0])
             utils.grasp(self.sim, gripper_ctrl, 'CB0_0')
