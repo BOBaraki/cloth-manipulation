@@ -78,6 +78,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         self.behavior = behavior
         self.explicit_policy = True
         self.physical_params = [4.00000000e-03, 8.00000000e-03, 1.40000000e+00, 3.00000000e-03, 1.00000000e-03, 2.00000000e-03, 1.00000000e-03, 1.00000000e-02, 3.00000000e-02, 1.10000000e+01]
+        #The number of n_actions need to change to 8 for a second agent
         super(RandomizedGen3Env, self).__init__(
             model_path=model_path, n_substeps=n_substeps, n_actions=4,
             initial_qpos=initial_qpos, mode=self.mode, visual_randomize=self.visual_randomize, visual_data_recording=self.visual_data_recording)
@@ -248,15 +249,18 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
     def compute_reward(self, achieved_goal, goal, info):
         # Compute distance between goal and the achieved goal.
+        # Probably needs to change due to the second agent but for the time we can discard it completely until we use reinforcement learning
         if self.behavior=="sideways":
             num_objects = 2
             if len(achieved_goal.shape) == 1:
                 blocks_in_position = 0
                 for x in range(num_objects):
                     if (goal_distance(achieved_goal[x*3:x*3+3], goal[x*3:x*3+3]) < self.distance_threshold):
+                        print(blocks_in_position)
                         blocks_in_position += 1
                 #reward = -1*self.num_objects + blocks_in_position
                 reward = -(np.array(blocks_in_position != num_objects)).astype(np.float32) # non positive rewards
+                # pdb.set_trace()
                 return reward
             else:
                 #reward = -np.ones(achieved_goal.shape[0])*self.num_objects
@@ -268,6 +272,8 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                             blocks_in_position += 1
                     #reward[x] = reward[x] + blocks_in_position
                     reward[x] = -(np.array(blocks_in_position != num_objects)).astype(np.float32)
+                # pdb.set_trace()
+                print(reward)
                 return reward
         elif self.behavior=="diagonally":
             d = goal_distance(achieved_goal, goal)
@@ -293,6 +299,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
     # RobotEnv methods
     # ----------------------------
 
+    #not sure wehere this one is used. I can comment it out and the simulation will still work
     def _step_callback(self):
         if self.block_gripper:
             # pdb.set_trace()
@@ -339,6 +346,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         return cloth_points[closest], dist_2[closest]
 
     def _set_action(self, action):
+        # this will be 8 for 2 agents
         assert action.shape == (4,)
         action = action.copy()  # ensure that we don't change the action outside of this scope
         pos_ctrl, gripper_ctrl = action[:3], action[3]
@@ -398,13 +406,13 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         self.grip_pos = grip_pos
         dt = self.sim.nsubsteps * self.sim.model.opt.timestep
 
-        # grip_pos_2 = self.sim.data.get_body_xpos('gripper_central')
-        # self.grip_pos_2 = grip_pos_2
+        grip_pos_2 = self.sim.data.get_body_xpos('gripper_central')
+        self.grip_pos_2 = grip_pos_2
 
         #add second agent
         grip_velp = self.sim.data.get_body_xvelp('gripper_central2') * dt
 
-        # grip_velp_2 = self.sim.data.get_body_xvelp('gripper_central') * dt
+        grip_velp_2 = self.sim.data.get_body_xvelp('gripper_central') * dt
 
         robot_qpos, robot_qvel = utils.robot_get_obs(self.sim)
 
@@ -417,7 +425,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             object_rot = rotations.mat2euler(self.sim.data.get_site_xmat('object0'))
             # velocities
             object_velp = self.sim.data.get_site_xvelp('object0') * dt
-            pdb.set_trace()
+            # pdb.set_trace()
             object_velr = self.sim.data.get_site_xvelr('object0') * dt
             # gripper state
             object_rel_pos = object_pos - grip_pos
@@ -438,11 +446,13 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
             vertice_rel_pos = vertice_pos.copy()
             vertice_rel_pos -= grip_pos
+            # pdb.set_trace()
+            vertice_velp_2 = vertice_velp.copy()
             vertice_velp -= grip_velp
-
-            # vertice_rel_pos_2 = vertice_pos.copy()
-            # vertice_rel_pos_2 -= grip_pos_2
-            # vertice_velp_2 -= grip_velp_2
+            # pdb.set_trace()
+            vertice_rel_pos_2 = vertice_pos.copy()
+            vertice_rel_pos_2 -= grip_pos_2
+            vertice_velp_2 -= grip_velp_2
 
         else:
             object_pos = object_rot = object_velp = object_velr = object_rel_pos = np.zeros(0)
@@ -452,8 +462,9 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         # gripper_state = robot_qpos[-2:]
         # gripper_vel = robot_qvel[-2:] * dt  # change to a scalar if the gripper is made symmetric
 
-        gripper_state = np.array([self.sim.model.eq_active[-1]])
-        # gripper_state_2 = np.array([self.sim.model.eq_active[-1]]) #change the value according to the nameid of the second gripper
+        gripper_state = np.array([self.sim.model.eq_active[-2]])
+        # pdb.set_trace()
+        gripper_state_2 = np.array([self.sim.model.eq_active[-1]]) #change the value according to the nameid of the second gripper
         # gripper_vel # Does not make sense for fake gripper 
 
         if not self.has_object and not self.has_cloth:
@@ -561,7 +572,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             grip_pos, gripper_state, grip_velp, vertice_pos[0], vertice_pos[1], vertice_pos[2], vertice_pos[3], vertice_velp[0], vertice_velp[1], vertice_velp[2], vertice_velp[3], 
         ])
 
-
+        # pdb.set_trace()
 
         #might need to add extra info about the vertice_pos
         # obs = np.concatenate([
@@ -641,6 +652,8 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             # new_position[1] = new_position[1] + randomness[1]
             new_position = np.append(new_position, [1, 0, 0, 0])
             gripper_ctrl = np.array([0.0, 0.0])
+            # pdb.set_trace()
+            # Need to identify the target like CB0_0 or CB0_10)
             utils.grasp(self.sim, gripper_ctrl, 'CB0_0')
             self.sim.data.set_joint_qpos('cloth', new_position)
 
@@ -707,8 +720,12 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         gripper_rotation = np.array([0., 1., 1., 0.])
 
         #Add here the second agent mocap but probably we need to change initially the gripper target and rotation a bit in order to start in a more natural position
+        # self.sim.data.set_mocap_pos('robot1:mocap', gripper_target)
+        # self.sim.data.set_mocap_quat('robot1:mocap', gripper_rotation)
+
         self.sim.data.set_mocap_pos('robot2:mocap', gripper_target)
         self.sim.data.set_mocap_quat('robot2:mocap', gripper_rotation)
+        # pdb.set_trace()
         for _ in range(10):
             self.sim.step()
 
@@ -716,6 +733,8 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         # Extract information for sampling goals.
 
         #add also the second agent here but it can be commented out
+        # self.initial_gripper_xpos2 = self.sim.data.get_body_xpos(
+        #     'robot1:ee_link').copy()  # Needs a change if using the gripper for goal generation
         self.initial_gripper_xpos = self.sim.data.get_body_xpos('robot2:ee_link').copy() # Needs a change if using the gripper for goal generation
         if self.has_object:
             self.height_offset = self.sim.data.get_site_xpos('object0')[2]

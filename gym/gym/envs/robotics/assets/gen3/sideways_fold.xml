@@ -89,7 +89,7 @@
 
 	<equality>
 <!--		<weld name="grasp" active="false" body1="gripper_central" body2="CB0_0" relpose="0.0 0.0 0.0 0 0 0 0" solimp= "0.1 0.4 0.001 0.5 2" solref="0.005 1.0"/>-->
-		<weld name="grasp2" active="false" body1="gripper_central2" body2="CB0_0" relpose="0.0 0.0 0.0 0 0 0 0" solimp= "0.1 0.4 0.001 0.5 2" solref="0.005 1.0"/>
+		<weld name="grasp2" active="false" body1="gripper_central2" body2="CB10_0" relpose="0.0 0.0 0.0 0 0 0 0" solimp= "0.1 0.4 0.001 0.5 2" solref="0.005 1.0"/>
 	</equality>
 
 	<equality>
