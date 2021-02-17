@@ -5,6 +5,7 @@ import cv2
 import gym
 from gym import error, spaces
 from gym.utils import seeding
+import pdb
 
 from mujoco_py.modder import TextureModder, MaterialModder, LightModder, CameraModder # from mujoco-py package, needs to be rebuilt
 
@@ -51,6 +52,7 @@ class RobotEnv(gym.GoalEnv):
         self.initial_state = copy.deepcopy(self.sim.get_state())
 
         self.goal = self._sample_goal()
+
         obs = self._get_obs()
         self.action_space = spaces.Box(-1., 1., shape=(n_actions,), dtype='float32')
         self.observation_space = spaces.Dict(dict(
@@ -60,6 +62,8 @@ class RobotEnv(gym.GoalEnv):
         ))
         if self.viewer:
             self._viewer_setup()
+
+
 
     @property
     def dt(self):

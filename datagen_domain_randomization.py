@@ -43,39 +43,61 @@ def generate_demos(obs, render, max_episode_steps):
     episodeObs.append(obs)
 
     pick_up_object = 1
+    pick_up_object_2 = 0
     # place_pos = np.random.randint(2) + 3
     place_pos = 3
+    place_pos_2 = 2
 
     while True:
         #print("Approaching air", timeStep)
         if render: env.render(mode=render_mode)
         obsDataNew = obs.copy()
         #The obsDataNew will change because it will return the second gripper
-        objectPos = np.array([obsDataNew['observation'][7:10].copy() , obsDataNew['observation'][10:13].copy(), obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
+        objectPos = np.array([obsDataNew['observation'][7:10].copy(), obsDataNew['observation'][10:13].copy(), obsDataNew['observation'][13:16].copy(),
+                              obsDataNew['observation'][16:19].copy()])
+
+
         #New gripperPos and gripperState
         gripperPos = obsDataNew['observation'][:3].copy()
         gripperState = obsDataNew['observation'][3]
 
+        gripperPos_2 = obsDataNew['observation'][19:22].copy()
+        gripperState_2 = obsDataNew['observation'][22]
 
+        # pdb.set_trace()
         #New object positions related to the gripper maybe add some waiting actions if one gripper grabs the cloth before the other
         object_rel_pos = objectPos - gripperPos
         object_oriented_goal = object_rel_pos[pick_up_object].copy()
+
+        object_rel_pos_2 = objectPos - gripperPos_2
+        object_oriented_goal_2 = object_rel_pos_2[pick_up_object_2].copy()
         # pdb.set_trace()
         object_oriented_goal[2] += 0.02
-        if np.linalg.norm(object_oriented_goal) <= reach_threshold or timeStep >= max_episode_steps: break
+        object_oriented_goal_2[2] += 0.02
+        if (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps: break
 
         #increase the actions space here for two agents
-        # action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
-        #           random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001)]
-        action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001)]
+        action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
+                  random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001)]
+        # action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001)]
         speed = 1.0 # cap action to whatever speed you want
 
+        # pdb.set_trace()
         for i in range(len(object_oriented_goal)):
             action[i] = object_oriented_goal[i]
+
+        for i in range(len(object_oriented_goal_2)):
+            # pdb.set_trace()
+            action[4+i] = object_oriented_goal_2[i]
+
+        # pdb.set_trace()
+
+        # print(action)
 
         actionRescaled = rescale_action(action, speed, 0.1)
         
         obs, reward, done, info = env.step(actionRescaled)
+        # print(reward)
         episodeAcs.append(actionRescaled)
         episodeObs.append(obs)
         episodeInfo.append(info)

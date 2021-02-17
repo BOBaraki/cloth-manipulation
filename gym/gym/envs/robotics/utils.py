@@ -25,16 +25,18 @@ def ctrl_set_action(sim, action):
     """For torque actuators it copies the action into mujoco ctrl field.
     For position actuators it sets the target relative to the current qpos.
     """
+    # pdb.set_trace()
     if sim.model.nmocap > 0:
         _, action = np.split(action, (sim.model.nmocap * 7, ))
     if sim.data.ctrl is not None:
         for i in range(action.shape[0]):
             if sim.model.actuator_biastype[i] == 0:
                 sim.data.ctrl[i] = action[i]
+                # pdb.set_trace()
             else:
                 idx = sim.model.jnt_qposadr[sim.model.actuator_trnid[i, 0]]
                 sim.data.ctrl[i] = sim.data.qpos[idx] + action[i]
-
+                # pdb.set_trace()
 def grasp(sim, action, point):
     if action[0]>=0.5:
 
@@ -66,6 +68,8 @@ def mocap_set_action(sim, action):
         pos_delta = action[:, :3]
         quat_delta = action[:, 3:]
 
+        # print(action)
+
         reset_mocap2body_xpos(sim)
         sim.data.mocap_pos[:] = sim.data.mocap_pos + pos_delta
         sim.data.mocap_quat[:] = sim.data.mocap_quat + quat_delta
@@ -92,9 +96,14 @@ def reset_mocap2body_xpos(sim):
         sim.model.eq_obj2id is None):
         return
 
+    #might need similar change to the eq_type
     eq_type = sim.model.eq_type[-2]
+
     obj1_id = sim.model.eq_obj1id[-3]
+    obj1_id_2 = sim.model.eq_obj1id[-4]
+
     obj2_id = sim.model.eq_obj2id[-3]
+    obj2_id_2 = sim.model.eq_obj2id[-4]
 
     # import pdb
     # pdb.set_trace()
@@ -106,10 +115,13 @@ def reset_mocap2body_xpos(sim):
 
     assert (eq_type == mujoco_py.const.EQ_WELD)
 
+
     mocap_id = sim.model.body_mocapid[obj1_id]
+    mocap_id_2 = sim.model.body_mocapid[obj1_id_2]
     if mocap_id != -1:
         # obj1 is the mocap, obj2 is the welded body
         body_idx = obj2_id
+        body_idx_2 = obj2_id_2
     else:
         # obj2 is the mocap, obj1 is the welded body
         mocap_id = sim.model.body_mocapid[obj2_id]
@@ -118,6 +130,10 @@ def reset_mocap2body_xpos(sim):
     assert (mocap_id != -1)
     sim.data.mocap_pos[mocap_id][:] = sim.data.body_xpos[body_idx]
     sim.data.mocap_quat[mocap_id][:] = sim.data.body_xquat[body_idx]
+
+    sim.data.mocap_pos[mocap_id_2][:] = sim.data.body_xpos[body_idx_2]
+    sim.data.mocap_quat[mocap_id_2][:] = sim.data.body_xquat[body_idx_2]
+    # pdb.set_trace()
 
 #Helper functions to convert 3d point to 2d in image
 #USage label = global2label(obj_pos, cam_pos, cam_ori, output_size, fov=fov, s=s)

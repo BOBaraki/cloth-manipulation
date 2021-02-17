@@ -32,7 +32,7 @@
 
 	    <body name="CB0_10" pos="0.8 0.9 0.4">
 		    <freejoint name="cloth" />
-		    <composite count="11 11 1" flatinertia="0.016905" prefix="C" spacing="0.034402" type="cloth">
+		    <composite count="11 11 1" flatinertia="0.037651" prefix="C" spacing="0.035749" type="cloth">
 		        <joint damping="0.000500" kind="main" stiffness="0.001000" />
 		        <tendon damping="0.000500" kind="shear" stiffness="0.001000" width="0.001" />
         		<skin inflate="0.002" material="matsponge" subgrid="2" texcoord="true" />
@@ -63,7 +63,7 @@
 
 	<equality>
 
-		<weld active="false" body1="gripper_central2" body2="CB0_0" name="grasp2" relpose="0.0 0.0 0.0 0 0 0 0" solimp="0.1 0.4 0.001 0.5 2" solref="0.005 1.0" />
+		<weld active="false" body1="gripper_central2" body2="CB10_0" name="grasp2" relpose="0.0 0.0 0.0 0 0 0 0" solimp="0.1 0.4 0.001 0.5 2" solref="0.005 1.0" />
 	</equality>
 
 	<equality>
