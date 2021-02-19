@@ -401,15 +401,25 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         # pdb.set_trace()
         test_action = np.concatenate([action, action_2])
         # pdb.set_trace()
-        utils.ctrl_set_action(self.sim, test_action)
-        utils.mocap_set_action(self.sim, test_action)
+        utils.ctrl_set_action(self.sim, action)
+        utils.mocap_set_action(self.sim, action, agent = 0)
 
         # pdb.set_trace()
 
         #Use only when the second mocap is active
 
-        # utils.ctrl_set_action(self.sim, action_2)
+        utils.ctrl_set_action(self.sim, action_2)
+        utils.mocap_set_action(self.sim, action_2,agent = 1)
         # utils.mocap_set_action(self.sim, action_2)
+
+
+        #test grasping
+        # gripper_ctrl = 0.6
+        # gripper_ctrl_2 = 0.6
+        # gripper_ctrl = np.array([gripper_ctrl, gripper_ctrl])
+        # gripper_ctrl_2 = np.array([gripper_ctrl_2, gripper_ctrl_2])
+        # utils.grasp(self.sim, gripper_ctrl , 'CB10_0')
+        # utils.grasp(self.sim, gripper_ctrl_2, 'CB0_0')
         
 
     def _get_obs(self):
@@ -428,6 +438,8 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
         grip_pos_2 = self.sim.data.get_body_xpos('gripper_central')
         self.grip_pos_2 = grip_pos_2
+
+
 
         #add second agent
         grip_velp = self.sim.data.get_body_xvelp('gripper_central2') * dt
@@ -752,12 +764,12 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         utils.reset_mocap_welds(self.sim)
         self.sim.forward()
         # Move end effector into position.
-        gripper_target_2= np.array([0.6, 0.6 , 0.4 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robotiq_85_base_link')
-        gripper_target = np.array([0.8, 0.5 , 0.4 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robotiq_85_base_link')
+        gripper_target_2= np.array([0.5, 0.5 , 0.3 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robotiq_85_base_link')
+        gripper_target = np.array([1, 1 , 1 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robotiq_85_base_link')
         gripper_rotation = np.array([0., 1., 1., 0.])
 
         #Add here the second agent mocap but probably we need to change initially the gripper target and rotation a bit in order to start in a more natural position
-        self.sim.data.set_mocap_pos('robot1:mocap', gripper_target)
+        self.sim.data.set_mocap_pos('robot1:mocap', gripper_target_2)
         self.sim.data.set_mocap_quat('robot1:mocap', gripper_rotation)
 
         self.sim.data.set_mocap_pos('robot2:mocap', gripper_target)

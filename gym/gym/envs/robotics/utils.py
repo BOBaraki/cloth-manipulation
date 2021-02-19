@@ -49,7 +49,27 @@ def grasp(sim, action, point):
     else:
         sim.model.eq_active[-2] = False
 
-def mocap_set_action(sim, action):
+
+# def grasp(sim, action, point):
+#     pdb.set_trace()
+#     if action[0]>=0.5:
+#
+#         # print("all eq constraints", sim.model.body_id2name(sim.model.eq_obj2id[-1]))
+#         # pdb.set_trace()
+#         if point == 'CB0_0':
+#             sim.model.eq_obj2id[-1] = sim.model.body_name2id(point)
+#             sim.model.eq_active[-2] = True
+#             sim.model.eq_data[-2, :] = np.array(
+#                         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+#         elif point == 'CB10_0':
+#             sim.model.eq_obj2id[-2] = sim.model.body_name2id(point)
+#             sim.model.eq_active[-1] = True
+#             sim.model.eq_data[-2, :] = np.array(
+#                         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+#     else:
+#         sim.model.eq_active[-2] = False
+
+def mocap_set_action(sim, action, agent):
     """The action controls the robot using mocaps. Specifically, bodies
     on the robot (for example the gripper wrist) is controlled with
     mocap bodies. In this case the action is the desired difference
@@ -60,9 +80,9 @@ def mocap_set_action(sim, action):
     """
     if sim.model.nmocap > 0:
         # pdb.set_trace()
-        action, _ = np.split(action, (sim.model.nmocap * 7, ))
+        action, _ = np.split(action, ( 7, ))
         # pdb.set_trace()
-        action = action.reshape(sim.model.nmocap, 7)
+        action = action.reshape(1, 7)
         # print(action)
         # pdb.set_trace()
         pos_delta = action[:, :3]
@@ -70,9 +90,21 @@ def mocap_set_action(sim, action):
 
         # print(action)
 
-        reset_mocap2body_xpos(sim)
-        sim.data.mocap_pos[:] = sim.data.mocap_pos + pos_delta
-        sim.data.mocap_quat[:] = sim.data.mocap_quat + quat_delta
+        reset_mocap2body_xpos(sim, agent)
+        # pdb.set_trace()
+
+        temp_sum = sim.data.mocap_pos+ pos_delta
+        temp_sum_quat = sim.data.mocap_quat + quat_delta
+
+        if agent == 0:
+            sim.data.mocap_pos[:] = np.reshape(np.append(sim.data.mocap_pos[0,:], temp_sum[1,:]), (2,3))
+            # pdb.set_trace()
+            sim.data.mocap_quat[:] = np.reshape(np.append(sim.data.mocap_quat[0,:], temp_sum_quat[1,:]), (2,4))
+        else:
+            # pdb.set_trace()
+            sim.data.mocap_pos[:] = np.reshape(np.append(temp_sum[0, :], sim.data.mocap_pos[1, :]), (2, 3))
+            # pdb.set_trace()
+            sim.data.mocap_quat[:] = np.reshape(np.append(temp_sum_quat[0, :],sim.data.mocap_quat[1, :]), (2, 4))
 
 
 def reset_mocap_welds(sim):
@@ -86,7 +118,7 @@ def reset_mocap_welds(sim):
     sim.forward()
 
 
-def reset_mocap2body_xpos(sim):
+def reset_mocap2body_xpos(sim, agent):
     """Resets the position and orientation of the mocap bodies to the same
     values as the bodies they're welded to.
     """
@@ -104,6 +136,7 @@ def reset_mocap2body_xpos(sim):
 
     obj2_id = sim.model.eq_obj2id[-3]
     obj2_id_2 = sim.model.eq_obj2id[-4]
+    # pdb.set_trace()
 
     # import pdb
     # pdb.set_trace()
@@ -119,21 +152,31 @@ def reset_mocap2body_xpos(sim):
     mocap_id = sim.model.body_mocapid[obj1_id]
     mocap_id_2 = sim.model.body_mocapid[obj1_id_2]
     if mocap_id != -1:
+        # pdb.set_trace()
         # obj1 is the mocap, obj2 is the welded body
         body_idx = obj2_id
         body_idx_2 = obj2_id_2
+        # pdb.set_trace()
     else:
         # obj2 is the mocap, obj1 is the welded body
         mocap_id = sim.model.body_mocapid[obj2_id]
         body_idx = obj1_id
-
-    assert (mocap_id != -1)
-    sim.data.mocap_pos[mocap_id][:] = sim.data.body_xpos[body_idx]
-    sim.data.mocap_quat[mocap_id][:] = sim.data.body_xquat[body_idx]
-
-    sim.data.mocap_pos[mocap_id_2][:] = sim.data.body_xpos[body_idx_2]
-    sim.data.mocap_quat[mocap_id_2][:] = sim.data.body_xquat[body_idx_2]
     # pdb.set_trace()
+    # test_body_indx = [body_idx, body_idx_2]
+    # test_mocap_id = [mocap_id, mocap_id_2]
+
+    # assert (mocap_id_2 != -1)
+    # pdb.set_trace()
+    if agent == 0:
+        sim.data.mocap_pos[mocap_id][:] = sim.data.body_xpos[body_idx]
+        sim.data.mocap_quat[mocap_id][:] = sim.data.body_xquat[body_idx]
+    else:
+        sim.data.mocap_pos[mocap_id_2][:] = sim.data.body_xpos[body_idx_2]
+        sim.data.mocap_quat[mocap_id_2][:] = sim.data.body_xquat[body_idx_2]
+    # pdb.set_trace()
+
+
+
 
 #Helper functions to convert 3d point to 2d in image
 #USage label = global2label(obj_pos, cam_pos, cam_ori, output_size, fov=fov, s=s)

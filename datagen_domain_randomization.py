@@ -57,9 +57,12 @@ def generate_demos(obs, render, max_episode_steps):
                               obsDataNew['observation'][16:19].copy()])
 
 
+
         #New gripperPos and gripperState
         gripperPos = obsDataNew['observation'][:3].copy()
         gripperState = obsDataNew['observation'][3]
+
+
 
         gripperPos_2 = obsDataNew['observation'][19:22].copy()
         gripperState_2 = obsDataNew['observation'][22]
@@ -74,6 +77,7 @@ def generate_demos(obs, render, max_episode_steps):
         # pdb.set_trace()
         object_oriented_goal[2] += 0.02
         object_oriented_goal_2[2] += 0.02
+
         if (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps: break
 
         #increase the actions space here for two agents
@@ -85,17 +89,25 @@ def generate_demos(obs, render, max_episode_steps):
         # pdb.set_trace()
         for i in range(len(object_oriented_goal)):
             action[i] = object_oriented_goal[i]
+            # action[i] = 0.
 
         for i in range(len(object_oriented_goal_2)):
             # pdb.set_trace()
             action[4+i] = object_oriented_goal_2[i]
+            # action[4+i] = 0.
 
         # pdb.set_trace()
 
         # print(action)
 
         actionRescaled = rescale_action(action, speed, 0.1)
-        
+        # pdb.set_trace()
+
+        # if timeStep%2 == 1:
+        #     actionRescaled[0] = 0
+
+
+
         obs, reward, done, info = env.step(actionRescaled)
         # print(reward)
         episodeAcs.append(actionRescaled)
