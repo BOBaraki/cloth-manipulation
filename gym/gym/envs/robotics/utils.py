@@ -37,37 +37,39 @@ def ctrl_set_action(sim, action):
                 idx = sim.model.jnt_qposadr[sim.model.actuator_trnid[i, 0]]
                 sim.data.ctrl[i] = sim.data.qpos[idx] + action[i]
                 # pdb.set_trace()
-def grasp(sim, action, point):
-    if action[0]>=0.5:
-
-        # print("all eq constraints", sim.model.body_id2name(sim.model.eq_obj2id[-1]))
-        # pdb.set_trace()
-        sim.model.eq_obj2id[-1] = sim.model.body_name2id(point)
-        sim.model.eq_active[-2] = True
-        sim.model.eq_data[-2, :] = np.array(
-                    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-    else:
-        sim.model.eq_active[-2] = False
-
-
 # def grasp(sim, action, point):
-#     pdb.set_trace()
 #     if action[0]>=0.5:
 #
 #         # print("all eq constraints", sim.model.body_id2name(sim.model.eq_obj2id[-1]))
 #         # pdb.set_trace()
-#         if point == 'CB0_0':
-#             sim.model.eq_obj2id[-1] = sim.model.body_name2id(point)
-#             sim.model.eq_active[-2] = True
-#             sim.model.eq_data[-2, :] = np.array(
-#                         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-#         elif point == 'CB10_0':
-#             sim.model.eq_obj2id[-2] = sim.model.body_name2id(point)
-#             sim.model.eq_active[-1] = True
-#             sim.model.eq_data[-2, :] = np.array(
-#                         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+#         sim.model.eq_obj2id[-1] = sim.model.body_name2id(point)
+#         sim.model.eq_active[-2] = True
+#         sim.model.eq_data[-2, :] = np.array(
+#                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 #     else:
 #         sim.model.eq_active[-2] = False
+
+
+def grasp(sim, action, point):
+    # pdb.set_trace()
+    if action[0]>=0.5:
+
+        # print("all eq constraints", sim.model.body_id2name(sim.model.eq_obj2id[-1]))
+        # pdb.set_trace()
+        if point == 'CB0_0':
+            # pdb.set_trace()
+            sim.model.eq_obj2id[-1] = sim.model.body_name2id(point)
+            sim.model.eq_active[-2] = True
+            sim.model.eq_data[-2, :] = np.array(
+                        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        elif point == 'CB10_0':
+            sim.model.eq_obj2id[-2] = sim.model.body_name2id(point)
+            sim.model.eq_active[-1] = True
+            sim.model.eq_data[-1, :] = np.array(
+                        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+    else:
+        sim.model.eq_active[-2] = False
+        sim.model.eq_active[-1] = False
 
 def mocap_set_action(sim, action, agent):
     """The action controls the robot using mocaps. Specifically, bodies

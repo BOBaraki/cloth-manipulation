@@ -117,44 +117,44 @@ def generate_demos(obs, render, max_episode_steps):
         timeStep += 1
 
 
-    while True:
-        print("Approaching OBJECT", timeStep)
-        if render: env.render(mode=render_mode)
-        obsDataNew = obs.copy()
-        objectPos = np.array([obsDataNew['observation'][7:10].copy() , obsDataNew['observation'][10:13].copy(), obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
-        gripperPos = obsDataNew['observation'][:3].copy()
-        gripperState = obsDataNew['observation'][3]
-
-        object_rel_pos = objectPos - gripperPos
-        object_oriented_goal = object_rel_pos[pick_up_object].copy()
-        object_oriented_goal[2] += 0.02
-
-        if np.linalg.norm(object_oriented_goal) <= grasp_threshold or timeStep >= max_episode_steps: break
-
-        action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001)]
-        speed = 1.0 # cap action to whatever speed you want
-
-        for i in range(len(object_oriented_goal)):
-            action[i] = object_oriented_goal[i]
-
-        actionRescaled = rescale_action(action, speed, noise_param)
-
-        obs, reward, done, info = env.step(actionRescaled)
-        episodeAcs.append(actionRescaled)
-        episodeObs.append(obs)
-        episodeInfo.append(info)
-
-        timeStep += 1
-
-    if render: env.render(mode=render_mode)
-    action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0)]
-    actionRescaled = rescale_action(action, speed, noise_param)
-    obs, reward, done, info = env.step(actionRescaled)
-    episodeAcs.append(actionRescaled)
-    episodeObs.append(obs)
-    episodeInfo.append(info)
-
-    timeStep += 1
+    # while True:
+    #     print("Approaching OBJECT", timeStep)
+    #     if render: env.render(mode=render_mode)
+    #     obsDataNew = obs.copy()
+    #     objectPos = np.array([obsDataNew['observation'][7:10].copy() , obsDataNew['observation'][10:13].copy(), obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
+    #     gripperPos = obsDataNew['observation'][:3].copy()
+    #     gripperState = obsDataNew['observation'][3]
+    #
+    #     object_rel_pos = objectPos - gripperPos
+    #     object_oriented_goal = object_rel_pos[pick_up_object].copy()
+    #     object_oriented_goal[2] += 0.02
+    #
+    #     if np.linalg.norm(object_oriented_goal) <= grasp_threshold or timeStep >= max_episode_steps: break
+    #
+    #     action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001)]
+    #     speed = 1.0 # cap action to whatever speed you want
+    #
+    #     for i in range(len(object_oriented_goal)):
+    #         action[i] = object_oriented_goal[i]
+    #
+    #     actionRescaled = rescale_action(action, speed, noise_param)
+    #
+    #     obs, reward, done, info = env.step(actionRescaled)
+    #     episodeAcs.append(actionRescaled)
+    #     episodeObs.append(obs)
+    #     episodeInfo.append(info)
+    #
+    #     timeStep += 1
+    #
+    # if render: env.render(mode=render_mode)
+    # action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0)]
+    # actionRescaled = rescale_action(action, speed, noise_param)
+    # obs, reward, done, info = env.step(actionRescaled)
+    # episodeAcs.append(actionRescaled)
+    # episodeObs.append(obs)
+    # episodeInfo.append(info)
+    #
+    # timeStep += 1
     #
     # while True:
     #     print("PICKING UP", timeStep)
@@ -229,80 +229,80 @@ def generate_demos(obs, render, max_episode_steps):
     #     timeStep += 1
     #
     #
-    while True:
-        print("Taking", timeStep)
-        if render: env.render(mode=render_mode)
-        obsDataNew = obs.copy()
-        objectPos = np.array([obsDataNew['observation'][7:10].copy() , obsDataNew['observation'][10:13].copy(), obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
-        gripperPos = obsDataNew['observation'][:3].copy()
-        gripperState = obsDataNew['observation'][3]
-
-        object_rel_pos = objectPos - gripperPos
-        object_oriented_goal = object_rel_pos[place_pos].copy()
-        object_oriented_goal[2] += 0.1
-
-        #object_oriented_goal[0] -= 0.02
-        object_oriented_goal[1] += 0.01
-
-        if np.linalg.norm(object_oriented_goal) <= reach_threshold or timeStep >= max_episode_steps: break
-
-        action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0)]
-        speed = 1.0 # cap action to whatever speed you want
-
-        for i in range(len(object_oriented_goal)):
-            action[i] = object_oriented_goal[i]
-
-        actionRescaled = rescale_action(action, speed, noise_param)
-
-        obs, reward, done, info = env.step(actionRescaled)
-        episodeAcs.append(actionRescaled)
-        episodeObs.append(obs)
-        episodeInfo.append(info)
-
-        timeStep += 1
+    # while True:
+    #     print("Taking", timeStep)
+    #     if render: env.render(mode=render_mode)
+    #     obsDataNew = obs.copy()
+    #     objectPos = np.array([obsDataNew['observation'][7:10].copy() , obsDataNew['observation'][10:13].copy(), obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
+    #     gripperPos = obsDataNew['observation'][:3].copy()
+    #     gripperState = obsDataNew['observation'][3]
     #
-    while True:
-        print("Taking", timeStep)
-        if render: env.render(mode=render_mode)
-        obsDataNew = obs.copy()
-        objectPos = np.array([obsDataNew['observation'][7:10].copy() , obsDataNew['observation'][10:13].copy(), obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
-        gripperPos = obsDataNew['observation'][:3].copy()
-        gripperState = obsDataNew['observation'][3]
-
-        object_rel_pos = objectPos - gripperPos
-        object_oriented_goal = object_rel_pos[place_pos].copy()
-        object_oriented_goal[2] += 0.02
-
-        #object_oriented_goal[0] -= 0.02
-        object_oriented_goal[1] += 0.02
-
-        if np.linalg.norm(object_oriented_goal) <= reach_threshold or timeStep >= max_episode_steps: break
-
-        action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0)]
-        speed = 1.0 # cap action to whatever speed you want
-
-        for i in range(len(object_oriented_goal)):
-            action[i] = object_oriented_goal[i]
-
-        actionRescaled = rescale_action(action, speed, noise_param)
-
-        obs, reward, done, info = env.step(actionRescaled)
-        episodeAcs.append(actionRescaled)
-        episodeObs.append(obs)
-        episodeInfo.append(info)
-
-        timeStep += 1
+    #     object_rel_pos = objectPos - gripperPos
+    #     object_oriented_goal = object_rel_pos[place_pos].copy()
+    #     object_oriented_goal[2] += 0.1
     #
-    while (timeStep)< max_episode_steps:
-        #print("WAITING", timeStep)
-        if render: env.render(mode=render_mode)
-        actionDull = [random.uniform(-0.00000001, 0.00000001), random.uniform(-0.00000001, 0.00000001), random.uniform(-0.00000001, 0.00000001), random.uniform(-0.00000001, 0.00000001)]
-        actionRescaled = rescale_action(actionDull, speed, noise_param)
-        obs, reward, done, info = env.step(actionRescaled)
-        episodeAcs.append(actionRescaled)
-        episodeObs.append(obs)
-        episodeInfo.append(info)
-        timeStep += 1
+    #     #object_oriented_goal[0] -= 0.02
+    #     object_oriented_goal[1] += 0.01
+    #
+    #     if np.linalg.norm(object_oriented_goal) <= reach_threshold or timeStep >= max_episode_steps: break
+    #
+    #     action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0)]
+    #     speed = 1.0 # cap action to whatever speed you want
+    #
+    #     for i in range(len(object_oriented_goal)):
+    #         action[i] = object_oriented_goal[i]
+    #
+    #     actionRescaled = rescale_action(action, speed, noise_param)
+    #
+    #     obs, reward, done, info = env.step(actionRescaled)
+    #     episodeAcs.append(actionRescaled)
+    #     episodeObs.append(obs)
+    #     episodeInfo.append(info)
+    #
+    #     timeStep += 1
+    #
+    # while True:
+    #     print("Taking", timeStep)
+    #     if render: env.render(mode=render_mode)
+    #     obsDataNew = obs.copy()
+    #     objectPos = np.array([obsDataNew['observation'][7:10].copy() , obsDataNew['observation'][10:13].copy(), obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
+    #     gripperPos = obsDataNew['observation'][:3].copy()
+    #     gripperState = obsDataNew['observation'][3]
+    #
+    #     object_rel_pos = objectPos - gripperPos
+    #     object_oriented_goal = object_rel_pos[place_pos].copy()
+    #     object_oriented_goal[2] += 0.02
+    #
+    #     #object_oriented_goal[0] -= 0.02
+    #     object_oriented_goal[1] += 0.02
+    #
+    #     if np.linalg.norm(object_oriented_goal) <= reach_threshold or timeStep >= max_episode_steps: break
+    #
+    #     action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0)]
+    #     speed = 1.0 # cap action to whatever speed you want
+    #
+    #     for i in range(len(object_oriented_goal)):
+    #         action[i] = object_oriented_goal[i]
+    #
+    #     actionRescaled = rescale_action(action, speed, noise_param)
+    #
+    #     obs, reward, done, info = env.step(actionRescaled)
+    #     episodeAcs.append(actionRescaled)
+    #     episodeObs.append(obs)
+    #     episodeInfo.append(info)
+    #
+    #     timeStep += 1
+    # #
+    # while (timeStep)< max_episode_steps:
+    #     #print("WAITING", timeStep)
+    #     if render: env.render(mode=render_mode)
+    #     actionDull = [random.uniform(-0.00000001, 0.00000001), random.uniform(-0.00000001, 0.00000001), random.uniform(-0.00000001, 0.00000001), random.uniform(-0.00000001, 0.00000001)]
+    #     actionRescaled = rescale_action(actionDull, speed, noise_param)
+    #     obs, reward, done, info = env.step(actionRescaled)
+    #     episodeAcs.append(actionRescaled)
+    #     episodeObs.append(obs)
+    #     episodeInfo.append(info)
+    #     timeStep += 1
     #
     return [episodeAcs, episodeObs, episodeInfo]
 
