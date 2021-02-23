@@ -291,8 +291,11 @@ class RandomizedGen3Env(robot_env.RobotEnv):
     # ----------------------------
     def _gripper_sync(self):
         # move the left_spring_joint joint[14] and right_spring_joint(joint[10]) in the right angle
+        # pdb.set_trace()
         self.sim.data.qpos[10] = self._gripper_consistent(self.sim.data.qpos[7: 10])
         self.sim.data.qpos[14] = self._gripper_consistent(self.sim.data.qpos[11: 14])
+        self.sim.data.qpos[25] = self._gripper_consistent(self.sim.data.qpos[22: 25])
+        self.sim.data.qpos[29] = self._gripper_consistent(self.sim.data.qpos[26: 29])
 
     def _gripper_consistent(self, angle):
         x = -0.006496 + 0.0315 * math.sin(angle[0]) + 0.04787744772 * math.cos(angle[0] + angle[1] - 0.1256503306) - 0.02114828598 * math.sin(angle[0] + angle[1] + angle[2] - 0.1184899592)
@@ -302,13 +305,15 @@ class RandomizedGen3Env(robot_env.RobotEnv):
     # RobotEnv methods
     # ----------------------------
 
-    #not sure wehere this one is used. I can comment it out and the simulation will still work
+    #gripper control
     def _step_callback(self):
         if self.block_gripper:
             # pdb.set_trace()
             for j in range(3):
                 self.sim.data.qpos[7 + j] = closed_pos[j]
                 self.sim.data.qpos[11 + j] = closed_pos[j]
+                self.sim.data.qpos[22 + j] = closed_pos[j]
+                self.sim.data.qpos[26 + j] = closed_pos[j]
             #self.sim.data.set_joint_qpos('robot1:right_knuckle_joint', closed_angle)
             #self.sim.data.set_joint_qpos('robot1:left_knuckle_joint', closed_angle)
             self._gripper_sync()
@@ -376,7 +381,13 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         # pdb.set_trace()
         if dist_closest<=0.001:
             # pdb.set_trace()
+            self.block_gripper = True
+            self._step_callback()
             utils.grasp(self.sim, gripper_ctrl, 'CB10_0')
+        else:
+            self.block_gripper = False
+            self._step_callback()
+
         if self.block_gripper:
             gripper_ctrl = np.zeros_like(gripper_ctrl)
 
@@ -385,13 +396,6 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             utils.grasp(self.sim, gripper_ctrl_2, 'CB0_0')
         if self.block_gripper:
             gripper_ctrl_2 = np.zeros_like(gripper_ctrl_2)
-
-        #second agent
-        # if dist_closest_2<=0.001:
-        #     # pdb.set_trace()
-        #     utils.grasp(self.sim, gripper_ctrl_2, closest_2)
-        # if self.block_gripper:
-        #     gripper_ctrl_2 = np.zeros_like(gripper_ctrl_2)
 
         # action = np.concatenate([pos_ctrl, rot_ctrl, gripper_ctrl])
         action = np.concatenate([pos_ctrl, rot_ctrl])
@@ -402,14 +406,14 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         # pdb.set_trace()
         test_action = np.concatenate([action, action_2])
         # pdb.set_trace()
-        utils.ctrl_set_action(self.sim, action)
+        utils.ctrl_set_action(self.sim, gripper_ctrl)
         utils.mocap_set_action(self.sim, action, agent = 0)
 
         # pdb.set_trace()
 
         #Use only when the second mocap is active
 
-        utils.ctrl_set_action(self.sim, action_2)
+        utils.ctrl_set_action(self.sim, gripper_ctrl_2)
         utils.mocap_set_action(self.sim, action_2,agent = 1)
         # utils.mocap_set_action(self.sim, action_2)
 

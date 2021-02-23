@@ -21,13 +21,29 @@ def robot_get_obs(sim):
     return np.zeros(0), np.zeros(0)
 
 
+# def ctrl_set_action(sim, action):
+#     """For torque actuators it copies the action into mujoco ctrl field.
+#     For position actuators it sets the target relative to the current qpos.
+#     """
+#     # pdb.set_trace()
+#     if sim.model.nmocap > 0:
+#         _, action = np.split(action, (sim.model.nmocap * 7, ))
+#     if sim.data.ctrl is not None:
+#         for i in range(action.shape[0]):
+#             if sim.model.actuator_biastype[i] == 0:
+#                 sim.data.ctrl[i] = action[i]
+#                 # pdb.set_trace()
+#             else:
+#                 idx = sim.model.jnt_qposadr[sim.model.actuator_trnid[i, 0]]
+#                 sim.data.ctrl[i] = sim.data.qpos[idx] + action[i]
+#                 # pdb.set_trace()
 def ctrl_set_action(sim, action):
     """For torque actuators it copies the action into mujoco ctrl field.
     For position actuators it sets the target relative to the current qpos.
     """
     # pdb.set_trace()
     if sim.model.nmocap > 0:
-        _, action = np.split(action, (sim.model.nmocap * 7, ))
+        _, action = np.split(action, (2, ))
     if sim.data.ctrl is not None:
         for i in range(action.shape[0]):
             if sim.model.actuator_biastype[i] == 0:
@@ -37,6 +53,9 @@ def ctrl_set_action(sim, action):
                 idx = sim.model.jnt_qposadr[sim.model.actuator_trnid[i, 0]]
                 sim.data.ctrl[i] = sim.data.qpos[idx] + action[i]
                 # pdb.set_trace()
+
+
+
 # def grasp(sim, action, point):
 #     if action[0]>=0.5:
 #
@@ -115,6 +134,7 @@ def reset_mocap_welds(sim):
     if sim.model.nmocap > 0 and sim.model.eq_data is not None:
         for i in range(sim.model.eq_data.shape[0]):
             if sim.model.eq_type[i] == mujoco_py.const.EQ_WELD:
+                # pdb.set_trace()
                 sim.model.eq_data[i, :] = np.array(
                     [0., 0., 0., 1., 0., 0., 0.])
     sim.forward()
