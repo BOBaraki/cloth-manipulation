@@ -375,7 +375,7 @@ for reward_type in ['sparse', 'dense']:
         entry_point='gym.envs.robotics:RandomizedGen3SidewaysFoldEnv',
         max_episode_steps=100,
         kwargs={
-            'config': '/home/tzortzis/gen3-mujoco/gym/gym/envs/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
+            'config': '/home/gtzelepis/gen3-mujoco/gym/gym/envs/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
             'xml_name': 'sideways_fold.xml'
         }
     )
@@ -386,7 +386,7 @@ for reward_type in ['sparse', 'dense']:
         entry_point='gym.envs.robotics:RandomizedGen3DiagonalFoldEnv',
         max_episode_steps=100,
         kwargs={
-            'config': '/home/tzortzis/gen3-mujoco/gym/gym/envs/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
+            'config': '/home/gtzelepis/gen3-mujoco/gym/gym/envs/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
             'xml_name': 'diagonal_fold.xml'
         }
     )
