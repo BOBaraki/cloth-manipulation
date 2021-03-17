@@ -12,15 +12,17 @@
         <texture builtin="flat" name="tex_light" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
         <texture builtin="flat" name="tex_cloth" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
 
-        <texture name="texsponge" type="2d" file="/home/gtzelepis/gen3-mujoco/gym/gym/envs/robotics/assets/gen3/cloth_red.png"/>
+        <texture name="texsponge" type="2d" file="/home/tzortzis/gen3-mujoco/gym/gym/envs/robotics/assets/gen3/cloth_red.png"/>
+        <texture name="textable" type="2d" file="/home/tzortzis/gen3-mujoco/gym/gym/envs/robotics/assets/gen3/wood.png"/>
 
         <material name="matsponge" texture="texsponge" specular="0.3"/>
+<!--        <material name="mattable" texture="textable" specular="0.3"/>-->
     
 
 
         <material name="floor_mat" specular="0" shininess="0.5" reflectance="0" rgba="0.2 0.2 0.2 1" texture="tex_floor"></material>
         <material name="cloth_mat" specular="0" shininess="0.5" reflectance="0" rgba="0.2 0.2 0.9 1" texture="tex_cloth"></material>
-        <material name="floor_mat_1" specular="0" shininess="0.5" reflectance="0" rgba="0.2 0.2 0.2 1" texture="tex_floor_1"></material>
+        <material name="floor_mat_1" specular="0" shininess="0.5" reflectance="0" rgba="0.2 0.2 0.2 1" texture="textable"></material>
         <material name="robot1:geomMat" shininess="0.03" specular="0.4" texture="tex_geom"></material>
         <material name="robot1:gripper_mat" shininess="0.5" specular="0.9" reflectance="0" texture="tex_gripper"></material>
         <material name="robot1:arm_mat" shininess="0.03" specular="0.4" reflectance="0" texture="tex_arm"></material>

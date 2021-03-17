@@ -379,7 +379,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         closest_2, dist_closest_2 = self.find_closest_indice(self.grip_pos_2)
         # Only allow gripping if in proximity
         # pdb.set_trace()
-        if dist_closest<=0.0001:
+        if dist_closest<=0.001:
             # pdb.set_trace()
             self.block_gripper = True
             self._step_callback()
@@ -391,7 +391,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         if self.block_gripper:
             gripper_ctrl = np.zeros_like(gripper_ctrl)
 
-        if dist_closest_2<=0.0001:
+        if dist_closest_2<=0.001:
             # pdb.set_trace()
             utils.grasp(self.sim, gripper_ctrl_2, 'CB0_0')
         if self.block_gripper:

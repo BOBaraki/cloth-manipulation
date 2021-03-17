@@ -24,15 +24,14 @@
 
 
 		<body name="table0" pos="0.8 0.75 0.2">
-			<geom mass="2000" material="floor_mat_1" size="1 1 0.2" type="box" />
+			<geom mass="2000" material="floor_mat_1" size="1 0.25 0.2" type="box" />
 		</body>
-
 
 		
 
 	    <body name="CB0_10" pos="0.8 0.9 0.4">
 		    <freejoint name="cloth" />
-		    <composite count="11 11 1" flatinertia="0.016205" prefix="C" spacing="0.029447" type="cloth">
+		    <composite count="11 11 1" flatinertia="0.085497" prefix="C" spacing="0.035055" type="cloth">
 		        <joint damping="0.000500" kind="main" stiffness="0.001000" />
 		        <tendon damping="0.000500" kind="shear" stiffness="0.001000" width="0.001" />
         		<skin inflate="0.002" material="matsponge" subgrid="2" texcoord="true" />
