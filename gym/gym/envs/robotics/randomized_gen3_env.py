@@ -592,11 +592,11 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             #     cv2.circle(visual_data, (int(point[0]), int(point[1])), 2, (0, 0, 255), 2)
         
             self._label_matrix = []
-            #name = "/home/rjangir/workSpace/IRI-DL/datasets/sim2real/train/" + "image_" +str(self._index) + ".jpg"
-            name = "/home/rjangir/workSpace/sketchbook/pytorch-corner-detection/data/real_images/train_dataset_RL/" + "image_" +str(self._index) + ".png"
+
+            name = "/path/to/folder/" + "image_" +str(self._index) + ".png"
             cv2.imwrite(name, visual_data)
-            #name_d = "/home/rjangir/workSpace/IRI-DL/datasets/sim2real/train/" + "image_depth" +str(self._index) + ".jpg"
-            name_d = "/home/rjangir/workSpace/sketchbook/pytorch-corner-detection/data/real_images/train_dataset_RL/" + "image_depth" +str(self._index) + ".tif"
+
+            name_d = "/path/to/folder/" + "image_depth" +str(self._index) + ".tif"
             cv2.imwrite(name_d, depth_cv)
 
             label_data = np.array([label[0], label[1], label[2], label[3]])
