@@ -81,7 +81,7 @@ def grasp(sim, action, point):
             sim.model.eq_active[-2] = True
             sim.model.eq_data[-2, :] = np.array(
                         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-        elif point == 'CB10_0':
+        elif point != 'CB0_0':
             sim.model.eq_obj2id[-2] = sim.model.body_name2id(point)
             sim.model.eq_active[-1] = True
             sim.model.eq_data[-1, :] = np.array(

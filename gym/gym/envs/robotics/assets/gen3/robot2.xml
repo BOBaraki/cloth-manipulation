@@ -11,7 +11,7 @@
 	</body>
 
 	<!-- NOTE: Might need to change pos -->
-	<body childclass="robot1:gen3" name="robot2:Base_Link" pos="1.5 0.75 0.4">
+	<body childclass="robot1:gen3" name="robot2:Base_Link" pos="1.6 0.55 0.4">
 		<!-- 		<joint armature="0.0001" axis="1 0 0" damping="1e+11" name="robot1:slide0" pos="0 0 0" type="slide"></joint>
 		<joint armature="0.0001" axis="0 1 0" damping="1e+11" name="robot1:slide1" pos="0 0 0" type="slide"></joint>
 		<joint armature="0.0001" axis="0 0 1" damping="1e+11" name="robot1:slide2" pos="0 0 0" type="slide"></joint> -->

@@ -82,7 +82,8 @@
 		<light directional="true" ambient="0.2 0.2 0.2" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3" castshadow="true" pos="0 4 0" dir="0 0 -1" name="light1"></light>
 		<light directional="true" ambient="0.2 0.2 0.2" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3" castshadow="true" pos="0 4 4" dir="0 0 -1" name="light2"></light>
 		<light directional="true" ambient="0.2 0.2 0.2" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3" castshadow="true" pos="4 0 4" dir="0 0 -1" name="light3"></light>
-		<camera fovy="45" name="camera1" pos="1.8 0.75 1.2" euler="0 0.77 1.57"/>
+<!--		<camera fovy="45" name="camera1" pos="1.8 0.75 1.2" euler="0 0.77 1.57"/>-->
+		<camera fovy="45" name="camera1" pos="0.95 0. 1." euler="1. 0. 0."/>
 	</worldbody>
 	
 
