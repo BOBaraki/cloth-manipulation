@@ -1,0 +1,15 @@
+Metadata-Version: 1.2
+Name: mujoco-py
+Version: 2.0.2.9
+Summary: UNKNOWN
+Home-page: https://github.com/openai/mujoco-py
+Author: OpenAI Robotics Team
+Author-email: robotics@openai.com
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3 :: Only
+Requires-Python: >=3.6
