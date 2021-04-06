@@ -95,6 +95,10 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         self.initial_qpos = initial_qpos
         self.n_substeps = n_substeps
 
+
+
+
+
         
 
 
