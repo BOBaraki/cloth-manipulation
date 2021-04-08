@@ -745,7 +745,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                 goal_vertices = ['CB0' + '_' + str(self.cloth_length - 1),
                                  'CB' + str(self.cloth_length - 1) + '_' + str(self.cloth_length - 1)]
                 # goals = [self.sim.data.get_body_xpos(goal_vertices[0]), self.sim.data.get_body_xpos(goal_vertices[1])]
-                goals = [self.sim.data.get_body_xpos(goal_vertices[0]) + (0, 0, 0.41), self.sim.data.get_body_xpos(goal_vertices[1]) + (0, 0, 0.41)]
+                goals = [self.sim.data.get_body_xpos(goal_vertices[0]) + (0, -0.1, 0.41), self.sim.data.get_body_xpos(goal_vertices[1]) + (0, -0.1, 0.41)]
                 # pdb.set_trace()
                 randomness = self.np_random.uniform(-self.target_range, self.target_range, size=4)
                 # goals[0][0] += randomness[0]/3
