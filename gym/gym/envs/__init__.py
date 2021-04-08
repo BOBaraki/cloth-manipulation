@@ -401,6 +401,8 @@ for reward_type in ['sparse', 'dense']:
         }
     )
 
+
+
     # Dummy env
     register(
         id='DummyEnv{}-v0'.format(suffix),

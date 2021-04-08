@@ -745,7 +745,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                 goal_vertices = ['CB0' + '_' + str(self.cloth_length - 1),
                                  'CB' + str(self.cloth_length - 1) + '_' + str(self.cloth_length - 1)]
                 # goals = [self.sim.data.get_body_xpos(goal_vertices[0]), self.sim.data.get_body_xpos(goal_vertices[1])]
-                goals = [self.sim.data.get_body_xpos(goal_vertices[0]) + (0, 0, 1), self.sim.data.get_body_xpos(goal_vertices[1]) + (0, 0, 1)]
+                goals = [self.sim.data.get_body_xpos(goal_vertices[0]) + (0, 0, 0.41), self.sim.data.get_body_xpos(goal_vertices[1]) + (0, 0, 0.41)]
                 # pdb.set_trace()
                 randomness = self.np_random.uniform(-self.target_range, self.target_range, size=4)
                 # goals[0][0] += randomness[0]/3
@@ -788,7 +788,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         self.sim.forward()
         # Move end effector into position.
         gripper_target_2= np.array([0.5, 0.5 , 0.3 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robotiq_85_base_link')
-        gripper_target = np.array([1, 1 , 1 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robotiq_85_base_link')
+        gripper_target = np.array([1.5, 0.5 , 0.5 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robotiq_85_base_link')
         gripper_rotation = np.array([0., 1., 1., 0.])
 
         #Add here the second agent mocap but probably we need to change initially the gripper target and rotation a bit in order to start in a more natural position
