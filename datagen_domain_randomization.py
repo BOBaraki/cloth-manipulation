@@ -387,7 +387,7 @@ if __name__ == '__main__':
     parser.add_argument("--once", action="store_true")
     parser.add_argument("--ignore_done", action="store_true")
     parser.add_argument("--render", action="store_true")
-    parser.add_argument("--behavior", choices=["diagonally", "sideways"], default="sideways")
+    parser.add_argument("--behavior", choices=["diagonally", "sideways, lifting"], default="sideways")
     args = parser.parse_args()
 
     #env = envs.make(args.env)
