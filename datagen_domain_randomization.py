@@ -38,7 +38,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
     timeStep = 0
     grasp_threshold = 0.01 # how close to get to grasp the vertice
     reach_threshold = 0.03 # how close to get to reach a point in space
-    drop_threshold = 1.
+    drop_threshold = 0.08
+    lowering_threshold = 1.
     noise_param = 0.6
 
     
@@ -158,7 +159,6 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             action[4 + i] = object_oriented_goal_2[i]
             # action[4+i] = 0.
 
-        # pdb.set_trace()
 
         # print(action)
 
@@ -221,7 +221,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         if behavior == "sideways":
             object_oriented_goal_2[1] -= 0.09
 
-        if behavior == "dropping" or behavior == "lowering" and timeStep > 70:
+        if behavior == "lowering" and timeStep > 70:
+            if (np.linalg.norm(object_oriented_goal) <= lowering_threshold and np.linalg.norm(
+                    object_oriented_goal_2) <= lowering_threshold) or timeStep >= max_episode_steps: break
+        elif behavior == "dropping":
             if (np.linalg.norm(object_oriented_goal) <= drop_threshold and np.linalg.norm(
                     object_oriented_goal_2) <= drop_threshold) or timeStep >= max_episode_steps: break
         else:
@@ -496,7 +499,7 @@ if __name__ == '__main__':
     parser.add_argument("--once", action="store_true")
     parser.add_argument("--ignore_done", action="store_true")
     parser.add_argument("--render", action="store_true")
-    parser.add_argument("--behavior", choices=["diagonally", "sideways", "lifting", "dropping", "lowering"], default="sideways")
+    parser.add_argument("--behavior", choices=["diagonally", "sideways", "lifting", "dropping", "lowering", "one-hand"], default="sideways")
     args = parser.parse_args()
 
     #env = envs.make(args.env)
