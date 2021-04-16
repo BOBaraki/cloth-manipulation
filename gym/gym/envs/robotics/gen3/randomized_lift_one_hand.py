@@ -7,9 +7,9 @@ from gym.envs.robotics import randomized_gen3_env
 MODEL_XML_PATH = os.path.join('gen3', 'sideways_fold.xml')
 
 
-class RandomizedGen3DiagonalFoldEnv(randomized_gen3_env.RandomizedGen3Env, utils.EzPickle):
+class RandomizedGen3LiftOneHandsEnv(randomized_gen3_env.RandomizedGen3Env, utils.EzPickle):
     def __init__(self, reward_type='sparse', **kwargs):
-        behaviors = ['diagonally', 'sideways']
+        behaviors = ['diagonally', 'sideways', 'onehand-lifting']
         initial_qpos = {
             'robot1:Actuator1': 0.0,
             'robot1:Actuator2': 0.0,
@@ -22,6 +22,6 @@ class RandomizedGen3DiagonalFoldEnv(randomized_gen3_env.RandomizedGen3Env, utils
         randomized_gen3_env.RandomizedGen3Env.__init__(
             self, MODEL_XML_PATH, has_object=False, has_cloth=True, block_gripper=True, n_substeps=20,
             gripper_extra_height=0.2, target_in_the_air=True, target_offset=0.0,
-            obj_range=0.15, target_range=0.15, distance_threshold=0.05, cloth_length=11, behavior=behaviors[0],
+            obj_range=0.15, target_range=0.15, distance_threshold=0.05, cloth_length=11, behavior=behaviors[2],
             initial_qpos=initial_qpos, reward_type=reward_type, **kwargs)
         utils.EzPickle.__init__(self)

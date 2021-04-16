@@ -82,7 +82,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         # pdb.set_trace()
         object_oriented_goal[2] += 0.02
         object_oriented_goal_2[2] += 0.02
-        if behavior == 'one-hand':
+        if behavior == 'one-hand'  or behavior == "diagonally":
             if (np.linalg.norm(object_oriented_goal)) <= reach_threshold or timeStep >= max_episode_steps: break
         elif (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps: break
 
@@ -99,7 +99,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         for i in range(len(object_oriented_goal_2)):
             # pdb.set_trace()
-            if behavior == 'one-hand':
+            if behavior == 'one-hand' or behavior == "diagonally":
                 action[4+i] = 0.
             else:
                 action[4+i] = object_oriented_goal_2[i]
@@ -146,7 +146,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         object_rel_pos_2 = objectPos - gripperPos_2
         object_oriented_goal_2 = object_rel_pos_2[pick_up_object_2].copy()
 
-        if behavior == 'one-hand':
+        if behavior == 'one-hand' or behavior == "diagonally":
             if (np.linalg.norm(object_oriented_goal)) <= reach_threshold or timeStep >= max_episode_steps: break
         elif (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(
             object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps:
@@ -166,7 +166,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         for i in range(len(object_oriented_goal_2)):
             # pdb.set_trace()
-            if behavior == 'one-hand':
+            if behavior == 'one-hand' or behavior == "diagonally":
                 action[4+i] = 0.
             else:
                 action[4 + i] = object_oriented_goal_2[i]
@@ -217,11 +217,17 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         #object_oriented_goal = object_rel_pos[place_pos].copy()
         # pdb.set_trace()
         # object_oriented_goal = obsDataNew['desired_goal'].copy()[(place_pos-3)*3:(place_pos-3+1)*3] - gripperPos
-        object_oriented_goal = obsDataNew['desired_goal'].copy()[3:6] - gripperPos
+        if behavior == "diagonally":
+            object_oriented_goal = obsDataNew['desired_goal'].copy() - gripperPos
+        else:
+            object_oriented_goal = obsDataNew['desired_goal'].copy()[3:6] - gripperPos
 
+
+
+
+
+        object_oriented_goal[1] -= 0.09
         object_oriented_goal[2] += 0.1
-        if behavior == "sideways":
-            object_oriented_goal[1] -= 0.09
 
         # object_oriented_goal_2 = obsDataNew['desired_goal'].copy()[
         #                        (place_pos_2 - 3) * 3:(place_pos_2 - 3 + 1) * 3] - gripperPos_2
@@ -239,7 +245,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         elif behavior == "dropping":
             if (np.linalg.norm(object_oriented_goal) <= drop_threshold and np.linalg.norm(
                     object_oriented_goal_2) <= drop_threshold) or timeStep >= max_episode_steps: break
-        elif behavior == "one-hand":
+        elif behavior == "one-hand" or behavior == "diagonally":
             if (np.linalg.norm(object_oriented_goal)) <= reach_threshold or timeStep >= max_episode_steps: break
         else:
             if (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(
@@ -263,7 +269,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         for i in range(len(object_oriented_goal_2)):
             # pdb.set_trace()
-            if behavior == 'one-hand':
+            if behavior == 'one-hand' or behavior == "diagonally":
                 action[4+i] = 0.
             else:
                 action[4 + i] = object_oriented_goal_2[i]
@@ -324,7 +330,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             # pdb.set_trace()
             object_oriented_goal_2[2] -= 0.1
 
-            if behavior == 'one-hand':
+            if behavior == 'one-hand' or behavior == "diagonally":
                 if (np.linalg.norm(object_oriented_goal)) <= reach_threshold or timeStep >= max_episode_steps: break
             elif (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(
                 object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps:
@@ -349,7 +355,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
             for i in range(len(object_oriented_goal_2)):
                 # pdb.set_trace()
-                if behavior == 'one-hand':
+                if behavior == 'one-hand' or behavior == "diagonally":
                     action[4 + i] = 0.
                 else:
                     action[4 + i] = object_oriented_goal_2[i]
@@ -395,11 +401,16 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         #object_oriented_goal = object_rel_pos[place_pos].copy()
         # object_oriented_goal = obsDataNew['desired_goal'].copy()[(place_pos-3)*3:(place_pos-3+1)*3] - gripperPos
-        object_oriented_goal = obsDataNew['desired_goal'].copy()[
-                               3:6] - gripperPos
+
 
         object_oriented_goal_2 = obsDataNew['desired_goal'].copy()[
                                  0:3] - gripperPos_2
+
+        if behavior == "diagonally":
+            object_oriented_goal = obsDataNew['desired_goal'].copy() - gripperPos
+        else:
+            object_oriented_goal = obsDataNew['desired_goal'].copy()[
+                                   3:6] - gripperPos
 
         object_oriented_goal[2] += 0.1
 
@@ -409,7 +420,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         object_oriented_goal_2[1] += 0.01
 
-        if behavior == 'one-hand':
+        if behavior == 'one-hand' or behavior == "diagonally":
             if (np.linalg.norm(object_oriented_goal)) <= reach_threshold or timeStep >= max_episode_steps: break
         elif (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(
             object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps:
@@ -457,8 +468,13 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         object_rel_pos = objectPos - gripperPos
         #object_oriented_goal = object_rel_pos[place_pos].copy()
         # object_oriented_goal = obsDataNew['desired_goal'].copy()[(place_pos-3)*3:(place_pos-3+1)*3] - gripperPos
-        object_oriented_goal = obsDataNew['desired_goal'].copy()[
-                               3:6] - gripperPos
+
+        if behavior == "diagonally":
+            object_oriented_goal = obsDataNew['desired_goal'].copy() - gripperPos
+        else:
+            object_oriented_goal = obsDataNew['desired_goal'].copy()[
+                                   3:6] - gripperPos
+
         object_oriented_goal[2] += 0.02
         object_oriented_goal[1] += 0.02
 
@@ -469,7 +485,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         object_oriented_goal_2[1] += 0.02
 
-        if behavior == 'one-hand':
+        if behavior == 'one-hand' or behavior == "diagonally":
             if (np.linalg.norm(object_oriented_goal)) <= reach_threshold or timeStep >= max_episode_steps: break
         elif (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(
             object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps:

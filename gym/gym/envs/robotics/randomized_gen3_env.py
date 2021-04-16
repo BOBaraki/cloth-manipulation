@@ -405,7 +405,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         #     gripper_ctrl_2 = np.zeros_like(gripper_ctrl_2)
 
 
-        if dist_closest_2<=0.001 and self.behavior != 'onehand':
+        if dist_closest_2<=0.001 and self.behavior != 'onehand' or self.behavior != 'diagonally':
             # pdb.set_trace()
 
             utils.grasp(self.sim, gripper_ctrl_2, 'CB0_0', self.behavior)
@@ -708,7 +708,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         if self.has_cloth:
             if self.behavior=="diagonally":
                 #joint_vertice = 'CB'+str(self.cloth_length-1)+'_'+str(self.cloth_length-1)
-                joint_vertice = 'CB0'+'_'+str(self.cloth_length-1)
+                joint_vertice = 'CB10'+'_'+str(self.cloth_length-1)
             elif self.behavior=="sideways" or self.behavior=="lifting" or self.behavior == "onehand":
                 joint_vertice = 'CB0'+'_'+str(self.cloth_length-1)
             new_position = self.sim.data.get_body_xpos(joint_vertice)
@@ -735,7 +735,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                 goal[2] += self.np_random.uniform(0, 0.45)
         elif self.has_cloth:
             if self.behavior=="diagonally":
-                goal_vertice = 'CB'+str(self.cloth_length-1)+'_'+str(self.cloth_length-1)
+                goal_vertice = 'CB0'+'_'+str(self.cloth_length-1)
                 goal = self.sim.data.get_body_xpos(goal_vertice)
                 # Sample goal according to the cloth_length
                 randomness = self.np_random.uniform(-self.target_range, self.target_range, size=2)

@@ -387,7 +387,7 @@ for reward_type in ['sparse', 'dense']:
         max_episode_steps=100,
         kwargs={
             'config': '/home/gtzelepis/gen3-mujoco/gym/gym/envs/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
-            'xml_name': 'diagonal_fold.xml'
+            'xml_name': 'sideways_fold.xml'
         }
     )
 
@@ -410,6 +410,18 @@ for reward_type in ['sparse', 'dense']:
             'xml_name': 'sideways_fold.xml'
         }
     )
+
+    register(
+        id='RandomizedGen3LiftOneHand{}-v0'.format(suffix),
+        entry_point='gym.envs.robotics:RandomizedGen3LiftOneHandEnv',
+        max_episode_steps=100,
+        kwargs={
+            'config': '/home/gtzelepis/gen3-mujoco/gym/gym/envs/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
+            'xml_name': 'sideways_fold.xml'
+        }
+    )
+
+
 
 
 
