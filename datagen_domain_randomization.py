@@ -42,6 +42,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
     lowering_threshold = 1.
     noise_param = 0.6
 
+
+
     
     episodeObs.append(obs)
 
@@ -80,8 +82,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         # pdb.set_trace()
         object_oriented_goal[2] += 0.02
         object_oriented_goal_2[2] += 0.02
-
-        if (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps: break
+        if behavior == 'one-hand':
+            if (np.linalg.norm(object_oriented_goal)) <= reach_threshold or timeStep >= max_episode_steps: break
+        elif (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps: break
 
         #increase the actions space here for two agents
         action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
@@ -96,8 +99,11 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         for i in range(len(object_oriented_goal_2)):
             # pdb.set_trace()
-            action[4+i] = object_oriented_goal_2[i]
-            # action[4+i] = 0.
+            if behavior == 'one-hand':
+                action[4+i] = 0.
+            else:
+                action[4+i] = object_oriented_goal_2[i]
+
 
         # pdb.set_trace()
 
@@ -140,7 +146,11 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         object_rel_pos_2 = objectPos - gripperPos_2
         object_oriented_goal_2 = object_rel_pos_2[pick_up_object_2].copy()
 
-        if (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps: break
+        if behavior == 'one-hand':
+            if (np.linalg.norm(object_oriented_goal)) <= reach_threshold or timeStep >= max_episode_steps: break
+        elif (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(
+            object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps:
+            break
 
         action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
                   random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
@@ -156,8 +166,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         for i in range(len(object_oriented_goal_2)):
             # pdb.set_trace()
-            action[4 + i] = object_oriented_goal_2[i]
-            # action[4+i] = 0.
+            if behavior == 'one-hand':
+                action[4+i] = 0.
+            else:
+                action[4 + i] = object_oriented_goal_2[i]
 
 
         # print(action)
@@ -227,6 +239,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         elif behavior == "dropping":
             if (np.linalg.norm(object_oriented_goal) <= drop_threshold and np.linalg.norm(
                     object_oriented_goal_2) <= drop_threshold) or timeStep >= max_episode_steps: break
+        elif behavior == "one-hand":
+            if (np.linalg.norm(object_oriented_goal)) <= reach_threshold or timeStep >= max_episode_steps: break
         else:
             if (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(
                     object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps: break
@@ -249,7 +263,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         for i in range(len(object_oriented_goal_2)):
             # pdb.set_trace()
-            action[4 + i] = object_oriented_goal_2[i]
+            if behavior == 'one-hand':
+                action[4+i] = 0.
+            else:
+                action[4 + i] = object_oriented_goal_2[i]
             # action[4+i] = 0.
 
         actionRescaled = rescale_action(action, speed, noise_param)
@@ -307,9 +324,11 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             # pdb.set_trace()
             object_oriented_goal_2[2] -= 0.1
 
-
-            if (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(
-                    object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps: break
+            if behavior == 'one-hand':
+                if (np.linalg.norm(object_oriented_goal)) <= reach_threshold or timeStep >= max_episode_steps: break
+            elif (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(
+                object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps:
+                break
 
             # if timeStep > 90:
             #     pdb.set_trace()
@@ -330,8 +349,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
             for i in range(len(object_oriented_goal_2)):
                 # pdb.set_trace()
-                action[4 + i] = object_oriented_goal_2[i]
-                # action[4+i] = 0.
+                if behavior == 'one-hand':
+                    action[4 + i] = 0.
+                else:
+                    action[4 + i] = object_oriented_goal_2[i]
 
             actionRescaled = rescale_action(action, speed, noise_param)
             actionRescaled[3] = action[3]
@@ -388,8 +409,11 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         object_oriented_goal_2[1] += 0.01
 
-        if (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(
-                object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps: break
+        if behavior == 'one-hand':
+            if (np.linalg.norm(object_oriented_goal)) <= reach_threshold or timeStep >= max_episode_steps: break
+        elif (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(
+            object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps:
+            break
 
         action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
                   random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0),
@@ -445,8 +469,11 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         object_oriented_goal_2[1] += 0.02
 
-        if (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(
-                object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps: break
+        if behavior == 'one-hand':
+            if (np.linalg.norm(object_oriented_goal)) <= reach_threshold or timeStep >= max_episode_steps: break
+        elif (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(
+            object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps:
+            break
 
         action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0),
                   random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0)]

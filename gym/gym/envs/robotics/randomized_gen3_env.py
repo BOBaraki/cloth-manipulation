@@ -389,7 +389,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             # pdb.set_trace()
             self.block_gripper = True
             self._step_callback()
-            utils.grasp(self.sim, gripper_ctrl, 'CB10_0')
+            utils.grasp(self.sim, gripper_ctrl, 'CB10_0', self.behavior)
         else:
             self.block_gripper = False
             self._step_callback()
@@ -397,11 +397,22 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         if self.block_gripper:
             gripper_ctrl = np.zeros_like(gripper_ctrl)
 
-        if dist_closest_2<=0.001:
+        # if dist_closest_2<=0.001:
+        #     # pdb.set_trace()
+        #
+        #     utils.grasp(self.sim, gripper_ctrl_2, 'CB0_0')
+        # if self.block_gripper:
+        #     gripper_ctrl_2 = np.zeros_like(gripper_ctrl_2)
+
+
+        if dist_closest_2<=0.001 and self.behavior != 'onehand':
             # pdb.set_trace()
-            utils.grasp(self.sim, gripper_ctrl_2, 'CB0_0')
-        if self.block_gripper:
+
+            utils.grasp(self.sim, gripper_ctrl_2, 'CB0_0', self.behavior)
+        if self.block_gripper and self.behavior != 'onehand':
             gripper_ctrl_2 = np.zeros_like(gripper_ctrl_2)
+
+
 
         # action = np.concatenate([pos_ctrl, rot_ctrl, gripper_ctrl])
         action = np.concatenate([pos_ctrl, rot_ctrl])
@@ -709,7 +720,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             gripper_ctrl = np.array([0.0, 0.0])
             # pdb.set_trace()
             # Need to identify the target like CB0_0 or CB0_10)
-            utils.grasp(self.sim, gripper_ctrl, 'CB0_0')
+            utils.grasp(self.sim, gripper_ctrl, 'CB0_0', self.behavior)
             self.sim.data.set_joint_qpos('cloth', new_position)
 
         self.sim.forward()

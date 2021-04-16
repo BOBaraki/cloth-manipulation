@@ -69,7 +69,7 @@ def ctrl_set_action(sim, action):
 #         sim.model.eq_active[-2] = False
 
 
-def grasp(sim, action, point):
+def grasp(sim, action, point,behavior):
     # pdb.set_trace()
     if action[0]>=0.5:
 
@@ -82,10 +82,16 @@ def grasp(sim, action, point):
             sim.model.eq_data[-2, :] = np.array(
                         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
         elif point != 'CB0_0':
+            # pdb.set_trace()
             sim.model.eq_obj2id[-2] = sim.model.body_name2id(point)
-            sim.model.eq_active[-1] = True
-            sim.model.eq_data[-1, :] = np.array(
-                        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+            if behavior == 'onehand':
+                sim.model.eq_active[-2] = True
+                sim.model.eq_data[-2, :] = np.array(
+                    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+            else:
+                sim.model.eq_active[-1] = True
+                sim.model.eq_data[-1, :] = np.array(
+                            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
     else:
         sim.model.eq_active[-2] = False
         sim.model.eq_active[-1] = False
