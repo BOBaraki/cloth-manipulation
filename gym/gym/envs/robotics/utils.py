@@ -84,7 +84,7 @@ def grasp(sim, action, point,behavior):
         elif point != 'CB0_0':
             # pdb.set_trace()
             sim.model.eq_obj2id[-2] = sim.model.body_name2id(point)
-            if behavior == 'onehand' or behavior == 'diagonally':
+            if behavior == 'onehand' or behavior == 'diagonally' or behavior == 'onehand-lifting':
                 sim.model.eq_active[-2] = True
                 sim.model.eq_data[-2, :] = np.array(
                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])

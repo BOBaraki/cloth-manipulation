@@ -6,6 +6,7 @@ from gym.envs.robotics.gen3.randomized_sideways_fold import RandomizedGen3Sidewa
 from gym.envs.robotics.gen3.randomized_diagonal_fold import RandomizedGen3DiagonalFoldEnv
 from gym.envs.robotics.gen3.randomized_lift_two_hands import RandomizedGen3LiftTwoHandsEnv
 from gym.envs.robotics.gen3.randomized_sideways_fold_onehand import RandomizedGen3SidewaysFoldOneHandEnv
+from gym.envs.robotics.gen3.randomized_lift_one_hand import RandomizedGen3LiftOneHandEnv
 
 
 

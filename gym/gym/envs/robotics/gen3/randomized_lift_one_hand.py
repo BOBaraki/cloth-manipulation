@@ -7,7 +7,7 @@ from gym.envs.robotics import randomized_gen3_env
 MODEL_XML_PATH = os.path.join('gen3', 'sideways_fold.xml')
 
 
-class RandomizedGen3LiftOneHandsEnv(randomized_gen3_env.RandomizedGen3Env, utils.EzPickle):
+class RandomizedGen3LiftOneHandEnv(randomized_gen3_env.RandomizedGen3Env, utils.EzPickle):
     def __init__(self, reward_type='sparse', **kwargs):
         behaviors = ['diagonally', 'sideways', 'onehand-lifting']
         initial_qpos = {

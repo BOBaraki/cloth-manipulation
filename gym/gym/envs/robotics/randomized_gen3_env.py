@@ -182,8 +182,14 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             composite.set('flatinertia', '{:3f}'.format(flatinertia))
 
     def _randomize_spacing(self):
-        spacing = self.dimensions[8].current_value
-        #print("spacing to change to", spacing)
+        # pdb.set_trace()
+        if self.behavior == "onehand-lifting":
+            # spacing = np.clip(self.dimensions[8].current_value, 0.025, 0.03)
+            spacing = np.random.uniform(0.024, 0.025)
+        else:
+            spacing = self.dimensions[8].current_value
+
+        print("spacing to change to", spacing)
         
         for composite in self.composites:
             composite.set('spacing', '{:3f}'.format(spacing))
@@ -198,6 +204,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
     def _create_xml(self):
         #self._randomize_size()
+        # pdb.set_trace()
         self._randomize_mass()
         self._randomize_spacing()
         self._randomize_flatinertia()
@@ -254,7 +261,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
     def compute_reward(self, achieved_goal, goal, info):
         # Compute distance between goal and the achieved goal.
         # Probably needs to change due to the second agent but for the time we can discard it completely until we use reinforcement learning
-        if self.behavior=="sideways" or self.behavior == "lifting" or self.behavior == "onehand":
+        if self.behavior=="sideways" or self.behavior == "lifting"  or self.behavior == "onehand-lifting" or self.behavior == "onehand":
             num_objects = 2
             if len(achieved_goal.shape) == 1:
                 blocks_in_position = 0
@@ -405,7 +412,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         #     gripper_ctrl_2 = np.zeros_like(gripper_ctrl_2)
 
 
-        if dist_closest_2<=0.001 and self.behavior != 'onehand' or self.behavior != 'diagonally':
+        if dist_closest_2<=0.001 and self.behavior != 'onehand' or self.behavior != 'diagonally' or self.behavior == 'onehand-lifting':
             # pdb.set_trace()
 
             utils.grasp(self.sim, gripper_ctrl_2, 'CB0_0', self.behavior)
@@ -528,7 +535,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         elif self.has_cloth and not self.has_object:
             if self.behavior=="diagonally":
                 achieved_goal = np.squeeze(vertice_pos[0].copy())
-            elif self.behavior=="sideways" or self.behavior=="lifting" or self.behavior == "onehand":
+            elif self.behavior=="sideways" or self.behavior=="lifting" or self.behavior == "onehand-lifting" or self.behavior == "onehand":
                 achieved_goal = np.concatenate([
                 vertice_pos[1].copy(), vertice_pos[3].copy(),
                 ])
@@ -677,7 +684,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
     def _render_callback(self):
         # Visualize target.
-        if self.behavior=="sideways" or self.behavior == "lifting" or self.behavior == "onehand"and self.visual_data_recording == False:
+        if self.behavior=="sideways" or self.behavior == "lifting" or self.behavior == "onehand" or self.behavior == "onehand-lifting" and self.visual_data_recording == False:
             sites_offset = (self.sim.data.site_xpos - self.sim.model.site_pos).copy()
             targets = ['target0', 'target1']
             site_ids = []
@@ -709,7 +716,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             if self.behavior=="diagonally":
                 #joint_vertice = 'CB'+str(self.cloth_length-1)+'_'+str(self.cloth_length-1)
                 joint_vertice = 'CB10'+'_'+str(self.cloth_length-1)
-            elif self.behavior=="sideways" or self.behavior=="lifting" or self.behavior == "onehand":
+            elif self.behavior=="sideways" or self.behavior=="lifting" or self.behavior == "onehand" or self.behavior == "onehand-lifting":
                 joint_vertice = 'CB0'+'_'+str(self.cloth_length-1)
             new_position = self.sim.data.get_body_xpos(joint_vertice)
             # Make the joint to be the first point
@@ -754,11 +761,11 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                 # goals[1][1] += -np.abs(randomness[3])
                 goal = np.concatenate([ goals[0].copy(), goals[1].copy()])
                 # pdb.set_trace()
-            elif self.behavior == "lifting":
+            elif self.behavior == "lifting" or self.behavior == "onehand-lifting":
                 goal_vertices = ['CB0' + '_' + str(self.cloth_length - 1),
                                  'CB' + str(self.cloth_length - 1) + '_' + str(self.cloth_length - 1)]
                 # goals = [self.sim.data.get_body_xpos(goal_vertices[0]), self.sim.data.get_body_xpos(goal_vertices[1])]
-                goals = [self.sim.data.get_body_xpos(goal_vertices[0]) + (0, -0.1, 0.41), self.sim.data.get_body_xpos(goal_vertices[1]) + (0, -0.1, 0.41)]
+                goals = [self.sim.data.get_body_xpos(goal_vertices[0]) + (0, -0.1, 0.41), self.sim.data.get_body_xpos(goal_vertices[1]) + (0.0, -0.1, 0.41)]
                 # pdb.set_trace()
                 randomness = self.np_random.uniform(-self.target_range, self.target_range, size=4)
                 # goals[0][0] += randomness[0]/3
@@ -774,7 +781,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         return goal.copy()
 
     def _is_success(self, achieved_goal, desired_goal):
-        if self.behavior=="sideways" or self.behavior == "lifting" or self.behavior == "onehand":
+        if self.behavior=="sideways" or self.behavior == "lifting" or self.behavior == "onehand" or self.behavior == "onehand-lifting":
             num_objects = 2
             # pdb.set_trace()
             if len(achieved_goal.shape) == 1:
@@ -800,7 +807,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         utils.reset_mocap_welds(self.sim)
         self.sim.forward()
         # Move end effector into position.
-        gripper_target_2= np.array([0.5, 0.5 , 0.3 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robotiq_85_base_link')
+        gripper_target_2= np.array([0.3, 0.8 , 0.3 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robotiq_85_base_link')
         gripper_target = np.array([1.5, 0.5 , 0.5 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robotiq_85_base_link')
         gripper_rotation = np.array([0., 1., 1., 0.])
 

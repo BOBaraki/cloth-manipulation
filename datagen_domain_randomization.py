@@ -38,7 +38,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
     timeStep = 0
     grasp_threshold = 0.01 # how close to get to grasp the vertice
     reach_threshold = 0.03 # how close to get to reach a point in space
-    drop_threshold = 0.08
+    drop_threshold = 0.1
     lowering_threshold = 1.
     noise_param = 0.6
 
@@ -82,7 +82,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         # pdb.set_trace()
         object_oriented_goal[2] += 0.02
         object_oriented_goal_2[2] += 0.02
-        if behavior == 'one-hand'  or behavior == "diagonally":
+        if behavior == 'one-hand'  or behavior == "diagonally" or behavior == "onehand-lifting" or behavior == "onehand-dropping":
             if (np.linalg.norm(object_oriented_goal)) <= reach_threshold or timeStep >= max_episode_steps: break
         elif (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps: break
 
@@ -99,7 +99,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         for i in range(len(object_oriented_goal_2)):
             # pdb.set_trace()
-            if behavior == 'one-hand' or behavior == "diagonally":
+            if behavior == 'one-hand' or behavior == "diagonally" or behavior == "onehand-lifting" or behavior == "onehand-dropping":
                 action[4+i] = 0.
             else:
                 action[4+i] = object_oriented_goal_2[i]
@@ -146,7 +146,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         object_rel_pos_2 = objectPos - gripperPos_2
         object_oriented_goal_2 = object_rel_pos_2[pick_up_object_2].copy()
 
-        if behavior == 'one-hand' or behavior == "diagonally":
+        if behavior == 'one-hand' or behavior == "diagonally" or behavior == "onehand-lifting" or behavior == "onehand-dropping":
             if (np.linalg.norm(object_oriented_goal)) <= reach_threshold or timeStep >= max_episode_steps: break
         elif (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(
             object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps:
@@ -166,7 +166,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         for i in range(len(object_oriented_goal_2)):
             # pdb.set_trace()
-            if behavior == 'one-hand' or behavior == "diagonally":
+            if behavior == 'one-hand' or behavior == "diagonally" or behavior == "onehand-lifting" or behavior == "onehand-dropping":
                 action[4+i] = 0.
             else:
                 action[4 + i] = object_oriented_goal_2[i]
@@ -236,6 +236,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         # pdb.set_trace()
         object_oriented_goal_2[2] += 0.1
+
         if behavior == "sideways":
             object_oriented_goal_2[1] -= 0.09
 
@@ -245,12 +246,15 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         elif behavior == "dropping":
             if (np.linalg.norm(object_oriented_goal) <= drop_threshold and np.linalg.norm(
                     object_oriented_goal_2) <= drop_threshold) or timeStep >= max_episode_steps: break
-        elif behavior == "one-hand" or behavior == "diagonally":
+        elif behavior == "one-hand" or behavior == "diagonally" or behavior == "onehand-lifting":
             if (np.linalg.norm(object_oriented_goal)) <= reach_threshold or timeStep >= max_episode_steps: break
+        elif behavior == "onehand-dropping":
+            # pdb.set_trace()
+            if np.linalg.norm(object_oriented_goal) <= drop_threshold or timeStep >= max_episode_steps: break
         else:
             if (np.linalg.norm(object_oriented_goal) <= reach_threshold and np.linalg.norm(
                     object_oriented_goal_2) <= reach_threshold) or timeStep >= max_episode_steps: break
-
+        # print(np.linalg.norm(object_oriented_goal))
 
         # if timeStep > 90:
         #     pdb.set_trace()
@@ -260,6 +264,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         if place_pos==3:
         	speed = 0.356
+        elif behavior == "onehand-dropping":
+            speed = 0.636
         else:
         	speed = 0.856 # cap action to whatever speed you want
 
@@ -269,7 +275,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         for i in range(len(object_oriented_goal_2)):
             # pdb.set_trace()
-            if behavior == 'one-hand' or behavior == "diagonally":
+            if behavior == 'one-hand' or behavior == "diagonally" or behavior == "onehand-lifting" or behavior == "onehand-dropping":
                 action[4+i] = 0.
             else:
                 action[4 + i] = object_oriented_goal_2[i]
@@ -285,7 +291,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         timeStep += 1
     #
-    if behavior == "dropping":
+    if behavior == "dropping" or behavior == "onehand-dropping":
         while (timeStep) < max_episode_steps:
             # print("WAITING", timeStep)
             if render: env.render(mode=render_mode)
@@ -542,7 +548,8 @@ if __name__ == '__main__':
     parser.add_argument("--once", action="store_true")
     parser.add_argument("--ignore_done", action="store_true")
     parser.add_argument("--render", action="store_true")
-    parser.add_argument("--behavior", choices=["diagonally", "sideways", "lifting", "dropping", "lowering", "one-hand"], default="sideways")
+    parser.add_argument("--behavior", choices=["diagonally", "sideways", "lifting", "dropping", "lowering", "one-hand", "onehand-lifting",
+                                               "onehand-dropping"], default="sideways")
     args = parser.parse_args()
 
     #env = envs.make(args.env)
