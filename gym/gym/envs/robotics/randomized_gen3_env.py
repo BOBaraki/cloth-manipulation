@@ -78,6 +78,10 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         self.behavior = behavior
         self.explicit_policy = True
         self.physical_params = [4.00000000e-03, 8.00000000e-03, 1.40000000e+00, 3.00000000e-03, 1.00000000e-03, 2.00000000e-03, 1.00000000e-03, 1.00000000e-02, 3.00000000e-02, 1.10000000e+01]
+        if self.behavior == 'lifting-middle':
+            # pdb.set_trace()
+            self.vertex = np.random.randint(4, cloth_length - 3)
+
         #The number of n_actions need to change to 8 for a second agent
         super(RandomizedGen3Env, self).__init__(
             model_path=model_path, n_substeps=n_substeps, n_actions=8,
@@ -94,6 +98,8 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         self._locate_randomize_parameters()
         self.initial_qpos = initial_qpos
         self.n_substeps = n_substeps
+        # pdb.set_trace()
+
 
 
 
@@ -366,6 +372,8 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
         return cloth_points[closest], dist_2[closest]
 
+
+
     def _set_action(self, action):
         # this will be 8 for 2 agents
         # assert action.shape == (4,)
@@ -388,15 +396,22 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         # Apply action to simulation
 
         # Determine the closest cloth node to the gripper
+
         closest, dist_closest = self.find_closest_indice(self.grip_pos)
+        if self.behavior == 'lifting-middle':
+            dist_closest = np.sum(abs(self.grip_pos - self.sim.data.get_body_xpos('CB' + str(self.vertex) + '_' + '0')))
         closest_2, dist_closest_2 = self.find_closest_indice(self.grip_pos_2)
+        # pdb.set_trace()
         # Only allow gripping if in proximity
         # pdb.set_trace()
         if dist_closest<=0.001:
             # pdb.set_trace()
             self.block_gripper = True
             self._step_callback()
-            utils.grasp(self.sim, gripper_ctrl, 'CB10_0', self.behavior)
+            if self.behavior == 'lifting-middle':
+                utils.grasp(self.sim, gripper_ctrl,'CB' + str(self.vertex) + '_' + '0' , self.behavior)
+            else:
+                utils.grasp(self.sim, gripper_ctrl, 'CB10_0', self.behavior)
         else:
             self.block_gripper = False
             self._step_callback()
@@ -495,10 +510,15 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             #get the positions and velocities for 4 corners of the cloth
             vertices = ['CB0_0']
             # Name vertices with respect to the cloth_length
-            vertices.append('CB'+str(self.cloth_length-1)+'_'+'0')
+            if self.behavior == 'lifting-middle':
+                vertices.append('CB' + str(self.vertex) + '_' + '0' )
+            else:
+                vertices.append('CB'+str(self.cloth_length-1)+'_'+'0')
+
             vertices.append('CB'+str(self.cloth_length-1)+'_'+str(self.cloth_length-1))
             vertices.append('CB'+'0'+'_'+str(self.cloth_length-1))
             vertice_pos, vertice_velp, vertice_velr, vertice_rel_pos = [], [], [], []
+
             for vertice in vertices:
                 vertice_pos.append(self.sim.data.get_body_xpos(vertice))
                 vertice_velp.append(self.sim.data.get_body_xvelp(vertice) * dt)
@@ -535,7 +555,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         elif self.has_cloth and not self.has_object:
             if self.behavior=="diagonally":
                 achieved_goal = np.squeeze(vertice_pos[0].copy())
-            elif self.behavior=="sideways" or self.behavior=="lifting" or self.behavior == "onehand-lifting" or self.behavior == "onehand":
+            elif self.behavior=="sideways" or self.behavior=="lifting" or self.behavior == "onehand-lifting" or self.behavior == "onehand" or self.behavior == 'lifting-middle':
                 achieved_goal = np.concatenate([
                 vertice_pos[1].copy(), vertice_pos[3].copy(),
                 ])
@@ -684,7 +704,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
     def _render_callback(self):
         # Visualize target.
-        if self.behavior=="sideways" or self.behavior == "lifting" or self.behavior == "onehand" or self.behavior == "onehand-lifting" and self.visual_data_recording == False:
+        if self.behavior=="sideways" or self.behavior == "lifting" or self.behavior == "onehand" or self.behavior == "onehand-lifting" or self.behavior == 'lifting-middle' and self.visual_data_recording == False:
             sites_offset = (self.sim.data.site_xpos - self.sim.model.site_pos).copy()
             targets = ['target0', 'target1']
             site_ids = []
@@ -716,7 +736,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             if self.behavior=="diagonally":
                 #joint_vertice = 'CB'+str(self.cloth_length-1)+'_'+str(self.cloth_length-1)
                 joint_vertice = 'CB10'+'_'+str(self.cloth_length-1)
-            elif self.behavior=="sideways" or self.behavior=="lifting" or self.behavior == "onehand" or self.behavior == "onehand-lifting":
+            elif self.behavior=="sideways" or self.behavior=="lifting" or self.behavior == "onehand" or self.behavior == "onehand-lifting" or self.behavior=="lifting-middle":
                 joint_vertice = 'CB0'+'_'+str(self.cloth_length-1)
             new_position = self.sim.data.get_body_xpos(joint_vertice)
             # Make the joint to be the first point
@@ -761,11 +781,19 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                 # goals[1][1] += -np.abs(randomness[3])
                 goal = np.concatenate([ goals[0].copy(), goals[1].copy()])
                 # pdb.set_trace()
-            elif self.behavior == "lifting" or self.behavior == "onehand-lifting":
-                goal_vertices = ['CB0' + '_' + str(self.cloth_length - 1),
-                                 'CB' + str(self.cloth_length - 1) + '_' + str(self.cloth_length - 1)]
+            elif self.behavior == "lifting" or self.behavior == "onehand-lifting" or self.behavior == "lifting-middle":
+                if self.behavior == "lifting-middle":
+                    goal_vertices = ['CB0' + '_' + str(self.cloth_length - 1),
+                                     'CB' + str(self.vertex) + '_' + str(self.cloth_length - 1)]
+                    # temp = np.abs(self.sim.data.get_body_xpos(goal_vertices[0]) - self.sim.data.get_body_xpos(goal_vertices[1]))
+                    # pdb.set_trace()
+                    goals = [self.sim.data.get_body_xpos(goal_vertices[0]) + (0.0, -0.1, 0.25),
+                             self.sim.data.get_body_xpos(goal_vertices[1]) + (0.0, -0.1, 0.25)]
+                else:
+                    goal_vertices = ['CB0' + '_' + str(self.cloth_length - 1),
+                                     'CB' + str(self.cloth_length - 1) + '_' + str(self.cloth_length - 1)]
                 # goals = [self.sim.data.get_body_xpos(goal_vertices[0]), self.sim.data.get_body_xpos(goal_vertices[1])]
-                goals = [self.sim.data.get_body_xpos(goal_vertices[0]) + (0, -0.1, 0.41), self.sim.data.get_body_xpos(goal_vertices[1]) + (0.0, -0.1, 0.41)]
+                    goals = [self.sim.data.get_body_xpos(goal_vertices[0]) + (0, -0.1, 0.41), self.sim.data.get_body_xpos(goal_vertices[1]) + (0.0, -0.1, 0.41)]
                 # pdb.set_trace()
                 randomness = self.np_random.uniform(-self.target_range, self.target_range, size=4)
                 # goals[0][0] += randomness[0]/3
@@ -781,7 +809,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         return goal.copy()
 
     def _is_success(self, achieved_goal, desired_goal):
-        if self.behavior=="sideways" or self.behavior == "lifting" or self.behavior == "onehand" or self.behavior == "onehand-lifting":
+        if self.behavior=="sideways" or self.behavior == "lifting" or self.behavior == "onehand" or self.behavior == "onehand-lifting" or self.behavior == "lifting-middle":
             num_objects = 2
             # pdb.set_trace()
             if len(achieved_goal.shape) == 1:

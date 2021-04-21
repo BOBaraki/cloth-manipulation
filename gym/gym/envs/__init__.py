@@ -421,6 +421,16 @@ for reward_type in ['sparse', 'dense']:
         }
     )
 
+    register(
+        id='RandomizedGen3LiftTwoHandsMiddle{}-v0'.format(suffix),
+        entry_point='gym.envs.robotics:RandomizedGen3LiftTwoHandsMiddleEnv',
+        max_episode_steps=100,
+        kwargs={
+            'config': '/home/gtzelepis/gen3-mujoco/gym/gym/envs/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
+            'xml_name': 'sideways_fold.xml'
+        }
+    )
+
 
 
 
