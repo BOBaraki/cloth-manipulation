@@ -230,7 +230,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
 
 
-        if behavior != "lifting" or behavior != "lowering" or behavior != 'dropping' or behavior != 'onahand-lifting':
+        if behavior != "lifting" or behavior != "lowering" or behavior != 'dropping' or behavior != 'onahand-lifting' or behavior == 'complex':
             object_oriented_goal[1] -= 0.09
         object_oriented_goal[2] += 0.1
 
@@ -248,7 +248,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         if behavior == "lowering" and timeStep > 70:
             if (np.linalg.norm(object_oriented_goal) <= lowering_threshold and np.linalg.norm(
                     object_oriented_goal_2) <= lowering_threshold) or timeStep >= max_episode_steps: break
-        elif behavior == "dropping" or behavior == "lifting":
+        elif behavior == "dropping" or behavior == "lifting" or behavior == "complex":
             if (np.linalg.norm(object_oriented_goal) <= drop_threshold and np.linalg.norm(
                     object_oriented_goal_2) <= drop_threshold) or timeStep >= max_episode_steps: break
         elif behavior == "one-hand" or behavior == "diagonally" or behavior == "onehand-lifting":
@@ -402,7 +402,228 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             episodeInfo.append(info)
             timeStep += 1
         #
+    elif behavior == "complex":
+        while True:
+            # print("PICKING UP", timeStep)
+            # pdb.set_trace()
+            if render: env.render(mode=render_mode)
+            obsDataNew = obs.copy()
+            objectPos = np.array([obsDataNew['observation'][7:10].copy(), obsDataNew['observation'][10:13].copy(),
+                                  obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
+            gripperPos = obsDataNew['observation'][:3].copy()
+            gripperState = obsDataNew['observation'][3]
 
+            object_rel_pos = objectPos - gripperPos
+
+            gripperPos_2 = obsDataNew['observation'][19:22].copy()
+            gripperState_2 = obsDataNew['observation'][22]
+
+            # object_oriented_goal = object_rel_pos[place_pos].copy()
+            # pdb.set_trace()
+            # object_oriented_goal = obsDataNew['desired_goal'].copy()[(place_pos-3)*3:(place_pos-3+1)*3] - gripperPos
+            object_oriented_goal = obsDataNew['desired_goal'].copy()[3:6] - [0, 0.3, 0.] - gripperPos
+
+            object_oriented_goal[1] -= 0.1
+
+            # object_oriented_goal_2 = obsDataNew['desired_goal'].copy()[
+            #                        (place_pos_2 - 3) * 3:(place_pos_2 - 3 + 1) * 3] - gripperPos_2
+
+            object_oriented_goal_2 = obsDataNew['desired_goal'].copy()[0:3] - [0, 0.3, 0.] - gripperPos_2
+
+            # pdb.set_trace()
+            object_oriented_goal_2[1] -= 0.1
+
+            if behavior == "complex":
+                # pdb.set_trace()
+                if (np.linalg.norm(object_oriented_goal) <= drop_threshold and np.linalg.norm(object_oriented_goal_2) <= drop_threshold) \
+                        or timeStep >= max_episode_steps:
+                    break
+            # if timeStep > 60:
+            #     pdb.set_trace()
+
+            action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
+                      random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0),
+                      random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
+                      random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0)]
+
+            if place_pos == 3:
+                speed = 0.356
+            else:
+                speed = 0.856  # cap action to whatever speed you want
+
+            for i in range(len(object_oriented_goal)):
+                action[i] = object_oriented_goal[i]
+                # action[i] = 0.
+
+            for i in range(len(object_oriented_goal_2)):
+                # pdb.set_trace()
+                if behavior == 'onehand-lowering':
+                    action[4 + i] = 0.
+                else:
+                    action[4 + i] = object_oriented_goal_2[i]
+
+            actionRescaled = rescale_action(action, speed, noise_param)
+            actionRescaled[3] = action[3]
+            actionRescaled[7] = action[7]
+            obs, reward, done, info = env.step(actionRescaled)
+            episodeAcs.append(actionRescaled)
+            episodeObs.append(obs)
+            episodeInfo.append(info)
+
+            timeStep += 1
+
+        while True:
+            # print("PICKING UP", timeStep)
+            # pdb.set_trace()
+            if render: env.render(mode=render_mode)
+            obsDataNew = obs.copy()
+            objectPos = np.array([obsDataNew['observation'][7:10].copy(), obsDataNew['observation'][10:13].copy(),
+                                  obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
+            gripperPos = obsDataNew['observation'][:3].copy()
+            gripperState = obsDataNew['observation'][3]
+
+            object_rel_pos = objectPos - gripperPos
+
+            gripperPos_2 = obsDataNew['observation'][19:22].copy()
+            gripperState_2 = obsDataNew['observation'][22]
+
+            # object_oriented_goal = object_rel_pos[place_pos].copy()
+            # pdb.set_trace()
+            # object_oriented_goal = obsDataNew['desired_goal'].copy()[(place_pos-3)*3:(place_pos-3+1)*3] - gripperPos
+            object_oriented_goal = obsDataNew['desired_goal'].copy()[3:6] - [0, 0.4, 0.1] - gripperPos
+
+            object_oriented_goal[2] -= 0.1
+
+            # object_oriented_goal_2 = obsDataNew['desired_goal'].copy()[
+            #                        (place_pos_2 - 3) * 3:(place_pos_2 - 3 + 1) * 3] - gripperPos_2
+
+            object_oriented_goal_2 = obsDataNew['desired_goal'].copy()[0:3] - [0, 0.4, 0.1] - gripperPos_2
+
+            # pdb.set_trace()
+            object_oriented_goal_2[2] -= 0.1
+
+            if behavior == "complex":
+                # pdb.set_trace()
+                if (np.linalg.norm(object_oriented_goal) <= drop_threshold and np.linalg.norm(
+                        object_oriented_goal_2) <= drop_threshold) or timeStep >= max_episode_steps:
+                    break
+            # if timeStep > 60:
+            #     pdb.set_trace()
+
+            action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
+                      random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0),
+                      random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
+                      random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0)]
+
+            if place_pos == 3:
+                speed = 0.356
+            else:
+                speed = 0.856  # cap action to whatever speed you want
+            speed = 0.356
+
+            for i in range(len(object_oriented_goal)):
+                action[i] = object_oriented_goal[i]
+                # action[i] = 0.
+
+            for i in range(len(object_oriented_goal_2)):
+                # pdb.set_trace()
+                if behavior == 'onehand-lowering':
+                    action[4 + i] = 0.
+                else:
+                    action[4 + i] = object_oriented_goal_2[i]
+
+            actionRescaled = rescale_action(action, speed, noise_param)
+            actionRescaled[3] = action[3]
+            actionRescaled[7] = action[7]
+            obs, reward, done, info = env.step(actionRescaled)
+            episodeAcs.append(actionRescaled)
+            episodeObs.append(obs)
+            episodeInfo.append(info)
+
+            timeStep += 1
+
+        while True:
+            print("PICKING UP", timeStep)
+            # pdb.set_trace()
+            if render: env.render(mode=render_mode)
+            obsDataNew = obs.copy()
+            objectPos = np.array([obsDataNew['observation'][7:10].copy(), obsDataNew['observation'][10:13].copy(),
+                                  obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
+            gripperPos = obsDataNew['observation'][:3].copy()
+            gripperState = obsDataNew['observation'][3]
+
+            object_rel_pos = objectPos - gripperPos
+
+            gripperPos_2 = obsDataNew['observation'][19:22].copy()
+            gripperState_2 = obsDataNew['observation'][22]
+
+            # object_oriented_goal = object_rel_pos[place_pos].copy()
+            # pdb.set_trace()
+            # object_oriented_goal = obsDataNew['desired_goal'].copy()[(place_pos-3)*3:(place_pos-3+1)*3] - gripperPos
+            object_oriented_goal = obsDataNew['desired_goal'].copy()[3:6] - [0, 0.15, 0.3] - gripperPos
+
+            object_oriented_goal[1] += 0.1
+
+            # object_oriented_goal_2 = obsDataNew['desired_goal'].copy()[
+            #                        (place_pos_2 - 3) * 3:(place_pos_2 - 3 + 1) * 3] - gripperPos_2
+
+            object_oriented_goal_2 = obsDataNew['desired_goal'].copy()[0:3] - [0, 0.15, 0.3] - gripperPos_2
+
+            # pdb.set_trace()
+            object_oriented_goal_2[1] += 0.1
+
+            if behavior == "complex":
+                # pdb.set_trace()
+                if (np.linalg.norm(object_oriented_goal) <= drop_threshold and np.linalg.norm(object_oriented_goal_2) <= drop_threshold)\
+                        or timeStep >= max_episode_steps:
+                    break
+            # if timeStep > 60:
+            #     pdb.set_trace()
+
+            action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
+                      random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0),
+                      random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
+                      random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0)]
+
+            if place_pos == 3:
+                speed = 0.356
+            else:
+                speed = 0.856  # cap action to whatever speed you want
+            speed = 0.356
+            for i in range(len(object_oriented_goal)):
+                action[i] = object_oriented_goal[i]
+                # action[i] = 0.
+
+            for i in range(len(object_oriented_goal_2)):
+                # pdb.set_trace()
+                if behavior == 'onehand-lowering':
+                    action[4 + i] = 0.
+                else:
+                    action[4 + i] = object_oriented_goal_2[i]
+
+            actionRescaled = rescale_action(action, speed, noise_param)
+            actionRescaled[3] = action[3]
+            actionRescaled[7] = action[7]
+            obs, reward, done, info = env.step(actionRescaled)
+            episodeAcs.append(actionRescaled)
+            episodeObs.append(obs)
+            episodeInfo.append(info)
+
+            timeStep += 1
+
+        while (timeStep) < max_episode_steps:
+            # print("WAITING", timeStep)
+            if render: env.render(mode=render_mode)
+            actionDull = [random.uniform(-0.00000001, 0.00000001), random.uniform(-0.00000001, 0.00000001),
+                          random.uniform(-0.00000001, 0.000000001), random.uniform(0.6, 1.),
+                          random.uniform(-0.00000001, 0.00000001), random.uniform(-0.00000001, 0.00000001),
+                          random.uniform(-0.000001, 0.00000001), random.uniform(0.6, 1.)]
+            actionRescaled = rescale_action(actionDull, 1.0, 0.0)
+            obs, reward, done, info = env.step(actionRescaled)
+            episodeAcs.append(actionRescaled)
+            episodeObs.append(obs)
+            episodeInfo.append(info)
+            timeStep += 1
 
     while True:
         # print("Taking", timeStep)
@@ -561,7 +782,7 @@ if __name__ == '__main__':
     parser.add_argument("--ignore_done", action="store_true")
     parser.add_argument("--render", action="store_true")
     parser.add_argument("--behavior", choices=["diagonally", "sideways", "lifting", "dropping", "lowering", "one-hand", "onehand-lifting",
-                                               "onehand-dropping", "onehand-lowering"], default="sideways")
+                                               "onehand-dropping", "onehand-lowering", "complex"], default="sideways")
     args = parser.parse_args()
 
     #env = envs.make(args.env)
@@ -594,6 +815,8 @@ if __name__ == '__main__':
 
         print("Starting a new trajectory")
         max_episode_steps = env._max_episode_steps
+        if behavior == "complex":
+            max_episode_steps = 200
 
         traj_success = 0
         while len(actions) < numItr:

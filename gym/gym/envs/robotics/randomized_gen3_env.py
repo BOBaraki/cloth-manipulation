@@ -398,8 +398,8 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         # Determine the closest cloth node to the gripper
 
         closest, dist_closest = self.find_closest_indice(self.grip_pos)
-        if self.behavior == 'lifting-middle':
-            dist_closest = np.sum(abs(self.grip_pos - self.sim.data.get_body_xpos('CB' + str(self.vertex) + '_' + '0')))
+        # if self.behavior == 'lifting-middle':
+        #     dist_closest = np.einsum(abs(self.grip_pos - self.sim.data.get_body_xpos('CB' + str(self.vertex) + '_' + '0')))
         closest_2, dist_closest_2 = self.find_closest_indice(self.grip_pos_2)
         # pdb.set_trace()
         # Only allow gripping if in proximity
