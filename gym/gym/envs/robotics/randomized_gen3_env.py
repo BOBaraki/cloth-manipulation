@@ -195,7 +195,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         else:
             spacing = self.dimensions[8].current_value
 
-        print("spacing to change to", spacing)
+        # print("spacing to change to", spacing)
         
         for composite in self.composites:
             composite.set('spacing', '{:3f}'.format(spacing))
@@ -385,8 +385,8 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
         pos_ctrl *= 0.05  # limit maximum change in position
         pos_ctrl_2 *= 0.05  # limit maximum change in position
-        rot_ctrl = [0., 1., 1., 0.]  # fixed rotation of the end effector, expressed as a quaternion {Vertical}
-        rot_ctrl_2 = [0., 1., 1., 0.]  # fixed rotation of the end effector, expressed as a quaternion {Vertical}
+        rot_ctrl = [0., 0., 0., 0.]  # fixed rotation of the end effector, expressed as a quaternion {Vertical}
+        rot_ctrl_2 = [0., 0., 0., 0.]  # fixed rotation of the end effector, expressed as a quaternion {Vertical}
         #rot_ctrl = [1., 0., 1., 0.]  # fixed rotation of the end effector, expressed as a quaternion {Horizontal}
         gripper_ctrl = np.array([gripper_ctrl, gripper_ctrl])
         gripper_ctrl_2 = np.array([gripper_ctrl_2, gripper_ctrl_2])
@@ -637,10 +637,10 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         
             self._label_matrix = []
 
-            name = "/path/to/folder/" + "image_" +str(self._index) + ".png"
+            name = "/home/gtzelepis/Data/cloth_manipulation/" + "image_" +str(self._index) + ".png"
             cv2.imwrite(name, visual_data)
 
-            name_d = "/path/to/folder/" + "image_depth" +str(self._index) + ".tif"
+            name_d = "/home/gtzelepis/Data/cloth_manipulation/" + "image_depth" +str(self._index) + ".tif"
             cv2.imwrite(name_d, depth_cv)
 
             label_data = np.array([label[0], label[1], label[2], label[3]])
@@ -657,8 +657,8 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             #     np.save(label_file, np.asarray(self._label_matrix), allow_pickle=True )
             #     np.savetxt(path + '.csv', centers, delimiter=",", fmt='%s')
 
-            label_file = "/home/rjangir/workSpace/sketchbook/pytorch-corner-detection/data/real_images/train_dataset_RL/" + "image" +str(self._index)
-            np.savetxt(label_file + '.csv', self._label_matrix, delimiter=",", fmt='%s')
+            # label_file = "/home/rjangir/workSpace/sketchbook/pytorch-corner-detection/data/real_images/train_dataset_RL/" + "image" +str(self._index)
+            # np.savetxt(label_file + '.csv', self._label_matrix, delimiter=",", fmt='%s')
 
         # obs = np.concatenate([
         #     grip_pos, gripper_state, grip_velp, vertice_pos[0], vertice_pos[1], vertice_pos[2], vertice_pos[3], vertice_velp[0], vertice_velp[1], vertice_velp[2], vertice_velp[3],
@@ -836,15 +836,16 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         self.sim.forward()
         # Move end effector into position.
         gripper_target_2= np.array([0.3, 0.8 , 0.3 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robotiq_85_base_link')
-        gripper_target = np.array([1.5, 0.5 , 0.5 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robotiq_85_base_link')
-        gripper_rotation = np.array([0., 1., 1., 0.])
+        gripper_target = np.array([1.5, 0.8 , 0.5 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robotiq_85_base_link')
+        gripper_rotation = np.array([0., 0., 1., 0.])
+        gripper_rotation_2 = np.array([0., -0., 1., 0.])
 
         #Add here the second agent mocap but probably we need to change initially the gripper target and rotation a bit in order to start in a more natural position
         self.sim.data.set_mocap_pos('robot1:mocap', gripper_target_2)
         self.sim.data.set_mocap_quat('robot1:mocap', gripper_rotation)
 
         self.sim.data.set_mocap_pos('robot2:mocap', gripper_target)
-        self.sim.data.set_mocap_quat('robot2:mocap', gripper_rotation)
+        self.sim.data.set_mocap_quat('robot2:mocap', gripper_rotation_2)
         # pdb.set_trace()
         for _ in range(10):
             self.sim.step()
