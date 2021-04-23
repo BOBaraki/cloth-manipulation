@@ -680,7 +680,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         for i in range(len(object_oriented_goal_2)):
             # pdb.set_trace()
-            action[4 + i] = object_oriented_goal_2[i]
+            if  behavior == 'one-hand' or behavior == "diagonally":
+                action[4+1] = 0
+            else:
+                action[4 + i] = object_oriented_goal_2[i]
             # action[4+i] = 0.
 
         actionRescaled = rescale_action(action, speed, noise_param)
@@ -743,7 +746,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         for i in range(len(object_oriented_goal_2)):
             # pdb.set_trace()
-            action[4 + i] = object_oriented_goal_2[i]
+            if behavior == 'one-hand' or behavior == "diagonally":
+                action[4 + 1] = 0
+            else:
+                action[4 + i] = object_oriented_goal_2[i]
             # action[4+i] = 0.
 
         actionRescaled = rescale_action(action, speed, 0.4)

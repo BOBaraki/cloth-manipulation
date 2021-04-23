@@ -327,10 +327,14 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         if self.block_gripper:
             # pdb.set_trace()
             for j in range(3):
-                self.sim.data.qpos[7 + j] = closed_pos[j]
-                self.sim.data.qpos[11 + j] = closed_pos[j]
-                self.sim.data.qpos[22 + j] = closed_pos[j]
-                self.sim.data.qpos[26 + j] = closed_pos[j]
+                if self.behavior == "onehand" or self.behavior == "onehand-lifting" or self.behavior == 'diagonally':
+                    self.sim.data.qpos[22 + j] = closed_pos[j]
+                    self.sim.data.qpos[26 + j] = closed_pos[j]
+                else:
+                    self.sim.data.qpos[7 + j] = closed_pos[j]
+                    self.sim.data.qpos[11 + j] = closed_pos[j]
+                    self.sim.data.qpos[22 + j] = closed_pos[j]
+                    self.sim.data.qpos[26 + j] = closed_pos[j]
             #self.sim.data.set_joint_qpos('robot1:right_knuckle_joint', closed_angle)
             #self.sim.data.set_joint_qpos('robot1:left_knuckle_joint', closed_angle)
             self._gripper_sync()
@@ -750,7 +754,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         if self.has_cloth:
             if self.behavior=="diagonally":
                 #joint_vertice = 'CB'+str(self.cloth_length-1)+'_'+str(self.cloth_length-1)
-                joint_vertice = 'CB10'+'_'+str(self.cloth_length-1)
+                joint_vertice = 'CB5'+'_'+str(self.cloth_length-1)
             elif self.behavior=="sideways" or self.behavior=="lifting" or self.behavior == "onehand" or self.behavior == "onehand-lifting" or self.behavior=="lifting-middle":
                 joint_vertice = 'CB0'+'_'+str(self.cloth_length-1)
             new_position = self.sim.data.get_body_xpos(joint_vertice)
