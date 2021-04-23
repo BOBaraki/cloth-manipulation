@@ -359,6 +359,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
         cloth_points_pos = []
         # slice the cloth points according to the number of cloth length
+        # pdb.set_trace()
         cloth_points = cloth_points_all[:self.cloth_length, :self.cloth_length].copy()
         cloth_points = cloth_points.flatten()
         for point in cloth_points:
@@ -371,6 +372,12 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
 
         return cloth_points[closest], dist_2[closest]
+
+    def distance_from_indice(self, gripper_position, indice):
+        point = self.sim.data.get_body_xpos(indice)
+        distance = np.linalg.norm(point -  gripper_position)
+
+        return distance
 
 
 
@@ -404,14 +411,22 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         # pdb.set_trace()
         # Only allow gripping if in proximity
         # pdb.set_trace()
+
         if dist_closest<=0.001:
             # pdb.set_trace()
-            self.block_gripper = True
-            self._step_callback()
+
             if self.behavior == 'lifting-middle':
-                utils.grasp(self.sim, gripper_ctrl,'CB' + str(self.vertex) + '_' + '0' , self.behavior)
+                # pdb.set_trace()
+                utils.grasp(self.sim, gripper_ctrl, 'CB' + str(self.vertex) + '_' + '0', self.behavior)
+                distance = self.distance_from_indice(self.grip_pos,'CB' + str(self.vertex) + '_' + '0')
+                if distance <= 0.01:
+                    # pdb.set_trace()
+                    self.block_gripper = True
+                    self._step_callback()
             else:
                 utils.grasp(self.sim, gripper_ctrl, 'CB10_0', self.behavior)
+                self.block_gripper = True
+                self._step_callback()
         else:
             self.block_gripper = False
             self._step_callback()
@@ -837,8 +852,11 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         # Move end effector into position.
         gripper_target_2= np.array([0.3, 0.8 , 0.3 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robotiq_85_base_link')
         gripper_target = np.array([1.5, 0.8 , 0.5 + self.gripper_extra_height]) #+ self.sim.data.get_site_xpos('robotiq_85_base_link')
-        gripper_rotation = np.array([0., 0., 1., 0.])
-        gripper_rotation_2 = np.array([0., -0., 1., 0.])
+        if self.behavior == 'lifting-middle':
+            gripper_rotation_2 = np.array([0., -0.5, 1., 0.5])
+        else:
+            gripper_rotation_2 = np.array([0., 1., 1., 0.])
+        gripper_rotation = np.array([0., 1., 1., 0.])
 
         #Add here the second agent mocap but probably we need to change initially the gripper target and rotation a bit in order to start in a more natural position
         self.sim.data.set_mocap_pos('robot1:mocap', gripper_target_2)

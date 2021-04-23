@@ -272,9 +272,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         if place_pos==3:
         	speed = 0.356
         elif behavior == "onehand-dropping":
-            speed = 0.636
+            speed = 0.236
         else:
-        	speed = 0.856 # cap action to whatever speed you want
+        	speed = 0.256 # cap action to whatever speed you want
 
         for i in range(len(object_oriented_goal)):
             action[i] = object_oriented_goal[i]
@@ -814,7 +814,8 @@ if __name__ == '__main__':
             image_output = env.render(mode=render_mode)
 
         print("Starting a new trajectory")
-        max_episode_steps = env._max_episode_steps
+        # max_episode_steps = env._max_episode_steps
+        max_episode_steps = args.max_steps
         if behavior == "complex":
             max_episode_steps = 200
 
