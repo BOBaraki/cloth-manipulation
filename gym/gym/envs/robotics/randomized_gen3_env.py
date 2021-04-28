@@ -15,6 +15,7 @@ from mujoco_py.modder import TextureModder, MaterialModder, LightModder, CameraM
 import cv2
 import matplotlib.pyplot as plt
 import pdb
+from PIL import Image
 
 DEBUG = False
 closed_pos = [1.12810781, -0.59798289, -0.53003607]
@@ -70,7 +71,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
         self.mode = 'rgb_array'
         self.visual_randomize = False
-        self.visual_data_recording = False
+        self.visual_data_recording = True
 
         self.num_vertices = 4
         self.cloth_length = cloth_length
@@ -605,15 +606,22 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         
         if self.visual_data_recording:
 
-            self._render_callback()
+            # self._render_callback()
             self.viewer = self._get_viewer('rgb_array')
             HEIGHT, WIDTH = 256, 256
+            # pdb.set_trace()
             self.viewer.render(HEIGHT, WIDTH)
+            # self.viewer.render()
+            # pdb.set_trace()
             visual_data_all = self.viewer.read_pixels(HEIGHT, WIDTH, depth=True)
+
             depth = visual_data_all[1]
             visual_data = visual_data_all[0]
+            # pdb.set_trace()
             # original image is upside-down, so flip it
-            visual_data =  cv2.UMat(visual_data[::-1, :, :])
+            # visual_data =  cv2.UMat(visual_data[::-1, :, :])
+            visual_data = Image.fromarray(visual_data[::-1, :, :], 'RGB')
+            # pdb.set_trace()
             depth_cv = cv2.normalize(depth[::-1,:], None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U)    
 
             #Save vertice labels
@@ -657,7 +665,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             self._label_matrix = []
 
             name = "/home/gtzelepis/Data/cloth_manipulation/" + "image_" +str(self._index) + ".png"
-            cv2.imwrite(name, visual_data)
+            visual_data.save(name)
 
             name_d = "/home/gtzelepis/Data/cloth_manipulation/" + "image_depth" +str(self._index) + ".tif"
             cv2.imwrite(name_d, depth_cv)
