@@ -16,7 +16,7 @@ import time
 from builtins import input
 import random
 import randomizer
-
+import glob
 from randomizer.wrappers import RandomizedEnvWrapper
 import cv2
 import pdb
@@ -53,11 +53,12 @@ def generate_demos(obs, render, max_episode_steps, behavior):
     # place_pos = np.random.randint(2) + 3
     place_pos = 2
     place_pos_2 = 3
-
+    # pdb.set_trace()
     while True:
         #print("Approaching air", timeStep)
         if render: env.render(mode=render_mode)
         obsDataNew = obs.copy()
+
         #The obsDataNew will change because it will return the second gripper
         objectPos = np.array([obsDataNew['observation'][7:10].copy(), obsDataNew['observation'][10:13].copy(), obsDataNew['observation'][13:16].copy(),
                               obsDataNew['observation'][16:19].copy()])
@@ -274,7 +275,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         elif behavior == "onehand-dropping":
             speed = 0.236
         else:
-        	speed = 0.256 # cap action to whatever speed you want
+        	speed = 0.856 # cap action to whatever speed you want
 
         for i in range(len(object_oriented_goal)):
             action[i] = object_oriented_goal[i]
@@ -824,7 +825,7 @@ if __name__ == '__main__':
         max_episode_steps = args.max_steps
         if behavior == "complex":
             max_episode_steps = 200
-
+        # pdb.set_trace()
         traj_success = 0
         while len(actions) < numItr:
             episodeAcs, episodeObs, episodeInfo = generate_demos(obs, render, max_episode_steps, behavior)

@@ -31,10 +31,10 @@
 
 	    <body name="CB0_10" pos="0.8 0.9 0.4">
 		    <freejoint name="cloth" />
-		    <composite count="11 11 1" flatinertia="0.097226" prefix="C" spacing="0.024975" type="cloth">
+		    <composite count="11 11 1" flatinertia="0.010000" prefix="C" spacing="0.030000" type="cloth">
 		        <joint damping="0.000500" kind="main" stiffness="0.001000" />
 		        <tendon damping="0.000500" kind="shear" stiffness="0.001000" width="0.001" />
-        		<skin inflate="0.002" material="matsponge" subgrid="2" texcoord="true" />
+        		<skin inflate="0.002" material="cloth_mat" subgrid="2" texcoord="true" />
 		        <geom friction="1.3000001.3000001.300000" mass="0.010000" material="floor_mat_1" rgba=".8 .2 .1 1" size="0.004" type="sphere" />
 		    </composite>
 	    </body>

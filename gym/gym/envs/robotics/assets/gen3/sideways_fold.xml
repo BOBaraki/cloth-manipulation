@@ -42,7 +42,7 @@
 		    <composite type="cloth" prefix="C" count="11 11 1" spacing="0.03" flatinertia="0.01" >
 		        <joint kind="main" damping="0.003" stiffness="0.001"/>
 		        <tendon width="0.001" kind="shear" stiffness="0.001" damping="0.002" />
-        		<skin material="matsponge" texcoord="true" inflate="0.002" subgrid="2"/>
+        		<skin material="cloth_mat" texcoord="true" inflate="0.002" subgrid="2"/>
 		        <geom type="sphere" size="0.004" rgba=".8 .2 .1 1" mass="0.008" friction="1.55 1.55 1.5" material="floor_mat_1"/>
 		    </composite>
 	    </body>

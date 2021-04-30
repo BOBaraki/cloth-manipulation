@@ -71,7 +71,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
         self.mode = 'rgb_array'
         self.visual_randomize = False
-        self.visual_data_recording = True
+        self.visual_data_recording = False
 
         self.num_vertices = 4
         self.cloth_length = cloth_length
