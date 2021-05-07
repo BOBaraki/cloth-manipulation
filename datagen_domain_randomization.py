@@ -59,6 +59,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         if render: env.render(mode=render_mode)
         obsDataNew = obs.copy()
 
+
         #The obsDataNew will change because it will return the second gripper
         objectPos = np.array([obsDataNew['observation'][7:10].copy(), obsDataNew['observation'][10:13].copy(), obsDataNew['observation'][13:16].copy(),
                               obsDataNew['observation'][16:19].copy()])
@@ -812,7 +813,7 @@ if __name__ == '__main__':
         actions = []
         observations = []
         infos = []
-        numItr = 400
+        numItr = 3
         fileName = "data_mujoco" + "_" + "fold_sideways" + "_" + str(numItr) + "_T_100_" + "L_11_" + "all_randomized_explicit" ".npz"
 
         actionDull = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001)]

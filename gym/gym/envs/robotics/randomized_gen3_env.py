@@ -1,6 +1,10 @@
 import numpy as np
-import os
+import os, os.path
 import copy
+import csv
+import uuid
+
+
 
 from gym.envs.robotics import rotations, robot_env, utils
 from gym.envs.robotics.rotations import mat2euler, mat2quat, quat2euler, euler2quat
@@ -20,6 +24,9 @@ from PIL import Image
 DEBUG = False
 closed_pos = [1.12810781, -0.59798289, -0.53003607]
 closed_angle = 0.45
+
+DIR = "/home/gtzelepis/Data/cloth_manipulation/"
+
 
 def debug(msg, data):
     if DEBUG:
@@ -71,7 +78,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
         self.mode = 'rgb_array'
         self.visual_randomize = False
-        self.visual_data_recording = False
+        self.visual_data_recording = True
 
         self.num_vertices = 4
         self.cloth_length = cloth_length
@@ -99,6 +106,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         self._locate_randomize_parameters()
         self.initial_qpos = initial_qpos
         self.n_substeps = n_substeps
+        self._index = len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))])
         # pdb.set_trace()
 
 
@@ -367,10 +375,10 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         # pdb.set_trace()
         cloth_points = cloth_points_all[:self.cloth_length, :self.cloth_length].copy()
         cloth_points = cloth_points.flatten()
+
         for point in cloth_points:
            cloth_points_pos.append(self.sim.data.get_body_xpos(point))
-
-        clothMesh = np.asarray(cloth_points_pos)        
+        clothMesh = np.asarray(cloth_points_pos)
         deltas = clothMesh - gripper_position
         dist_2 = np.einsum('ij,ij->i', deltas, deltas)
         closest = np.argmin(dist_2)
@@ -383,6 +391,56 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         distance = np.linalg.norm(point -  gripper_position)
 
         return distance
+
+    def find_point_coordinates(self):
+        cloth_points_all = np.array([np.array(
+            ['CB0_0', 'CB1_0', 'CB2_0', 'CB3_0', 'CB4_0', 'CB5_0', 'CB6_0', 'CB7_0', 'CB8_0', 'CB9_0', 'CB10_0',
+             'CB11_0', 'CB12_0', 'CB13_0', 'CB14_0']),
+                                     np.array(['CB0_1', 'CB1_1', 'CB2_1', 'CB3_1', 'CB4_1', 'CB5_1', 'CB6_1', 'CB7_1',
+                                               'CB8_1', 'CB9_1', 'CB10_1', 'CB11_1', 'CB12_1', 'CB13_1', 'CB14_1']),
+                                     np.array(['CB0_2', 'CB1_2', 'CB2_2', 'CB3_2', 'CB4_2', 'CB5_2', 'CB6_2', 'CB7_2',
+                                               'CB8_2', 'CB9_2', 'CB10_2', 'CB11_2', 'CB12_2', 'CB13_2', 'CB14_2']),
+                                     np.array(['CB0_3', 'CB1_3', 'CB2_3', 'CB3_3', 'CB4_3', 'CB5_3', 'CB6_3', 'CB7_3',
+                                               'CB8_3', 'CB9_3', 'CB10_3', 'CB11_3', 'CB12_3', 'CB13_3', 'CB14_3']),
+                                     np.array(['CB0_4', 'CB1_4', 'CB2_4', 'CB3_4', 'CB4_4', 'CB5_4', 'CB6_4', 'CB7_4',
+                                               'CB8_4', 'CB9_4', 'CB10_4', 'CB11_4', 'CB12_4', 'CB13_4', 'CB14_4']),
+                                     np.array(['CB0_5', 'CB1_5', 'CB2_5', 'CB3_5', 'CB4_5', 'CB5_5', 'CB6_5', 'CB7_5',
+                                               'CB8_5', 'CB9_5', 'CB10_5', 'CB11_5', 'CB12_5', 'CB13_5', 'CB14_5']),
+                                     np.array(['CB0_6', 'CB1_6', 'CB2_6', 'CB3_6', 'CB4_6', 'CB5_6', 'CB6_6', 'CB7_6',
+                                               'CB8_6', 'CB9_6', 'CB10_6', 'CB11_6', 'CB12_6', 'CB13_6', 'CB14_6']),
+                                     np.array(['CB0_7', 'CB1_7', 'CB2_7', 'CB3_7', 'CB4_7', 'CB5_7', 'CB6_7', 'CB7_7',
+                                               'CB8_7', 'CB9_7', 'CB10_7', 'CB11_7', 'CB12_7', 'CB13_7', 'CB14_7']),
+                                     np.array(['CB0_8', 'CB1_8', 'CB2_8', 'CB3_8', 'CB4_8', 'CB5_8', 'CB6_8', 'CB7_8',
+                                               'CB8_8', 'CB9_8', 'CB10_8', 'CB11_8', 'CB12_8', 'CB13_8', 'CB14_8']),
+                                     np.array(['CB0_9', 'CB1_9', 'CB2_9', 'CB3_9', 'CB4_9', 'CB5_9', 'CB6_9', 'CB7_9',
+                                               'CB8_9', 'CB9_9', 'CB10_9', 'CB11_9', 'CB12_9', 'CB13_9', 'CB14_9']),
+                                     np.array(['CB0_10', 'CB1_10', 'CB2_10', 'CB3_10', 'CB4_10', 'CB5_10', 'CB6_10',
+                                               'CB7_10', 'CB8_10', 'CB9_10', 'CB10_10', 'CB11_10', 'CB12_10', 'CB13_10',
+                                               'CB14_10']),
+                                     np.array(['CB0_11', 'CB1_11', 'CB2_11', 'CB3_11', 'CB4_11', 'CB5_11', 'CB6_11',
+                                               'CB7_11', 'CB8_11', 'CB9_11', 'CB10_11', 'CB11_11', 'CB12_11', 'CB13_11',
+                                               'CB14_11']),
+                                     np.array(['CB0_12', 'CB1_12', 'CB2_12', 'CB3_12', 'CB4_12', 'CB5_12', 'CB6_12',
+                                               'CB7_12', 'CB8_12', 'CB9_12', 'CB10_12', 'CB11_12', 'CB12_12', 'CB13_12',
+                                               'CB14_12']),
+                                     np.array(['CB0_13', 'CB1_13', 'CB2_13', 'CB3_13', 'CB4_13', 'CB5_13', 'CB6_13',
+                                               'CB7_13', 'CB8_13', 'CB9_13', 'CB10_13', 'CB11_13', 'CB12_13', 'CB13_13',
+                                               'CB14_13']),
+                                     np.array(['CB0_14', 'CB1_14', 'CB2_14', 'CB3_14', 'CB4_14', 'CB5_14', 'CB6_14',
+                                               'CB7_14', 'CB8_14', 'CB9_14', 'CB10_14', 'CB11_14', 'CB12_14', 'CB13_14',
+                                               'CB14_14'])])
+        cloth_points_pos = []
+        # slice the cloth points according to the number of cloth length
+        # pdb.set_trace()
+        cloth_points = cloth_points_all[:self.cloth_length, :self.cloth_length].copy()
+        cloth_points = cloth_points.flatten()
+        for point in cloth_points:
+            cloth_points_pos.append(self.sim.data.get_body_xpos(point))
+
+        clothMesh = np.asarray(cloth_points_pos)
+        dictionary = dict(zip(cloth_points, clothMesh))
+
+        return dictionary
 
 
 
@@ -603,7 +661,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         #     grip_pos, gripper_state, grip_velp, gripper_vel, vertice_pos[0], vertice_pos[1], vertice_pos[2], vertice_pos[3],
         # ])
         # Creating dataset for Visual policy training
-        
+        filename = str(uuid.uuid4())
         if self.visual_data_recording:
 
             # self._render_callback()
@@ -664,11 +722,19 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         
             self._label_matrix = []
 
-            name = "/home/gtzelepis/Data/cloth_manipulation/" + "image_" +str(self._index) + ".png"
+
+
+            name = "/home/gtzelepis/Data/cloth_manipulation/" + "image_" +filename + ".png"
             visual_data.save(name)
 
-            name_d = "/home/gtzelepis/Data/cloth_manipulation/" + "image_depth" +str(self._index) + ".tif"
-            cv2.imwrite(name_d, depth_cv)
+            # name_d = "/home/gtzelepis/Data/cloth_manipulation/" + "image_depth" +filename + ".tif"
+            # cv2.imwrite(name_d, depth_cv)
+            #
+            # name_c = "/home/gtzelepis/Data/cloth_manipulation/" + "points" +filename + ".csv"
+            # dict = {'points': self.find_point_coordinates().copy()}
+            # w = csv.writer(open(name_c, "w"))
+            # for key, val in dict['points'].items():
+            #     w.writerow([key, val])
 
             label_data = np.array([label[0], label[1], label[2], label[3]])
             for l in range(len(label)):
@@ -712,6 +778,8 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             'observation': obs.copy(),
             'achieved_goal': achieved_goal.copy(),
             'desired_goal': self.goal.copy(),
+            'points': self.find_point_coordinates(),
+            'filename': filename
         }
 
     def _viewer_setup(self):
