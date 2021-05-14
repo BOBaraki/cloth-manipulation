@@ -21,7 +21,15 @@ from randomizer.wrappers import RandomizedEnvWrapper
 import cv2
 import pdb
 
+import csv
+
+DIR = "/home/gtzelepis/Data/cloth_manipulation/"
+
 render_mode = "human"
+
+header = ['filename', 'cloth_state', 'gripper1_state', 'gripper2_state', 'action']
+
+data = []
 
 def rescale_action(action, speed, noise):
     noise = np.random.normal(0, noise,len(action))
@@ -54,17 +62,23 @@ def generate_demos(obs, render, max_episode_steps, behavior):
     place_pos = 2
     place_pos_2 = 3
     # pdb.set_trace()
+
     while True:
         #print("Approaching air", timeStep)
         if render: env.render(mode=render_mode)
         obsDataNew = obs.copy()
 
 
+
+        # pdb.set_trace()
+
         #The obsDataNew will change because it will return the second gripper
         objectPos = np.array([obsDataNew['observation'][7:10].copy(), obsDataNew['observation'][10:13].copy(), obsDataNew['observation'][13:16].copy(),
                               obsDataNew['observation'][16:19].copy()])
 
 
+
+        # pdb.set_trace()
 
         #New gripperPos and gripperState
         gripperPos = obsDataNew['observation'][:3].copy()
@@ -121,7 +135,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         #     actionRescaled[0] = 0
 
 
-
+        # pdb.set_trace()
         obs, reward, done, info = env.step(actionRescaled)
         # print(reward)
         episodeAcs.append(actionRescaled)
@@ -129,8 +143,13 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         episodeInfo.append(info)
 
         timeStep += 1
+        obsDataNew = obs.copy()
+        obsFilename = obsDataNew['filename']
 
+        newData = [obsFilename, 'flat', 'free', 'free', 'approaching']
 
+        data.append(newData)
+    # pdb.set_trace()
     while True:
         #print("Approaching OBJECT", timeStep)
         if render: env.render(mode=render_mode)
@@ -138,6 +157,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         objectPos = np.array([obsDataNew['observation'][7:10].copy() , obsDataNew['observation'][10:13].copy(), obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
         gripperPos = obsDataNew['observation'][:3].copy()
         gripperState = obsDataNew['observation'][3]
+
+
 
         object_rel_pos = objectPos - gripperPos
 
@@ -193,6 +214,15 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         episodeObs.append(obs)
         episodeInfo.append(info)
 
+        obsDataNew = obs.copy()
+        obsFilename = obsDataNew['filename']
+
+        newData = [obsFilename, 'flat', 'free', 'free', 'approaching']
+
+        data.append(newData)
+
+        # pdb.set_trace()
+
         timeStep += 1
 
     speed = 1.0
@@ -201,7 +231,15 @@ def generate_demos(obs, render, max_episode_steps, behavior):
               random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0)]
 
     actionRescaled = rescale_action(action, speed, 0.1)
+    # pdb.set_trace()
     obs, reward, done, info = env.step(actionRescaled)
+    obsDataNew = obs.copy()
+    obsFilename = obsDataNew['filename']
+
+    newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+
+    data.append(newData)
+
     episodeAcs.append(actionRescaled)
     episodeObs.append(obs)
     episodeInfo.append(info)
@@ -220,6 +258,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         gripperPos_2 = obsDataNew['observation'][19:22].copy()
         gripperState_2 = obsDataNew['observation'][22]
+
+
 
         #object_oriented_goal = object_rel_pos[place_pos].copy()
         # pdb.set_trace()
@@ -299,7 +339,16 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         episodeObs.append(obs)
         episodeInfo.append(info)
 
+        obsDataNew = obs.copy()
+
+        obsFilename = obsDataNew['filename']
+
+        newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+
+        data.append(newData)
+
         timeStep += 1
+    # pdb.set_trace()
     #
     if behavior == "dropping" or behavior == "onehand-dropping":
         while (timeStep) < max_episode_steps:
@@ -311,6 +360,14 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                           random.uniform(0.0, 1.0), random.uniform(-0.00000001, 0.00000001)]
             actionRescaled = rescale_action(actionDull, 1.0, 0.0)
             obs, reward, done, info = env.step(actionRescaled)
+
+            obsDataNew = obs.copy()
+            obsFilename = obsDataNew['filename']
+
+            newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+
+            data.append(newData)
+
             episodeAcs.append(actionRescaled)
             episodeObs.append(obs)
             episodeInfo.append(info)
@@ -384,6 +441,12 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                 actionRescaled[3] = action[3]
                 actionRescaled[7] = action[7]
                 obs, reward, done, info = env.step(actionRescaled)
+                obsDataNew = obs.copy()
+                obsFilename = obsDataNew['filename']
+
+                newData = [obsFilename, 'semilifted', 'closed', 'closed', 'picking']
+
+                data.append(newData)
                 episodeAcs.append(actionRescaled)
                 episodeObs.append(obs)
                 episodeInfo.append(info)
@@ -399,6 +462,12 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                   random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0)]
             actionRescaled = rescale_action(actionDull, 1.0, 0.0)
             obs, reward, done, info = env.step(actionRescaled)
+            obsDataNew = obs.copy()
+            obsFilename = obsDataNew['filename']
+
+            newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+
+            data.append(newData)
             episodeAcs.append(actionRescaled)
             episodeObs.append(obs)
             episodeInfo.append(info)
@@ -468,6 +537,13 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             actionRescaled[3] = action[3]
             actionRescaled[7] = action[7]
             obs, reward, done, info = env.step(actionRescaled)
+            obsDataNew = obs.copy()
+            obsFilename = obsDataNew['filename']
+
+            newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+
+            data.append(newData)
+
             episodeAcs.append(actionRescaled)
             episodeObs.append(obs)
             episodeInfo.append(info)
@@ -483,6 +559,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                                   obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
             gripperPos = obsDataNew['observation'][:3].copy()
             gripperState = obsDataNew['observation'][3]
+
+
 
             object_rel_pos = objectPos - gripperPos
 
@@ -538,6 +616,12 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             actionRescaled[3] = action[3]
             actionRescaled[7] = action[7]
             obs, reward, done, info = env.step(actionRescaled)
+            obsDataNew = obs.copy()
+            obsFilename = obsDataNew['filename']
+
+            newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+
+            data.append(newData)
             episodeAcs.append(actionRescaled)
             episodeObs.append(obs)
             episodeInfo.append(info)
@@ -558,6 +642,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
             gripperPos_2 = obsDataNew['observation'][19:22].copy()
             gripperState_2 = obsDataNew['observation'][22]
+
+
 
             # object_oriented_goal = object_rel_pos[place_pos].copy()
             # pdb.set_trace()
@@ -607,6 +693,13 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             actionRescaled[3] = action[3]
             actionRescaled[7] = action[7]
             obs, reward, done, info = env.step(actionRescaled)
+            obsDataNew = obs.copy()
+            obsFilename = obsDataNew['filename']
+
+            newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+
+            data.append(newData)
+
             episodeAcs.append(actionRescaled)
             episodeObs.append(obs)
             episodeInfo.append(info)
@@ -622,11 +715,18 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                           random.uniform(-0.000001, 0.00000001), random.uniform(0.6, 1.)]
             actionRescaled = rescale_action(actionDull, 1.0, 0.0)
             obs, reward, done, info = env.step(actionRescaled)
+            obsDataNew = obs.copy()
+            obsFilename = obsDataNew['filename']
+
+            newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+
+            data.append(newData)
+
             episodeAcs.append(actionRescaled)
             episodeObs.append(obs)
             episodeInfo.append(info)
             timeStep += 1
-
+    # pdb.set_trace()
     while True:
         # print("Taking", timeStep)
         if render: env.render(mode=render_mode)
@@ -639,6 +739,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         gripperPos_2 = obsDataNew['observation'][19:22].copy()
         gripperState_2 = obsDataNew['observation'][22]
+
+
 
         #object_oriented_goal = object_rel_pos[place_pos].copy()
         # object_oriented_goal = obsDataNew['desired_goal'].copy()[(place_pos-3)*3:(place_pos-3+1)*3] - gripperPos
@@ -692,6 +794,13 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         actionRescaled[3] = action[3]
         actionRescaled[7] = action[7]
         obs, reward, done, info = env.step(actionRescaled)
+        obsDataNew = obs.copy()
+        obsFilename = obsDataNew['filename']
+
+        newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'taking']
+
+        data.append(newData)
+
         episodeAcs.append(actionRescaled)
         episodeObs.append(obs)
         episodeInfo.append(info)
@@ -708,6 +817,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         gripperPos_2 = obsDataNew['observation'][19:22].copy()
         gripperState_2 = obsDataNew['observation'][22]
+
+
 
         object_rel_pos = objectPos - gripperPos
         #object_oriented_goal = object_rel_pos[place_pos].copy()
@@ -757,6 +868,13 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         actionRescaled = rescale_action(action, speed, 0.4)
         #actionRescaled[3] = action[3]
         obs, reward, done, info = env.step(actionRescaled)
+        obsDataNew = obs.copy()
+        obsFilename = obsDataNew['filename']
+
+        newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'taking']
+
+        data.append(newData)
+
         episodeAcs.append(actionRescaled)
         episodeObs.append(obs)
         episodeInfo.append(info)
@@ -767,15 +885,44 @@ def generate_demos(obs, render, max_episode_steps, behavior):
     #
     while (timeStep)< max_episode_steps:
         #print("WAITING", timeStep)
+
+        obsDataNew = obs.copy()
+
+        # pdb.set_trace()
+
+        # The obsDataNew will change because it will return the second gripper
+        objectPos = np.array([obsDataNew['observation'][7:10].copy(), obsDataNew['observation'][10:13].copy(),
+                              obsDataNew['observation'][13:16].copy(),
+                              obsDataNew['observation'][16:19].copy()])
+
+
         if render: env.render(mode=render_mode)
         actionDull = [random.uniform(-0.00000001, 0.00000001), random.uniform(-0.00000001, 0.00000001), random.uniform(0.0, 1.0), random.uniform(-0.00000001, 0.00000001),
                       random.uniform(-0.00000001, 0.00000001), random.uniform(-0.00000001, 0.00000001), random.uniform(0.0, 1.0), random.uniform(-0.00000001, 0.00000001)]
         actionRescaled = rescale_action(actionDull, 1.0, 0.0)
         obs, reward, done, info = env.step(actionRescaled)
+        obsDataNew = obs.copy()
+        obsFilename = obsDataNew['filename']
+
+        newData = [obsFilename, 'folded', 'free', 'free', 'waiting']
+
+        data.append(newData)
         episodeAcs.append(actionRescaled)
         episodeObs.append(obs)
         episodeInfo.append(info)
         timeStep += 1
+
+    # pdb.set_trace()
+
+    with open(DIR + 'data.csv', 'w', encoding='UTF8', newline='') as f:
+        writer = csv.writer(f)
+
+        # write the header
+        writer.writerow(header)
+
+        # write multiple rows
+        writer.writerows(data)
+    pdb.set_trace()
 
     return [episodeAcs, episodeObs, episodeInfo]
 
@@ -808,7 +955,7 @@ if __name__ == '__main__':
     print("Press ESC to quit")
     reward = 0
     done = False
-    
+
     if mode == "demo":
         actions = []
         observations = []
@@ -825,7 +972,7 @@ if __name__ == '__main__':
         # max_episode_steps = env._max_episode_steps
         max_episode_steps = args.max_steps
         if behavior == "complex":
-            max_episode_steps = 200
+            max_episode_steps = 100
         # pdb.set_trace()
         traj_success = 0
         while len(actions) < numItr:

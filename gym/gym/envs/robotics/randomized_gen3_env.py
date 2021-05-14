@@ -4,6 +4,9 @@ import copy
 import csv
 import uuid
 
+import datetime
+
+
 
 
 from gym.envs.robotics import rotations, robot_env, utils
@@ -475,7 +478,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         # Only allow gripping if in proximity
         # pdb.set_trace()
 
-        if dist_closest<=0.001:
+        if dist_closest<=0.001 and gripper_ctrl[0]>0.5:
             # pdb.set_trace()
 
             if self.behavior == 'lifting-middle':
@@ -505,7 +508,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         #     gripper_ctrl_2 = np.zeros_like(gripper_ctrl_2)
 
 
-        if dist_closest_2<=0.001 and self.behavior != 'onehand' or self.behavior != 'diagonally' or self.behavior == 'onehand-lifting':
+        if dist_closest_2<=0.001 and gripper_ctrl_2[0] > 0.5 and self.behavior != 'onehand' or self.behavior != 'diagonally' or self.behavior == 'onehand-lifting':
             # pdb.set_trace()
 
             utils.grasp(self.sim, gripper_ctrl_2, 'CB0_0', self.behavior)
@@ -661,7 +664,13 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         #     grip_pos, gripper_state, grip_velp, gripper_vel, vertice_pos[0], vertice_pos[1], vertice_pos[2], vertice_pos[3],
         # ])
         # Creating dataset for Visual policy training
-        filename = str(uuid.uuid4())
+        # filename = str(uuid.uuid4())
+
+        # basename = "mylogfile"
+        filename = datetime.datetime.now().strftime("%y%m%d_%H%M%S%f")
+        # filename = "_".join([basename, suffix])
+
+
         if self.visual_data_recording:
 
             # self._render_callback()
@@ -724,13 +733,13 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
 
 
-            name = "/home/gtzelepis/Data/cloth_manipulation/" + "image_" +filename + ".png"
+            name = "/home/gtzelepis/Data/cloth_manipulation/RGB/" +filename + ".png"
             visual_data.save(name)
 
-            # name_d = "/home/gtzelepis/Data/cloth_manipulation/" + "image_depth" +filename + ".tif"
+            # name_d = "/home/gtzelepis/Data/cloth_manipulation/depth/" +filename + ".tif"
             # cv2.imwrite(name_d, depth_cv)
-            #
-            # name_c = "/home/gtzelepis/Data/cloth_manipulation/" + "points" +filename + ".csv"
+            # #
+            # name_c = "/home/gtzelepis/Data/cloth_manipulation/points/" +filename + ".csv"
             # dict = {'points': self.find_point_coordinates().copy()}
             # w = csv.writer(open(name_c, "w"))
             # for key, val in dict['points'].items():
