@@ -82,7 +82,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
         self.mode = 'rgb_array'
         self.visual_randomize = False
-        self.visual_data_recording = False
+        self.visual_data_recording = True
 
         self.num_vertices = 4
         self.cloth_length = cloth_length
@@ -674,7 +674,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
         if self.visual_data_recording:
 
-            # self._render_callback()
+            self._render_callback()
             self.viewer = self._get_viewer('rgb_array')
             HEIGHT, WIDTH = 512, 512
             # pdb.set_trace()
@@ -807,9 +807,9 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         lookat = self.sim.data.body_xpos[body_id]
         for idx, value in enumerate(lookat):
             self.viewer.cam.lookat[idx] = value
-        self.viewer.cam.distance = 0.85
-        self.viewer.cam.azimuth = 90.
-        self.viewer.cam.elevation = -35.
+        self.viewer.cam.distance = 0.85 + randint(-5, 5)/100
+        self.viewer.cam.azimuth = 90. + randint(-5, 5)
+        self.viewer.cam.elevation = -40. + randint(-5, 5)
 
     def _render_callback(self):
         # Visualize target.
@@ -829,7 +829,9 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             self.sim.forward()
 
     def _reset_sim(self):
+
         self.sim.set_state(self.initial_state)
+        self._viewer_setup()
 
         self.sim.forward()
         # Randomize start position of object.

@@ -959,7 +959,7 @@ if __name__ == '__main__':
         actions = []
         observations = []
         infos = []
-        numItr = 1
+        numItr = 3
         fileName = "data_mujoco" + "_" + "fold_sideways" + "_" + str(numItr) + "_T_100_" + "L_11_" + "all_randomized_explicit" ".npz"
 
         actionDull = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001)]
