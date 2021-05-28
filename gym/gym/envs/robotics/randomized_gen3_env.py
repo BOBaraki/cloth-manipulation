@@ -13,6 +13,7 @@ from gym.envs.robotics import rotations, robot_env, utils
 from gym.envs.robotics.rotations import mat2euler, mat2quat, quat2euler, euler2quat
 import gym
 import math
+import random
 from random import randint
 
 import xml.etree.ElementTree as et
@@ -81,7 +82,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
         self.mode = 'rgb_array'
         self.visual_randomize = False
-        self.visual_data_recording = True
+        self.visual_data_recording = False
 
         self.num_vertices = 4
         self.cloth_length = cloth_length
@@ -675,7 +676,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
             # self._render_callback()
             self.viewer = self._get_viewer('rgb_array')
-            HEIGHT, WIDTH = 256, 256
+            HEIGHT, WIDTH = 512, 512
             # pdb.set_trace()
             self.viewer.render(HEIGHT, WIDTH)
             # self.viewer.render()
@@ -717,6 +718,8 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             fov = self.sim.model.cam_fovy[cam_id]
             fov = self.sim.model.cam_fovy[cam_id]
             cam_pos = self.sim.data.get_camera_xpos(cam_name)
+            # pdb.set_trace()
+            # cam_pos = cam_pos + random.uniform(0. , 0.1)
             #cam_quat = self.sim.model.cam_quat[cam_id]
             cam_ori = gym.envs.robotics.rotations.mat2euler(self.sim.data.get_camera_xmat(cam_name))
             #Camera pos and ori  [1.8  0.75 1.2 ] <class 'numpy.ndarray'> [-0.    0.77  1.57] <class 'numpy.ndarray'>
@@ -794,17 +797,19 @@ class RandomizedGen3Env(robot_env.RobotEnv):
     def _viewer_setup(self):
         self.viewer._show_mocap = False
 
-        self.viewer.cam.fixedcamid = 0
-        self.viewer.cam.type = mujoco_py.generated.const.CAMERA_FIXED
+        # self.viewer.cam.fixedcamid = 0
+        # self.viewer.cam.type = mujoco_py.generated.const.CAMERA_FIXED
 
-        # body_id = self.sim.model.body_name2id('table0')
+        # pdb.set_trace()
+
+        body_id = self.sim.model.body_name2id('CB5_5')
         # #body_id = self.sim.model.body_name2id('robot1:robotiq_85_base_link')
-        # lookat = self.sim.data.body_xpos[body_id]
-        # for idx, value in enumerate(lookat):
-        #     self.viewer.cam.lookat[idx] = value
-        # self.viewer.cam.distance = 1.3
-        # self.viewer.cam.azimuth = 180.
-        # self.viewer.cam.elevation = -45.
+        lookat = self.sim.data.body_xpos[body_id]
+        for idx, value in enumerate(lookat):
+            self.viewer.cam.lookat[idx] = value
+        self.viewer.cam.distance = 0.85
+        self.viewer.cam.azimuth = 90.
+        self.viewer.cam.elevation = -35.
 
     def _render_callback(self):
         # Visualize target.

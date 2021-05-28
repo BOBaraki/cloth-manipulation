@@ -58,3 +58,18 @@ ERROR: GLEW initalization error: Missing GL version
 Thu Apr 22 11:56:32 2021
 ERROR: GLEW initalization error: Missing GL version
 
+Fri May 28 13:30:25 2021
+ERROR: Fixed camera id is outside valid range
+
+Fri May 28 13:30:41 2021
+ERROR: Fixed camera id is outside valid range
+
+Fri May 28 13:30:54 2021
+ERROR: Fixed camera id is outside valid range
+
+Fri May 28 13:32:21 2021
+ERROR: Track body id is outside valid range
+
+Fri May 28 13:53:27 2021
+ERROR: Fixed camera id is outside valid range
+

@@ -922,7 +922,6 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         # write multiple rows
         writer.writerows(data)
-    pdb.set_trace()
 
     return [episodeAcs, episodeObs, episodeInfo]
 
@@ -960,7 +959,7 @@ if __name__ == '__main__':
         actions = []
         observations = []
         infos = []
-        numItr = 3
+        numItr = 1
         fileName = "data_mujoco" + "_" + "fold_sideways" + "_" + str(numItr) + "_T_100_" + "L_11_" + "all_randomized_explicit" ".npz"
 
         actionDull = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001)]
