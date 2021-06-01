@@ -495,7 +495,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                 self.block_gripper = True
                 self._step_callback()
         else:
-            utils.grasp(self.sim, gripper_ctrl, 'CB10_0', self.behavior)
+            utils.grasp(self.sim, gripper_ctrl, 'CB10_0', self.behavior) #this might need to change
             self.block_gripper = False
             self._step_callback()
 
@@ -737,13 +737,13 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
 
 
-            name = "/home/gtzelepis/Data/cloth_manipulation/one_hand_diagonal/RGB/" +filename + ".png"
+            name = "/home/gtzelepis/Data/cloth_manipulation/one_hand_dropping/RGB/" +filename + ".png"
             visual_data.save(name)
 
-            name_d = "/home/gtzelepis/Data/cloth_manipulation/one_hand_diagonal/depth/" +filename + ".tif"
+            name_d = "/home/gtzelepis/Data/cloth_manipulation/one_hand_dropping/depth/" +filename + ".tif"
             cv2.imwrite(name_d, depth_cv)
             #
-            name_c = "/home/gtzelepis/Data/cloth_manipulation/one_hand_diagonal/points/" +filename + ".csv"
+            name_c = "/home/gtzelepis/Data/cloth_manipulation/one_hand_dropping/points/" +filename + ".csv"
             dict = {'points': self.find_point_coordinates().copy()}
             w = csv.writer(open(name_c, "w"))
             for key, val in dict['points'].items():
@@ -805,7 +805,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
         body_id = self.sim.model.body_name2id('CB5_5')
 
-        if self.behavior == 'diagonally':
+        if self.behavior == 'diagonally' or self.behavior == 'onehand-lifting':
             body_id = self.sim.model.body_name2id('CB10_0')
         # #body_id = self.sim.model.body_name2id('robot1:robotiq_85_base_link')
         lookat = self.sim.data.body_xpos[body_id]
