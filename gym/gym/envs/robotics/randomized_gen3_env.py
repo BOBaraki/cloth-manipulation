@@ -495,6 +495,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                 self.block_gripper = True
                 self._step_callback()
         else:
+            utils.grasp(self.sim, gripper_ctrl, 'CB10_0', self.behavior)
             self.block_gripper = False
             self._step_callback()
 
@@ -513,7 +514,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             # pdb.set_trace()
 
             utils.grasp(self.sim, gripper_ctrl_2, 'CB0_0', self.behavior)
-        if self.block_gripper and self.behavior != 'onehand':
+        if self.block_gripper and self.behavior != 'onehand' or self.behavior:
             gripper_ctrl_2 = np.zeros_like(gripper_ctrl_2)
 
 
@@ -736,17 +737,17 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
 
 
-            name = "/home/gtzelepis/Data/cloth_manipulation/RGB/" +filename + ".png"
+            name = "/home/gtzelepis/Data/cloth_manipulation/one_hand_diagonal/RGB/" +filename + ".png"
             visual_data.save(name)
 
-            # name_d = "/home/gtzelepis/Data/cloth_manipulation/depth/" +filename + ".tif"
-            # cv2.imwrite(name_d, depth_cv)
-            # #
-            # name_c = "/home/gtzelepis/Data/cloth_manipulation/points/" +filename + ".csv"
-            # dict = {'points': self.find_point_coordinates().copy()}
-            # w = csv.writer(open(name_c, "w"))
-            # for key, val in dict['points'].items():
-            #     w.writerow([key, val])
+            name_d = "/home/gtzelepis/Data/cloth_manipulation/one_hand_diagonal/depth/" +filename + ".tif"
+            cv2.imwrite(name_d, depth_cv)
+            #
+            name_c = "/home/gtzelepis/Data/cloth_manipulation/one_hand_diagonal/points/" +filename + ".csv"
+            dict = {'points': self.find_point_coordinates().copy()}
+            w = csv.writer(open(name_c, "w"))
+            for key, val in dict['points'].items():
+                w.writerow([key, val])
 
             label_data = np.array([label[0], label[1], label[2], label[3]])
             for l in range(len(label)):
@@ -803,6 +804,9 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         # pdb.set_trace()
 
         body_id = self.sim.model.body_name2id('CB5_5')
+
+        if self.behavior == 'diagonally':
+            body_id = self.sim.model.body_name2id('CB10_0')
         # #body_id = self.sim.model.body_name2id('robot1:robotiq_85_base_link')
         lookat = self.sim.data.body_xpos[body_id]
         for idx, value in enumerate(lookat):
@@ -858,7 +862,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             gripper_ctrl = np.array([0.0, 0.0])
             # pdb.set_trace()
             # Need to identify the target like CB0_0 or CB0_10)
-            utils.grasp(self.sim, gripper_ctrl, 'CB0_0', self.behavior)
+            # utils.grasp(self.sim, gripper_ctrl, 'CB0_0', self.behavior)
             self.sim.data.set_joint_qpos('cloth', new_position)
 
         self.sim.forward()

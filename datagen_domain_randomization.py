@@ -62,6 +62,11 @@ def generate_demos(obs, render, max_episode_steps, behavior):
     place_pos = 2
     place_pos_2 = 3
     # pdb.set_trace()
+    ini_obs =  obs.copy()
+    init_objectPos = np.array([ini_obs['observation'][7:10].copy(), ini_obs['observation'][10:13].copy(), ini_obs['observation'][13:16].copy(),
+                              ini_obs['observation'][16:19].copy()])
+
+    # pdb.set_trace()
 
     while True:
         #print("Approaching air", timeStep)
@@ -238,6 +243,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
     newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
 
+    if behavior == 'one-hand' or behavior == 'diagonally':
+        newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
+
     data.append(newData)
 
     episodeAcs.append(actionRescaled)
@@ -343,7 +351,17 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         obsFilename = obsDataNew['filename']
 
+        temp_obs = np.array([obsDataNew['observation'][7:10].copy() , obsDataNew['observation'][10:13].copy(), obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
+
         newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+
+        if behavior == 'one-hand' or behavior == 'diagonally':
+            newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
+        # pdb.set_trace()
+        liftedFlag =  all(i > 0.005 for i in (temp_obs[:,2] - init_objectPos[:,2]))
+
+        if liftedFlag:
+            newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
 
         data.append(newData)
 
@@ -365,6 +383,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             obsFilename = obsDataNew['filename']
 
             newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+
+            if behavior == 'one-hand' or behavior == 'diagonally':
+                newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
 
             data.append(newData)
 
@@ -446,6 +467,14 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
                 newData = [obsFilename, 'semilifted', 'closed', 'closed', 'picking']
 
+                if behavior == 'one-hand' or behavior == 'diagonally':
+                    newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
+
+                liftedFlag = all(i > 0.005 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
+
+                if liftedFlag:
+                    newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
+
                 data.append(newData)
                 episodeAcs.append(actionRescaled)
                 episodeObs.append(obs)
@@ -466,6 +495,14 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             obsFilename = obsDataNew['filename']
 
             newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+
+            if behavior == 'one-hand' or behavior == 'diagonally':
+                newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
+
+            liftedFlag = all(i > 0.005 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
+
+            if liftedFlag:
+                newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
 
             data.append(newData)
             episodeAcs.append(actionRescaled)
@@ -541,6 +578,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             obsFilename = obsDataNew['filename']
 
             newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+
+            if behavior == 'one-hand' or behavior == 'diagonally':
+                newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
 
             data.append(newData)
 
@@ -621,6 +661,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
             newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
 
+            if behavior == 'one-hand' or behavior == 'diagonally':
+                newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
+
             data.append(newData)
             episodeAcs.append(actionRescaled)
             episodeObs.append(obs)
@@ -698,6 +741,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
             newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
 
+            if behavior == 'one-hand' or behavior == 'diagonally':
+                newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
+
             data.append(newData)
 
             episodeAcs.append(actionRescaled)
@@ -719,6 +765,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             obsFilename = obsDataNew['filename']
 
             newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+
+            if behavior == 'one-hand' or behavior == 'diagonally':
+                newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
 
             data.append(newData)
 
@@ -799,6 +848,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'taking']
 
+        if behavior == 'one-hand' or behavior == 'diagonally':
+            newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'taking']
+
         data.append(newData)
 
         episodeAcs.append(actionRescaled)
@@ -873,6 +925,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'taking']
 
+        if behavior == 'one-hand' or behavior == 'diagonally':
+            newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'taking']
+
         data.append(newData)
 
         episodeAcs.append(actionRescaled)
@@ -897,6 +952,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
 
         if render: env.render(mode=render_mode)
+        # pdb.set_trace()
         actionDull = [random.uniform(-0.00000001, 0.00000001), random.uniform(-0.00000001, 0.00000001), random.uniform(0.0, 1.0), random.uniform(-0.00000001, 0.00000001),
                       random.uniform(-0.00000001, 0.00000001), random.uniform(-0.00000001, 0.00000001), random.uniform(0.0, 1.0), random.uniform(-0.00000001, 0.00000001)]
         actionRescaled = rescale_action(actionDull, 1.0, 0.0)
@@ -905,6 +961,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         obsFilename = obsDataNew['filename']
 
         newData = [obsFilename, 'folded', 'free', 'free', 'waiting']
+
+        if behavior == 'diagonally':
+            newData = [obsFilename, 'diagonally Folded', 'free', 'free', 'waiting']
 
         data.append(newData)
         episodeAcs.append(actionRescaled)
