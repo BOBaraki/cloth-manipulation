@@ -52,7 +52,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
     noise_param = 0.6
 
 
-
+    episode_flagLifted = False
     
     episodeObs.append(obs)
 
@@ -243,7 +243,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
     newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
 
-    if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lifting' or behavior == 'onehand-dropping':
+    if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == "onehand-lowering":
         newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
 
     data.append(newData)
@@ -355,13 +355,18 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
 
-        if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lifting' or behavior == 'onehand-dropping':
+        if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == "onehand-lowering":
             newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
         # pdb.set_trace()
         liftedFlag =  all(i > 0.008 for i in (temp_obs[:,2] - init_objectPos[:,2]))
 
         if liftedFlag:
-            if behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == 'onehand-dropping':
+            episode_flagLifted = True
+
+        # pdb.set_trace()
+
+        if liftedFlag:
+            if behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == "onehand-lowering":
                 newData = [obsFilename, 'lifted', 'free', 'closed', 'lifting_onehand']
             else:
                 newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
@@ -450,7 +455,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                 if place_pos == 3:
                     speed = 0.356
                 else:
-                    speed = 0.856  # cap action to whatever speed you want
+                    speed = 0.256  # cap action to whatever speed you want
 
                 for i in range(len(object_oriented_goal)):
                     action[i] = object_oriented_goal[i]
@@ -470,18 +475,27 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                 obsDataNew = obs.copy()
                 obsFilename = obsDataNew['filename']
 
-                newData = [obsFilename, 'semilifted', 'closed', 'closed', 'picking']
+                newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
 
-                if behavior == 'one-hand' or behavior == 'diagonally':
+                if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lowering':
                     newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
 
-                liftedFlag = all(i > 0.008 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
+                liftedFlag = all(i > 0.015 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
+                print(temp_obs[:, 2] - init_objectPos[:, 2])
 
                 if liftedFlag:
-                    if behavior == 'onehand-lifting' or behavior == 'onehand-dropping':
+                    episode_flagLifted = True
+
+                # pdb.set_trace()
+
+                if liftedFlag:
+                    if behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == "onehand-lowering":
                         newData = [obsFilename, 'lifted', 'free', 'closed', 'lifting_onehand']
                     else:
                         newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
+                else:
+                    if behavior == 'onehand-lowering' and episode_flagLifted:
+                        newData = [obsFilename, 'semi-lifted-crampled', 'free', 'closed', 'lowering-onehand']
 
                 data.append(newData)
                 episodeAcs.append(actionRescaled)
@@ -504,16 +518,23 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
             newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
 
-            if behavior == 'one-hand' or behavior == 'diagonally':
+            if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lowering':
                 newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
 
-            liftedFlag = all(i > 0.008 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
+            liftedFlag = all(i > 0.01 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
+            if liftedFlag:
+                episode_flagLifted = True
+
+            # pdb.set_trace()
 
             if liftedFlag:
-                if behavior == 'onehand-lifting' or behavior == 'onehand-dropping':
+                if behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == 'onehand-lowering':
                     newData = [obsFilename, 'lifted', 'free', 'closed', 'lifting_onehand']
                 else:
                     newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
+            else:
+                if behavior == 'onehand-lowering' and episode_flagLifted:
+                    newData = [obsFilename, 'semi-lifted-crampled', 'free', 'closed', 'lowering-onehand']
 
             data.append(newData)
             episodeAcs.append(actionRescaled)
@@ -758,7 +779,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             liftedFlag = all(i > 0.008 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
 
             if liftedFlag:
-                if behavior == 'onehand-lifting' or behavior == 'onehand-dropping':
+                episode_flagLifted = True
+
+            if liftedFlag:
+                if behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == 'onehand-lowering':
                     newData = [obsFilename, 'lifted', 'free', 'closed', 'lifting_onehand']
                 else:
                     newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
@@ -873,7 +897,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         liftedFlag = all(i > 0.008 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
 
         if liftedFlag:
-            if behavior == 'onehand-lifting':
+            episode_flagLifted = True
+
+        if liftedFlag:
+            if behavior == 'onehand-lifting' or behavior == 'onehand-lowering':
                 newData = [obsFilename, 'lifted', 'free', 'closed', 'lifting_onehand']
             else:
                 newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
@@ -958,9 +985,11 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'taking']
 
         liftedFlag = all(i > 0.008 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
+        if liftedFlag:
+            episode_flagLifted = True
 
         if liftedFlag:
-            if behavior == 'onehand-lifting':
+            if behavior == 'onehand-lifting' or behavior == 'onehand-lowering':
                 newData = [obsFilename, 'lifted', 'free', 'closed', 'lifting_onehand']
             else:
                 newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
@@ -1003,9 +1032,11 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             newData = [obsFilename, 'diagonally Folded', 'free', 'free', 'waiting']
 
         liftedFlag = all(i > 0.008 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
+        if liftedFlag:
+            episode_flagLifted = True
 
         if liftedFlag:
-            if behavior == 'onehand-lifting':
+            if behavior == 'onehand-lifting' or behavior == 'onehand-lowering':
                 newData = [obsFilename, 'lifted', 'free', 'closed', 'lifting_onehand']
             else:
                 newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
@@ -1074,8 +1105,8 @@ if __name__ == '__main__':
         print("Starting a new trajectory")
         # max_episode_steps = env._max_episode_steps
         max_episode_steps = args.max_steps
-        if behavior == "complex":
-            max_episode_steps = 100
+        # if behavior == "complex":
+        #     max_episode_steps = 100
         # pdb.set_trace()
         traj_success = 0
         while len(actions) < numItr:

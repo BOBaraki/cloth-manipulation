@@ -83,6 +83,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         self.mode = 'rgb_array'
         self.visual_randomize = False
         self.visual_data_recording = True
+        self.track = False
 
         self.num_vertices = 4
         self.cloth_length = cloth_length
@@ -204,7 +205,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         # pdb.set_trace()
         if self.behavior == "onehand-lifting":
             # spacing = np.clip(self.dimensions[8].current_value, 0.025, 0.03)
-            spacing = np.random.uniform(0.024, 0.025)
+            spacing = np.random.uniform(0.022, 0.023)
         else:
             spacing = self.dimensions[8].current_value
 
@@ -737,13 +738,13 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
 
 
-            name = "/home/gtzelepis/Data/cloth_manipulation/one_hand_dropping/RGB/" +filename + ".png"
+            name = "/home/gtzelepis/Data/cloth_manipulation/two_hands_complex/RGB/" +filename + ".png"
             visual_data.save(name)
 
-            name_d = "/home/gtzelepis/Data/cloth_manipulation/one_hand_dropping/depth/" +filename + ".tif"
+            name_d = "/home/gtzelepis/Data/cloth_manipulation/two_hands_complex/depth/" +filename + ".tif"
             cv2.imwrite(name_d, depth_cv)
             #
-            name_c = "/home/gtzelepis/Data/cloth_manipulation/one_hand_dropping/points/" +filename + ".csv"
+            name_c = "/home/gtzelepis/Data/cloth_manipulation/two_hands_complex/points/" +filename + ".csv"
             dict = {'points': self.find_point_coordinates().copy()}
             w = csv.writer(open(name_c, "w"))
             for key, val in dict['points'].items():
@@ -786,6 +787,8 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             ])
             
         self._index += 1
+        # self.track = True
+        # self._viewer_setup()
 
         return {
             'observation': obs.copy(),
@@ -798,7 +801,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
     def _viewer_setup(self):
         self.viewer._show_mocap = False
 
-        # self.viewer.cam.fixedcamid = 0
+        # self.viewer.cam.fixedcamid = -1
         # self.viewer.cam.type = mujoco_py.generated.const.CAMERA_FIXED
 
         # pdb.set_trace()
@@ -806,14 +809,16 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         body_id = self.sim.model.body_name2id('CB5_5')
 
         if self.behavior == 'diagonally' or self.behavior == 'onehand-lifting':
-            body_id = self.sim.model.body_name2id('CB10_0')
+            body_id = self.sim.model.body_name2id('CB5_5')
         # #body_id = self.sim.model.body_name2id('robot1:robotiq_85_base_link')
         lookat = self.sim.data.body_xpos[body_id]
         for idx, value in enumerate(lookat):
             self.viewer.cam.lookat[idx] = value
-        self.viewer.cam.distance = 0.85 + randint(-5, 5)/100
-        self.viewer.cam.azimuth = 90. + randint(-5, 5)
-        self.viewer.cam.elevation = -40. + randint(-5, 5)
+
+        if not self.track:
+            self.viewer.cam.distance = 0.85 + randint(-5, 5)/100
+            self.viewer.cam.azimuth = 90. + randint(-5, 5)
+            self.viewer.cam.elevation = -30. + randint(-5, 5)
 
     def _render_callback(self):
         # Visualize target.
@@ -835,6 +840,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
     def _reset_sim(self):
 
         self.sim.set_state(self.initial_state)
+        self.track = False
         self._viewer_setup()
 
         self.sim.forward()

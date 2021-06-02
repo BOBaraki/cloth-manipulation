@@ -73,3 +73,9 @@ ERROR: Track body id is outside valid range
 Fri May 28 13:53:27 2021
 ERROR: Fixed camera id is outside valid range
 
+Wed Jun  2 12:36:50 2021
+ERROR: Fixed camera id is outside valid range
+
+Wed Jun  2 12:37:02 2021
+ERROR: Fixed camera id is outside valid range
+
