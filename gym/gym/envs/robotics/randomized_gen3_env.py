@@ -737,14 +737,14 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             self._label_matrix = []
 
 
-
-            name = "/home/gtzelepis/Data/cloth_manipulation/two_hands_complex/RGB/" +filename + ".png"
+            data_path = "/home/gtzelepis/Data/cloth_manipulation/one_hand_diagonal/cloth_yellow_table_white/"
+            name = data_path + "RGB/" +filename + ".png"
             visual_data.save(name)
 
-            name_d = "/home/gtzelepis/Data/cloth_manipulation/two_hands_complex/depth/" +filename + ".tif"
+            name_d = data_path + "depth/" +filename + ".tif"
             cv2.imwrite(name_d, depth_cv)
             #
-            name_c = "/home/gtzelepis/Data/cloth_manipulation/two_hands_complex/points/" +filename + ".csv"
+            name_c = data_path + "points/" +filename + ".csv"
             dict = {'points': self.find_point_coordinates().copy()}
             w = csv.writer(open(name_c, "w"))
             for key, val in dict['points'].items():
@@ -816,9 +816,14 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             self.viewer.cam.lookat[idx] = value
 
         if not self.track:
-            self.viewer.cam.distance = 0.85 + randint(-5, 5)/100
+            self.viewer.cam.distance = 1.2 + randint(-5, 5)/100
             self.viewer.cam.azimuth = 90. + randint(-5, 5)
             self.viewer.cam.elevation = -30. + randint(-5, 5)
+
+        # if not self.track:
+        #     self.viewer.cam.distance = 1.2 + randint(-5, 5)/100
+        #     self.viewer.cam.azimuth = 90. + randint(-5, 5)
+        #     self.viewer.cam.elevation = -30. + randint(-5, 5)
 
     def _render_callback(self):
         # Visualize target.
@@ -884,6 +889,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         elif self.has_cloth:
             if self.behavior=="diagonally":
                 goal_vertice = 'CB0'+'_'+str(self.cloth_length-1)
+                # goal_vertice = 'CB0' + '_10'
                 goal = self.sim.data.get_body_xpos(goal_vertice)
                 # Sample goal according to the cloth_length
                 randomness = self.np_random.uniform(-self.target_range, self.target_range, size=2)

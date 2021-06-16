@@ -23,7 +23,7 @@ import pdb
 
 import csv
 
-DIR = "/home/gtzelepis/Data/cloth_manipulation/"
+DIR = "/home/gtzelepis/Data/cloth_manipulation/one_hand_diagonal/cloth_yellow_table_white/"
 
 render_mode = "human"
 
@@ -241,10 +241,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
     obsDataNew = obs.copy()
     obsFilename = obsDataNew['filename']
 
-    newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+    newData = [obsFilename, 'semi-lifted-twohands', 'closed', 'closed', 'picking']
 
     if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == "onehand-lowering":
-        newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
+        newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'picking']
 
     data.append(newData)
 
@@ -283,6 +283,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         if behavior != "lifting" or behavior != "lowering" or behavior != 'dropping' or behavior != 'onahand-lifting' or behavior == 'complex':
             object_oriented_goal[1] -= 0.09
         object_oriented_goal[2] += 0.1
+
 
         # object_oriented_goal_2 = obsDataNew['desired_goal'].copy()[
         #                        (place_pos_2 - 3) * 3:(place_pos_2 - 3 + 1) * 3] - gripperPos_2
@@ -367,9 +368,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         if liftedFlag:
             if behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == "onehand-lowering":
-                newData = [obsFilename, 'lifted', 'free', 'closed', 'lifting_onehand']
+                newData = [obsFilename, 'lifted-onehand', 'free', 'closed', 'lifting_onehand']
             else:
-                newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
+                newData = [obsFilename, 'lifted-twohands', 'closed', 'closed', 'lifting_two_hands']
 
         data.append(newData)
 
@@ -456,7 +457,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                     speed = 0.356
                 else:
                     speed = 0.256  # cap action to whatever speed you want
-
+                speed = 0.356
                 for i in range(len(object_oriented_goal)):
                     action[i] = object_oriented_goal[i]
                     # action[i] = 0.
@@ -590,7 +591,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                 speed = 0.356
             else:
                 speed = 0.856  # cap action to whatever speed you want
-
+            speed = 0.356
             for i in range(len(object_oriented_goal)):
                 action[i] = object_oriented_goal[i]
                 # action[i] = 0.
@@ -866,7 +867,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                   random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
                   random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0)]
         if place_pos==3:
-            speed = 0.356
+            speed = 0.256
         else:
             speed = 0.856 # cap action to whatever speed you want
 
@@ -957,7 +958,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0),
                   random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0)]
         if place_pos==3:
-            speed = 0.356
+            speed = 0.256
         else:
             speed = 0.856 # cap action to whatever speed you want
 

@@ -3,13 +3,15 @@ import pandas as pd
 
 import pdb
 
-path = "/home/gtzelepis/Data/cloth_manipulation/two_hands_complex/RGB/"
+DIR = "/home/gtzelepis/Data/cloth_manipulation/one_hand_diagonal/cloth_yellow_table_white/"
 
-path_depth = "/home/gtzelepis/Data/cloth_manipulation/two_hands_complex/depth/"
+path = DIR + "RGB/"
 
-path_points = "/home/gtzelepis/Data/cloth_manipulation/two_hands_complex/points/"
+path_depth = DIR + "depth/"
 
-flist = pd.read_csv("/home/gtzelepis/Data/cloth_manipulation/two_hands_complex/data.csv")
+path_points = DIR + "points/"
+
+flist = pd.read_csv(DIR + "data.csv")
 
 
 
