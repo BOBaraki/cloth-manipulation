@@ -9,7 +9,7 @@ import pdb
 
 '''Helper function to customize/group the data before feeding them into pytorch'''
 
-PATH = "/home/gtzelepis/Data/cloth_manipulation/small_dataset/two_hands_sideways/"
+PATH = "/home/gtzelepis/Data/cloth_manipulation/small_dataset/one_hand_sideways/"
 EXT = "*.csv"
 img_EXT = "*.png"
 
@@ -24,12 +24,12 @@ all_img_files = []
 for path, subdir, files in os.walk(PATH):
     for file in glob(os.path.join(path, EXT)):
         if file.endswith('data.csv'):
-            your_value = 'semi-lifted-twohands'  # value that you want to replace with
+            your_value = 'semi-lifted-onehand'  # value that you want to replace with
             with open(file, 'r') as infile, open('output.csv', 'w') as outfile:
                 reader = csv.reader(infile)
                 writer = csv.writer(outfile)
                 df = pd.read_csv(file, index_col=None, header=0)
-                df.replace('semi-lifted', 'semi-lifted-twohands', inplace=True)
+                df.replace('semi-lifted', 'semi-lifted-onehand', inplace=True)
                 df.to_csv(file)
                 # pdb.set_trace()
 #             all_csv_files.append(file)

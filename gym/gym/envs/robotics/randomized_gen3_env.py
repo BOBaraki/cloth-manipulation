@@ -737,7 +737,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             self._label_matrix = []
 
 
-            data_path = "/home/gtzelepis/Data/cloth_manipulation/one_hand_diagonal/cloth_yellow_table_white/"
+            data_path = "/home/gtzelepis/Data/cloth_manipulation/small_dataset/one_hand_lifting/cloth_black_table_wood/"
             name = data_path + "RGB/" +filename + ".png"
             visual_data.save(name)
 

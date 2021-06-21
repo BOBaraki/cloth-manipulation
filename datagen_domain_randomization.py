@@ -23,7 +23,7 @@ import pdb
 
 import csv
 
-DIR = "/home/gtzelepis/Data/cloth_manipulation/one_hand_diagonal/cloth_yellow_table_white/"
+DIR = "/home/gtzelepis/Data/cloth_manipulation/small_dataset/one_hand_lifting/cloth_black_table_wood/"
 
 render_mode = "human"
 
@@ -67,6 +67,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                               ini_obs['observation'][16:19].copy()])
 
     # pdb.set_trace()
+
+
 
     while True:
         #print("Approaching air", timeStep)
@@ -365,7 +367,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             episode_flagLifted = True
 
         # pdb.set_trace()
-
+        # semi-lifted-crambled condition for one hand lifting should go here. same with lifted
         if liftedFlag:
             if behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == "onehand-lowering":
                 newData = [obsFilename, 'lifted-onehand', 'free', 'closed', 'lifting_onehand']
@@ -476,10 +478,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                 obsDataNew = obs.copy()
                 obsFilename = obsDataNew['filename']
 
-                newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+                newData = [obsFilename, 'semi-lifted-twohands', 'closed', 'closed', 'picking']
 
                 if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lowering':
-                    newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
+                    newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'picking']
 
                 liftedFlag = all(i > 0.015 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
                 print(temp_obs[:, 2] - init_objectPos[:, 2])
@@ -507,6 +509,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         while (timeStep) < max_episode_steps:
             # print("WAITING", timeStep)
+            # pdb.set_trace()
             if render: env.render(mode=render_mode)
             actionDull = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001),
                   random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0),
@@ -517,10 +520,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             obsDataNew = obs.copy()
             obsFilename = obsDataNew['filename']
 
-            newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+            newData = [obsFilename, 'semi-lifted-twohands', 'closed', 'closed', 'picking']
 
             if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lowering':
-                newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
+                newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'picking']
 
             liftedFlag = all(i > 0.01 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
             if liftedFlag:
@@ -530,9 +533,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
             if liftedFlag:
                 if behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == 'onehand-lowering':
-                    newData = [obsFilename, 'lifted', 'free', 'closed', 'lifting_onehand']
+                    newData = [obsFilename, 'lifted-onehand', 'free', 'closed', 'lifting_onehand']
                 else:
-                    newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
+                    newData = [obsFilename, 'lifted-twohands', 'closed', 'closed', 'lifting_two_hands']
             else:
                 if behavior == 'onehand-lowering' and episode_flagLifted:
                     newData = [obsFilename, 'semi-lifted-crampled', 'free', 'closed', 'lowering-onehand']
@@ -610,10 +613,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             obsDataNew = obs.copy()
             obsFilename = obsDataNew['filename']
 
-            newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+            newData = [obsFilename, 'semi-lifted-twohands', 'closed', 'closed', 'picking']
 
             if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-dropping':
-                newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
+                newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'picking']
 
             data.append(newData)
 
@@ -692,10 +695,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             obsDataNew = obs.copy()
             obsFilename = obsDataNew['filename']
 
-            newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+            newData = [obsFilename, 'semi-lifted-twohands', 'closed', 'closed', 'picking']
 
             if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-dropping':
-                newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
+                newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'picking']
 
             data.append(newData)
             episodeAcs.append(actionRescaled)
@@ -772,10 +775,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             obsDataNew = obs.copy()
             obsFilename = obsDataNew['filename']
 
-            newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+            newData = [obsFilename, 'semi-lifted-twohands', 'closed', 'closed', 'picking']
 
             if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-dropping':
-                newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
+                newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'picking']
 
             liftedFlag = all(i > 0.008 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
 
@@ -784,9 +787,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
             if liftedFlag:
                 if behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == 'onehand-lowering':
-                    newData = [obsFilename, 'lifted', 'free', 'closed', 'lifting_onehand']
+                    newData = [obsFilename, 'lifted-onehand', 'free', 'closed', 'lifting_onehand']
                 else:
-                    newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
+                    newData = [obsFilename, 'lifted-twohands', 'closed', 'closed', 'lifting_two_hands']
 
             data.append(newData)
 
@@ -798,6 +801,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         while (timeStep) < max_episode_steps:
             # print("WAITING", timeStep)
+
             if render: env.render(mode=render_mode)
             actionDull = [random.uniform(-0.00000001, 0.00000001), random.uniform(-0.00000001, 0.00000001),
                           random.uniform(-0.00000001, 0.000000001), random.uniform(0.6, 1.),
@@ -808,10 +812,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             obsDataNew = obs.copy()
             obsFilename = obsDataNew['filename']
 
-            newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+            newData = [obsFilename, 'semi-lifted-twohands', 'closed', 'closed', 'picking']
 
             if behavior == 'one-hand' or behavior == 'diagonally':
-                newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
+                newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'picking']
 
             data.append(newData)
 
@@ -877,7 +881,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         for i in range(len(object_oriented_goal_2)):
             # pdb.set_trace()
-            if  behavior == 'one-hand' or behavior == "diagonally":
+            if  behavior == 'one-hand' or behavior == "diagonally" or behavior == 'onehand-lifting':
                 action[4+1] = 0
             else:
                 action[4 + i] = object_oriented_goal_2[i]
@@ -890,10 +894,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         obsDataNew = obs.copy()
         obsFilename = obsDataNew['filename']
 
-        newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'taking']
+        newData = [obsFilename, 'semi-lifted-twohands', 'closed', 'closed', 'taking']
 
         if behavior == 'one-hand' or behavior == 'diagonally':
-            newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'taking']
+            newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'taking']
 
         liftedFlag = all(i > 0.008 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
 
@@ -902,9 +906,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         if liftedFlag:
             if behavior == 'onehand-lifting' or behavior == 'onehand-lowering':
-                newData = [obsFilename, 'lifted', 'free', 'closed', 'lifting_onehand']
+                newData = [obsFilename, 'lifted-onehand', 'free', 'closed', 'lifting_onehand']
             else:
-                newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
+                newData = [obsFilename, 'lifted-twohands', 'closed', 'closed', 'lifting_two_hands']
 
 
 
@@ -980,10 +984,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         obsDataNew = obs.copy()
         obsFilename = obsDataNew['filename']
 
-        newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'taking']
+        newData = [obsFilename, 'semi-lifted-twohands', 'closed', 'closed', 'taking']
 
         if behavior == 'one-hand' or behavior == 'diagonally':
-            newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'taking']
+            newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'taking']
 
         liftedFlag = all(i > 0.008 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
         if liftedFlag:
@@ -991,9 +995,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         if liftedFlag:
             if behavior == 'onehand-lifting' or behavior == 'onehand-lowering':
-                newData = [obsFilename, 'lifted', 'free', 'closed', 'lifting_onehand']
+                newData = [obsFilename, 'lifted-onehand', 'free', 'closed', 'lifting_onehand']
             else:
-                newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
+                newData = [obsFilename, 'lifted-twohands', 'closed', 'closed', 'lifting_two_hands']
 
         data.append(newData)
 
@@ -1010,7 +1014,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         obsDataNew = obs.copy()
 
-        # pdb.set_trace()
+        pdb.set_trace()
 
         # The obsDataNew will change because it will return the second gripper
         objectPos = np.array([obsDataNew['observation'][7:10].copy(), obsDataNew['observation'][10:13].copy(),
@@ -1038,9 +1042,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         if liftedFlag:
             if behavior == 'onehand-lifting' or behavior == 'onehand-lowering':
-                newData = [obsFilename, 'lifted', 'free', 'closed', 'lifting_onehand']
+                newData = [obsFilename, 'lifted-onehand', 'free', 'closed', 'lifting_onehand']
             else:
-                newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
+                newData = [obsFilename, 'lifted-twohands', 'closed', 'closed', 'lifting_two_hands']
 
         data.append(newData)
         episodeAcs.append(actionRescaled)
