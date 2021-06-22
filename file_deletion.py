@@ -3,7 +3,7 @@ import pandas as pd
 
 import pdb
 
-DIR = "/home/gtzelepis/Data/cloth_manipulation/small_dataset/one_hand_lifting/cloth_black_table_wood/"
+DIR = "/home/gtzelepis/Data/cloth_manipulation/small_dataset/one_hand_lifting/cloth_orange_table_dark/"
 
 path = DIR + "RGB/"
 

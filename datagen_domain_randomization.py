@@ -23,7 +23,7 @@ import pdb
 
 import csv
 
-DIR = "/home/gtzelepis/Data/cloth_manipulation/small_dataset/one_hand_lifting/cloth_black_table_wood/"
+DIR = "/home/gtzelepis/Data/cloth_manipulation/small_dataset/one_hand_lifting/cloth_orange_table_dark/"
 
 render_mode = "human"
 
@@ -67,7 +67,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                               ini_obs['observation'][16:19].copy()])
 
     # pdb.set_trace()
-
+    initial_dist = np.linalg.norm(init_objectPos[0] - init_objectPos[3])
 
 
     while True:
@@ -322,7 +322,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         action = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0),
                   random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(0.6, 1.0)]
 
-        if place_pos==3:
+        if place_pos==3 or behavior == 'onehand-lifting':
         	speed = 0.356
         elif behavior == "onehand-dropping":
             speed = 0.236
@@ -359,7 +359,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
 
         if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == "onehand-lowering":
-            newData = [obsFilename, 'semi-lifted', 'free', 'closed', 'picking']
+            newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'picking']
         # pdb.set_trace()
         liftedFlag =  all(i > 0.008 for i in (temp_obs[:,2] - init_objectPos[:,2]))
 
@@ -368,11 +368,15 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         # pdb.set_trace()
         # semi-lifted-crambled condition for one hand lifting should go here. same with lifted
+        crambled_flag  = (np.linalg.norm(temp_obs[0] - temp_obs[3]) < initial_dist * 95/100)
         if liftedFlag:
             if behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == "onehand-lowering":
                 newData = [obsFilename, 'lifted-onehand', 'free', 'closed', 'lifting_onehand']
             else:
                 newData = [obsFilename, 'lifted-twohands', 'closed', 'closed', 'lifting_two_hands']
+        elif crambled_flag:
+            if behavior == behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == "onehand-lowering":
+                newData = [obsFilename, 'semi-lifted-crambled', 'free', 'closed', 'lifting_onehand']
 
         data.append(newData)
 
@@ -480,7 +484,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
                 newData = [obsFilename, 'semi-lifted-twohands', 'closed', 'closed', 'picking']
 
-                if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lowering':
+                if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lowering' or behavior == 'onehand-lifting':
                     newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'picking']
 
                 liftedFlag = all(i > 0.015 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
@@ -522,7 +526,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
             newData = [obsFilename, 'semi-lifted-twohands', 'closed', 'closed', 'picking']
 
-            if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lowering':
+            if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lowering' or behavior == 'onehand-lifting':
                 newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'picking']
 
             liftedFlag = all(i > 0.01 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
@@ -697,7 +701,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
             newData = [obsFilename, 'semi-lifted-twohands', 'closed', 'closed', 'picking']
 
-            if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-dropping':
+            if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-dropping' or behavior == 'onehand-lifting':
                 newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'picking']
 
             data.append(newData)
