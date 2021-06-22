@@ -23,7 +23,7 @@ import pdb
 
 import csv
 
-DIR = "/home/gtzelepis/Data/cloth_manipulation/small_dataset/one_hand_lifting/cloth_orange_table_dark/"
+DIR = "/home/gtzelepis/Data/cloth_manipulation/small_dataset/two_hands_middle/cloth_blue_table_white/"
 
 render_mode = "human"
 
@@ -242,8 +242,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
     obs, reward, done, info = env.step(actionRescaled)
     obsDataNew = obs.copy()
     obsFilename = obsDataNew['filename']
-
-    newData = [obsFilename, 'semi-lifted-twohands', 'closed', 'closed', 'picking']
+    #in case of middle change the label here
+    newData = [obsFilename, 'semi-lifted-twohands-middle', 'closed', 'closed', 'picking']
 
     if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == "onehand-lowering":
         newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'picking']
@@ -355,8 +355,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         obsFilename = obsDataNew['filename']
 
         temp_obs = np.array([obsDataNew['observation'][7:10].copy() , obsDataNew['observation'][10:13].copy(), obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
-
-        newData = [obsFilename, 'semi-lifted', 'closed', 'closed', 'picking']
+        # pdb.set_trace()
+        # in case of middle change the label here
+        newData = [obsFilename, 'semi-lifted-twohands-middle', 'closed', 'closed', 'picking']
 
         if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == "onehand-lowering":
             newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'picking']
@@ -523,8 +524,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             obs, reward, done, info = env.step(actionRescaled)
             obsDataNew = obs.copy()
             obsFilename = obsDataNew['filename']
-
-            newData = [obsFilename, 'semi-lifted-twohands', 'closed', 'closed', 'picking']
+            # in case of middle change the label here
+            newData = [obsFilename, 'semi-lifted-twohands-middle', 'closed', 'closed', 'picking']
 
             if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lowering' or behavior == 'onehand-lifting':
                 newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'picking']
