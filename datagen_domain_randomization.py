@@ -23,7 +23,7 @@ import pdb
 
 import csv
 
-DIR = "/home/gtzelepis/Data/cloth_manipulation/small_dataset/two_hands_middle/cloth_blue_table_white/"
+DIR = "/home/gtzelepis/Data/cloth_manipulation/one_hand_lowering/cloth_yellow_table_white/"
 
 render_mode = "human"
 
@@ -46,7 +46,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
     timeStep = 0
     grasp_threshold = 0.01 # how close to get to grasp the vertice
     reach_threshold = 0.03 # how close to get to reach a point in space
-    drop_threshold = 0.1
+    drop_threshold = 0.15
     lowering_threshold = 1.
     lowering_threshold_one_hand = 0.1
     noise_param = 0.6
@@ -325,9 +325,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         if place_pos==3 or behavior == 'onehand-lifting':
         	speed = 0.356
         elif behavior == "onehand-dropping":
-            speed = 0.236
+            speed = 0.336
         else:
-        	speed = 0.856 # cap action to whatever speed you want
+        	speed = 0.556 + np.random.uniform(-0.3, 0.3) # cap action to whatever speed you want
 
         for i in range(len(object_oriented_goal)):
             action[i] = object_oriented_goal[i]
@@ -362,7 +362,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == "onehand-lowering":
             newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'picking']
         # pdb.set_trace()
-        liftedFlag =  all(i > 0.008 for i in (temp_obs[:,2] - init_objectPos[:,2]))
+        liftedFlag =  all(i > 0.012 for i in (temp_obs[:,2] - init_objectPos[:,2]))
 
         if liftedFlag:
             episode_flagLifted = True
@@ -421,6 +421,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                 objectPos = np.array([obsDataNew['observation'][7:10].copy(), obsDataNew['observation'][10:13].copy(),
                                       obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
                 gripperPos = obsDataNew['observation'][:3].copy()
+
                 gripperState = obsDataNew['observation'][3]
 
                 object_rel_pos = objectPos - gripperPos
@@ -464,7 +465,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                     speed = 0.356
                 else:
                     speed = 0.256  # cap action to whatever speed you want
-                speed = 0.356
+                speed = 0.556 + np.random.uniform(-0.3, 0.3)
                 for i in range(len(object_oriented_goal)):
                     action[i] = object_oriented_goal[i]
                     # action[i] = 0.
@@ -482,15 +483,16 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                 obs, reward, done, info = env.step(actionRescaled)
                 obsDataNew = obs.copy()
                 obsFilename = obsDataNew['filename']
-
+                temp_obs = np.array([obsDataNew['observation'][7:10].copy(), obsDataNew['observation'][10:13].copy(),
+                                     obsDataNew['observation'][13:16].copy(), obsDataNew['observation'][16:19].copy()])
                 newData = [obsFilename, 'semi-lifted-twohands', 'closed', 'closed', 'picking']
 
                 if behavior == 'one-hand' or behavior == 'diagonally' or behavior == 'onehand-lowering' or behavior == 'onehand-lifting':
                     newData = [obsFilename, 'semi-lifted-onehand', 'free', 'closed', 'picking']
 
                 liftedFlag = all(i > 0.015 for i in (temp_obs[:, 2] - init_objectPos[:, 2]))
-                print(temp_obs[:, 2] - init_objectPos[:, 2])
-
+                # print(temp_obs[:, 2] - init_objectPos[:, 2])
+                # print(liftedFlag)
                 if liftedFlag:
                     episode_flagLifted = True
 
@@ -498,7 +500,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
                 if liftedFlag:
                     if behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == "onehand-lowering":
-                        newData = [obsFilename, 'lifted', 'free', 'closed', 'lifting_onehand']
+                        newData = [obsFilename, 'lifted-onehand', 'free', 'closed', 'lifting_onehand']
                     else:
                         newData = [obsFilename, 'lifted', 'closed', 'closed', 'lifting_two_hands']
                 else:
@@ -538,7 +540,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
             if liftedFlag:
                 if behavior == 'onehand-lifting' or behavior == 'onehand-dropping' or behavior == 'onehand-lowering':
-                    newData = [obsFilename, 'lifted-onehand', 'free', 'closed', 'lifting_onehand']
+                    newData = [obsFilename, 'lifted-onehand2', 'free', 'closed', 'lifting_onehand']
                 else:
                     newData = [obsFilename, 'lifted-twohands', 'closed', 'closed', 'lifting_two_hands']
             else:
@@ -599,7 +601,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                 speed = 0.356
             else:
                 speed = 0.856  # cap action to whatever speed you want
-            speed = 0.356
+            speed = 0.556 + np.random.uniform(-0.3, 0.3)
             for i in range(len(object_oriented_goal)):
                 action[i] = object_oriented_goal[i]
                 # action[i] = 0.
@@ -651,14 +653,14 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             # object_oriented_goal = object_rel_pos[place_pos].copy()
             # pdb.set_trace()
             # object_oriented_goal = obsDataNew['desired_goal'].copy()[(place_pos-3)*3:(place_pos-3+1)*3] - gripperPos
-            object_oriented_goal = obsDataNew['desired_goal'].copy()[3:6] - [0, 0.4, 0.1] - gripperPos
+            object_oriented_goal = obsDataNew['desired_goal'].copy()[3:6] - [0, 0.4, 0.2] - gripperPos
 
             object_oriented_goal[2] -= 0.1
 
             # object_oriented_goal_2 = obsDataNew['desired_goal'].copy()[
             #                        (place_pos_2 - 3) * 3:(place_pos_2 - 3 + 1) * 3] - gripperPos_2
 
-            object_oriented_goal_2 = obsDataNew['desired_goal'].copy()[0:3] - [0, 0.4, 0.1] - gripperPos_2
+            object_oriented_goal_2 = obsDataNew['desired_goal'].copy()[0:3] - [0, 0.4, 0.2] - gripperPos_2
 
             # pdb.set_trace()
             object_oriented_goal_2[2] -= 0.1
@@ -680,7 +682,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                 speed = 0.356
             else:
                 speed = 0.856  # cap action to whatever speed you want
-            speed = 0.356
+            speed = 0.556 + np.random.uniform(-0.3, 0.3)
 
             for i in range(len(object_oriented_goal)):
                 action[i] = object_oriented_goal[i]
@@ -761,7 +763,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                 speed = 0.356
             else:
                 speed = 0.856  # cap action to whatever speed you want
-            speed = 0.356
+            speed = 0.556 + np.random.uniform(-0.3, 0.3)
             for i in range(len(object_oriented_goal)):
                 action[i] = object_oriented_goal[i]
                 # action[i] = 0.
@@ -878,7 +880,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         if place_pos==3:
             speed = 0.256
         else:
-            speed = 0.856 # cap action to whatever speed you want
+            speed = 0.556  + np.random.uniform(-0.3, 0.3) # cap action to whatever speed you want
 
         for i in range(len(object_oriented_goal)):
             action[i] = object_oriented_goal[i]
@@ -969,7 +971,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         if place_pos==3:
             speed = 0.256
         else:
-            speed = 0.856 # cap action to whatever speed you want
+            speed = 0.556  + np.random.uniform(-0.3, 0.3)# cap action to whatever speed you want
 
         for i in range(len(object_oriented_goal)):
             action[i] = object_oriented_goal[i]

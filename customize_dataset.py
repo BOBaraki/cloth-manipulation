@@ -9,7 +9,7 @@ import pdb
 
 '''Helper function to customize/group the data before feeding them into pytorch'''
 
-PATH = "/home/gtzelepis/Data/cloth_manipulation/small_dataset/one_hand_sideways/"
+PATH = "/home/gtzelepis/Data/cloth_manipulation/small_dataset/two_hands_middle/"
 EXT = "*.csv"
 img_EXT = "*.png"
 
@@ -29,7 +29,7 @@ for path, subdir, files in os.walk(PATH):
                 reader = csv.reader(infile)
                 writer = csv.writer(outfile)
                 df = pd.read_csv(file, index_col=None, header=0)
-                df.replace('semi-lifted', 'semi-lifted-onehand', inplace=True)
+                df.replace('lifted-twohands', 'semi-lifted-twohands-middle', inplace=True)
                 df.to_csv(file)
                 # pdb.set_trace()
 #             all_csv_files.append(file)

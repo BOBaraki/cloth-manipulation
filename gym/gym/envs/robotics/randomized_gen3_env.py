@@ -737,7 +737,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             self._label_matrix = []
 
 
-            data_path = "/home/gtzelepis/Data/cloth_manipulation/small_dataset/two_hands_middle/cloth_blue_table_white/"
+            data_path = "/home/gtzelepis/Data/cloth_manipulation/one_hand_lowering/cloth_yellow_table_white/"
             name = data_path + "RGB/" +filename + ".png"
             visual_data.save(name)
 
@@ -920,7 +920,8 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                     goal_vertices = ['CB0' + '_' + str(self.cloth_length - 1),
                                      'CB' + str(self.cloth_length - 1) + '_' + str(self.cloth_length - 1)]
                 # goals = [self.sim.data.get_body_xpos(goal_vertices[0]), self.sim.data.get_body_xpos(goal_vertices[1])]
-                    goals = [self.sim.data.get_body_xpos(goal_vertices[0]) + (0, -0.1, 0.41), self.sim.data.get_body_xpos(goal_vertices[1]) + (0.0, -0.1, 0.41)]
+                    goals = [self.sim.data.get_body_xpos(goal_vertices[0]) + (0, -0.2, 0.41), self.sim.data.get_body_xpos(goal_vertices[1]) + (0.0, -0.1, 0.41)]
+                    #use (0.0, -0.1, 0.31) for lifting and one hand dropping
                 # pdb.set_trace()
                 randomness = self.np_random.uniform(-self.target_range, self.target_range, size=4)
                 # goals[0][0] += randomness[0]/3
