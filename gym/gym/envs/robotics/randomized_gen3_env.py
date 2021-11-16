@@ -960,6 +960,13 @@ class RandomizedGen3Env(robot_env.RobotEnv):
     def _env_setup(self, initial_qpos):
         # for name, value in initial_qpos.items():
         #     self.sim.data.set_joint_qpos(name, value)
+        self.light_modder = LightModder(self.sim)
+        # pdb.set_trace()
+        ################Change the light settings, mainly the position and the direction to create different shadows####################################
+        # self.light_modder.set_pos("light0", [randint(0,4), randint(0,4), randint(0,4)])
+        # self.light_modder.set_pos("light1", 0 0 0)
+        # self.light_modder.set_pos("light2", 0 0 0)
+        # self.light_modder.set_pos("light3", 0 0 0)
         utils.reset_mocap_welds(self.sim)
         self.sim.forward()
         # Move end effector into position.

@@ -3,7 +3,7 @@
 	<size nconmax="4000" njmax="8000" nstack="1000000" />
 	
 
-	
+
 
 	<compiler angle="radian" coordinate="local" meshdir="../stls/gen3" texturedir="../textures" />
 	<option solver="Newton" timestep="0.001">
@@ -31,7 +31,7 @@
 
 	    <body name="CB0_10" pos="0.8 0.9 0.4">
 		    <freejoint name="cloth" />
-		    <composite count="11 11 1" flatinertia="0.044059" prefix="C" spacing="0.022283" type="cloth">
+		    <composite count="11 11 1" flatinertia="0.001427" prefix="C" spacing="0.030549" type="cloth">
 		        <joint damping="0.000500" kind="main" stiffness="0.001000" />
 		        <tendon damping="0.000500" kind="shear" stiffness="0.001000" width="0.001" />
         		<skin inflate="0.002" material="cloth_mat" subgrid="2" texcoord="true" />
@@ -39,26 +39,26 @@
 		    </composite>
 	    </body>
 
-   
+
         
 		
 
 	     
 
-		
-
-		
-		
 
 
-		<light ambient="0.2 0.2 0.2" castshadow="true" diffuse="0.8 0.8 0.8" dir="0 0 -1" directional="true" name="light0" pos="0 0 4" specular="0.3 0.3 0.3" />
+
+
+
+
+		<light ambient="0.2 0.2 0.2" castshadow="true" diffuse="0.8 0.8 0.8" dir="1 0 -1" directional="true" name="light0" pos="0 0 4" specular="0.3 0.3 0.3" />
 		<light ambient="0.2 0.2 0.2" castshadow="true" diffuse="0.8 0.8 0.8" dir="0 0 -1" directional="true" name="light1" pos="0 4 0" specular="0.3 0.3 0.3" />
 		<light ambient="0.2 0.2 0.2" castshadow="true" diffuse="0.8 0.8 0.8" dir="0 0 -1" directional="true" name="light2" pos="0 4 4" specular="0.3 0.3 0.3" />
 		<light ambient="0.2 0.2 0.2" castshadow="true" diffuse="0.8 0.8 0.8" dir="0 0 -1" directional="true" name="light3" pos="4 0 4" specular="0.3 0.3 0.3" />
 
 		<camera euler="1. 0. 0." fovy="45" name="camera1" pos="0.95 0. 1." />
 	</worldbody>
-	
+
 
 
 	<equality>

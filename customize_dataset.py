@@ -9,7 +9,7 @@ import pdb
 
 '''Helper function to customize/group the data before feeding them into pytorch'''
 
-PATH = "/home/gtzelepis/Data/cloth_manipulation/small_dataset/two_hands_middle/"
+PATH = "/home/gtzelepis/Data/cloth_manipulation/one_hand_lowering/cloth_yellow_table_white/"
 EXT = "*.csv"
 img_EXT = "*.png"
 

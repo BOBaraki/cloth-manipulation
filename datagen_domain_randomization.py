@@ -31,6 +31,8 @@ header = ['filename', 'cloth_state', 'gripper1_state', 'gripper2_state', 'action
 
 data = []
 
+
+
 def rescale_action(action, speed, noise):
     noise = np.random.normal(0, noise,len(action))
     action = [x * 60 for x in action]
@@ -1106,7 +1108,7 @@ if __name__ == '__main__':
         actions = []
         observations = []
         infos = []
-        numItr = 3
+        numItr = 5
         fileName = "data_mujoco" + "_" + "fold_sideways" + "_" + str(numItr) + "_T_100_" + "L_11_" + "all_randomized_explicit" ".npz"
 
         actionDull = [random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001), random.uniform(-0.00001, 0.00001)]
