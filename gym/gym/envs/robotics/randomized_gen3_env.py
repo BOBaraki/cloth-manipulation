@@ -29,9 +29,6 @@ DEBUG = False
 closed_pos = [1.12810781, -0.59798289, -0.53003607]
 closed_angle = 0.45
 
-DIR = "/home/gtzelepis/Data/cloth_manipulation/"
-
-
 def debug(msg, data):
     if DEBUG:
         print(msg, data)
@@ -46,13 +43,14 @@ class RandomizedGen3Env(robot_env.RobotEnv):
     """
 
     def __init__(
-        self, model_path, n_substeps, gripper_extra_height, block_gripper,
+        self, data_path, model_path, n_substeps, gripper_extra_height, block_gripper,
         has_object, has_cloth, target_in_the_air, target_offset, obj_range, target_range,
         distance_threshold, cloth_length, behavior, initial_qpos, reward_type, **kwargs,
     ):
         """Initializes a new Kinova Gen3 environment.
 
         Args:
+            data_path (string): path where data is saved
             model_path (string): path to the environments XML file
             n_substeps (int): number of substeps the simulation runs on every call to step
             gripper_extra_height (float): additional height above the table when positioning the gripper
@@ -111,7 +109,8 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         self._locate_randomize_parameters()
         self.initial_qpos = initial_qpos
         self.n_substeps = n_substeps
-        self._index = len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))])
+        self.data_path = data_path
+        self._index = len([name for name in os.listdir(self.data_path) if os.path.isfile(os.path.join(self.data_path, name))])
         # pdb.set_trace()
 
 
@@ -737,14 +736,17 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             self._label_matrix = []
 
 
-            data_path = "/home/gtzelepis/Data/cloth_manipulation/one_hand_lowering/cloth_yellow_table_white/"
-            name = data_path + "RGB/" +filename + ".png"
+            if not os.path.exists(self.data_path):
+                for subdir in ['RGB', 'depth', 'points']
+                    os.makedirs(os.path.join(self.data_path, subpath))
+
+            name = self.data_path + "RGB/" +filename + ".png"
             visual_data.save(name)
 
-            name_d = data_path + "depth/" +filename + ".tif"
+            name_d = self.data_path + "depth/" +filename + ".tif"
             cv2.imwrite(name_d, depth_cv)
             #
-            name_c = data_path + "points/" +filename + ".csv"
+            name_c = self.data_path + "points/" +filename + ".csv"
             dict = {'points': self.find_point_coordinates().copy()}
             w = csv.writer(open(name_c, "w"))
             for key, val in dict['points'].items():

@@ -1,7 +1,10 @@
+import os
 from gym.envs.registration import registry, register, make, spec
 
 # Algorithmic
 # ----------------------------------------
+
+abs_root = os.path.dirname(os.path.abspath(__file__))
 
 register(
     id='Copy-v0',
@@ -375,7 +378,7 @@ for reward_type in ['sparse', 'dense']:
         entry_point='gym.envs.robotics:RandomizedGen3SidewaysFoldEnv',
         max_episode_steps=100,
         kwargs={
-            'config': '/home/gtzelepis/gen3-mujoco/gym/gym/envs/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
+            'config': f'{abs_root}/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
             'xml_name': 'sideways_fold.xml'
         }
     )
@@ -386,7 +389,7 @@ for reward_type in ['sparse', 'dense']:
         entry_point='gym.envs.robotics:RandomizedGen3DiagonalFoldEnv',
         max_episode_steps=100,
         kwargs={
-            'config': '/home/gtzelepis/gen3-mujoco/gym/gym/envs/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
+            'config': f'{abs_root}/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
             'xml_name': 'sideways_fold.xml'
         }
     )
@@ -396,7 +399,7 @@ for reward_type in ['sparse', 'dense']:
         entry_point='gym.envs.robotics:RandomizedGen3LiftTwoHandsEnv',
         max_episode_steps=100,
         kwargs={
-            'config': '/home/gtzelepis/gen3-mujoco/gym/gym/envs/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
+            'config': f'{abs_root}/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
             'xml_name': 'sideways_fold.xml'
         }
     )
@@ -406,7 +409,7 @@ for reward_type in ['sparse', 'dense']:
         entry_point='gym.envs.robotics:RandomizedGen3SidewaysFoldOneHandEnv',
         max_episode_steps=100,
         kwargs={
-            'config': '/home/gtzelepis/gen3-mujoco/gym/gym/envs/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
+            'config': f'{abs_root}/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
             'xml_name': 'sideways_fold.xml'
         }
     )
@@ -416,7 +419,7 @@ for reward_type in ['sparse', 'dense']:
         entry_point='gym.envs.robotics:RandomizedGen3LiftOneHandEnv',
         max_episode_steps=100,
         kwargs={
-            'config': '/home/gtzelepis/gen3-mujoco/gym/gym/envs/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
+            'config': f'{abs_root}/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
             'xml_name': 'sideways_fold.xml'
         }
     )
@@ -426,7 +429,7 @@ for reward_type in ['sparse', 'dense']:
         entry_point='gym.envs.robotics:RandomizedGen3LiftTwoHandsMiddleEnv',
         max_episode_steps=100,
         kwargs={
-            'config': '/home/gtzelepis/gen3-mujoco/gym/gym/envs/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
+            'config': f'{abs_root}/robotics/randomizer/config/RandomizedGen3Sideways/default.json',
             'xml_name': 'sideways_fold.xml'
         }
     )
