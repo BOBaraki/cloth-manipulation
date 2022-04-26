@@ -1,3 +1,7 @@
 *.json
 *.mp4
 __pycache__/
+*.so
+*.egg
+mujoco-py/mujoco_py/generated/*
+
