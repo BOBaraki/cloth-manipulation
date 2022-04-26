@@ -16,8 +16,6 @@ import pdb
 
 import csv
 
-DIR = "/home/obarbany/Data/edo_sample/"
-
 render_mode = "human"
 
 header = ["filename", "cloth_state", "gripper1_state", "gripper2_state", "action"]
@@ -80,34 +78,29 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             ]
         )
 
-        # pdb.set_trace()
-
         # New gripperPos and gripperState
         gripperPos = obsDataNew["observation"][:3].copy()
         gripperState = obsDataNew["observation"][3]
-        print(gripperPos)
-        print(gripperState)
 
         gripperPos_2 = obsDataNew["observation"][19:22].copy()
         gripperState_2 = obsDataNew["observation"][22]
 
         # Save gripper positions and states
-        if not os.path.isdir(os.path.join(DIR, "gripper_1")):
-            os.mkdir(os.path.join(DIR, "gripper_1"))
-        if not os.path.isdir(os.path.join(DIR, "gripper_2")):
-            os.mkdir(os.path.join(DIR, "gripper_2"))
+        if not os.path.isdir(os.path.join(args.data_path, "gripper_1")):
+            os.mkdir(os.path.join(args.data_path, "gripper_1"))
+        if not os.path.isdir(os.path.join(args.data_path, "gripper_2")):
+            os.mkdir(os.path.join(args.data_path, "gripper_2"))
 
-        np.savetxt(os.path.join(DIR, "gripper_1", f"pos_{timeStep}.txt"), gripperPos)
+        np.savetxt(os.path.join(args.data_path, "gripper_1", f"pos_{timeStep}.txt"), gripperPos)
         np.savetxt(
-            os.path.join(DIR, "gripper_1", f"state_{timeStep}.txt"), [gripperState]
+            os.path.join(args.data_path, "gripper_1", f"state_{timeStep}.txt"), [gripperState]
         )
 
-        np.savetxt(os.path.join(DIR, "gripper_2", f"pos_{timeStep}.txt"), gripperPos_2)
+        np.savetxt(os.path.join(args.data_path, "gripper_2", f"pos_{timeStep}.txt"), gripperPos_2)
         np.savetxt(
-            os.path.join(DIR, "gripper_2", f"state_{timeStep}.txt"), [gripperState_2]
+            os.path.join(args.data_path, "gripper_2", f"state_{timeStep}.txt"), [gripperState_2]
         )
 
-        # pdb.set_trace()
         # New object positions related to the gripper maybe add some waiting actions
         # if one gripper grabs the cloth before the other
         object_rel_pos = objectPos - gripperPos
@@ -115,7 +108,6 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         object_rel_pos_2 = objectPos - gripperPos_2
         object_oriented_goal_2 = object_rel_pos_2[pick_up_object_2].copy()
-        # pdb.set_trace()
         object_oriented_goal[2] += 0.02
         object_oriented_goal_2[2] += 0.02
         if (
@@ -1443,7 +1435,7 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         episodeInfo.append(info)
         timeStep += 1
 
-    with open(DIR + "data.csv", "w", encoding="UTF8", newline="") as f:
+    with open(args.data_path + "data.csv", "w", encoding="UTF8", newline="") as f:
         writer = csv.writer(f)
 
         # write the header
@@ -1478,6 +1470,9 @@ if __name__ == "__main__":
     parser.add_argument("--ignore_done", action="store_true")
     parser.add_argument("--render", action="store_true")
     parser.add_argument(
+        "--data_path", type=str, required=True, help="Path where data will be stored"
+    )
+    parser.add_argument(
         "--behavior",
         choices=[
             "diagonally",
@@ -1494,6 +1489,15 @@ if __name__ == "__main__":
         default="sideways",
     )
     args = parser.parse_args()
+
+    if os.path.isdir(args.data_path):
+        if (
+            input(f"Path {args.data_path} already exists. Overwrite? [Y/n]").lower()
+            == "n"
+        ):
+            exit()
+    else:
+        os.makedirs(args.data_path)
 
     env = RandomizedEnvWrapper(envs.make(args.env), seed=1)
     action_space = env.action_space
