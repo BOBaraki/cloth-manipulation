@@ -5,6 +5,10 @@ __pycache__/
 
 # C extensions
 *.so
+*.c
+
+# Mujoco Py generated packages
+mujoco-py/mujoco_py/generated/
 
 # Distribution / packaging
 .Python
