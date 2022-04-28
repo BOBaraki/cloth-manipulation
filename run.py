@@ -12,7 +12,7 @@ import argparse
 import numpy as np
 import random
 from randomizer.wrappers import RandomizedEnvWrapper
-import pdb
+from tqdm import tqdm
 
 import csv
 
@@ -62,8 +62,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
     initial_dist = np.linalg.norm(init_objectPos[0] - init_objectPos[3])
 
+    pbar = tqdm(total=max_episode_steps)
     while True:
-        print("Approaching air", timeStep)
         if render:
             env.render(mode=render_mode)
         obsDataNew = obs.copy()
@@ -84,22 +84,6 @@ def generate_demos(obs, render, max_episode_steps, behavior):
 
         gripperPos_2 = obsDataNew["observation"][19:22].copy()
         gripperState_2 = obsDataNew["observation"][22]
-
-        # Save gripper positions and states
-        if not os.path.isdir(os.path.join(args.data_path, "gripper_1")):
-            os.mkdir(os.path.join(args.data_path, "gripper_1"))
-        if not os.path.isdir(os.path.join(args.data_path, "gripper_2")):
-            os.mkdir(os.path.join(args.data_path, "gripper_2"))
-
-        np.savetxt(os.path.join(args.data_path, "gripper_1", f"pos_{timeStep}.txt"), gripperPos)
-        np.savetxt(
-            os.path.join(args.data_path, "gripper_1", f"state_{timeStep}.txt"), [gripperState]
-        )
-
-        np.savetxt(os.path.join(args.data_path, "gripper_2", f"pos_{timeStep}.txt"), gripperPos_2)
-        np.savetxt(
-            os.path.join(args.data_path, "gripper_2", f"state_{timeStep}.txt"), [gripperState_2]
-        )
 
         # New object positions related to the gripper maybe add some waiting actions
         # if one gripper grabs the cloth before the other
@@ -169,6 +153,9 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         newData = [obsFilename, "flat", "free", "free", "approaching"]
 
         data.append(newData)
+
+        pbar.set_description("Approaching air")
+        pbar.update(1)
     while True:
         if render:
             env.render(mode=render_mode)
@@ -255,6 +242,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         data.append(newData)
 
         timeStep += 1
+        pbar.set_description("Approaching object")
+        pbar.update(1)
 
     speed = 1.0
     if render:
@@ -271,7 +260,6 @@ def generate_demos(obs, render, max_episode_steps, behavior):
     ]
 
     actionRescaled = rescale_action(action, speed, 0.1)
-    # pdb.set_trace()
     obs, reward, done, info = env.step(actionRescaled)
     obsDataNew = obs.copy()
     obsFilename = obsDataNew["filename"]
@@ -502,6 +490,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         data.append(newData)
 
         timeStep += 1
+        pbar.set_description("Picking up")
+        pbar.update(1)
     if behavior == "dropping" or behavior == "onehand-dropping":
         while (timeStep) < max_episode_steps:
             if render:
@@ -533,6 +523,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             episodeObs.append(obs)
             episodeInfo.append(info)
             timeStep += 1
+            pbar.set_description("Waiting")
+            pbar.update(1)
     elif (
         behavior == "lowering"
         or behavior == "onehand-lowering"
@@ -690,6 +682,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
                 episodeInfo.append(info)
 
                 timeStep += 1
+                pbar.set_description("Picking up")
+                pbar.update(1)
 
         while (timeStep) < max_episode_steps:
             if render:
@@ -771,6 +765,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             episodeObs.append(obs)
             episodeInfo.append(info)
             timeStep += 1
+            pbar.set_description("Waiting")
+            pbar.update(1)
     elif behavior == "complex":
         while True:
             if render:
@@ -870,6 +866,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             episodeInfo.append(info)
 
             timeStep += 1
+            pbar.set_description("Picking up")
+            pbar.update(1)
 
         while True:
             if render:
@@ -971,9 +969,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             episodeInfo.append(info)
 
             timeStep += 1
+            pbar.set_description("Picking up")
+            pbar.update(1)
 
         while True:
-            print("PICKING UP", timeStep)
             if render:
                 env.render(mode=render_mode)
             obsDataNew = obs.copy()
@@ -1100,6 +1099,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             episodeInfo.append(info)
 
             timeStep += 1
+            pbar.set_description("Picking up")
+            pbar.update(1)
 
         while (timeStep) < max_episode_steps:
             if render:
@@ -1142,6 +1143,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
             episodeObs.append(obs)
             episodeInfo.append(info)
             timeStep += 1
+            pbar.set_description("Waiting")
+            pbar.update(1)
     while True:
         if render:
             env.render(mode=render_mode)
@@ -1260,6 +1263,8 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         episodeInfo.append(info)
 
         timeStep += 1
+        pbar.set_description("Taking")
+        pbar.update(1)
     while True:
         if render:
             env.render(mode=render_mode)
@@ -1370,11 +1375,11 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         episodeInfo.append(info)
 
         timeStep += 1
+        pbar.set_description("Taking")
+        pbar.update(1)
 
     while (timeStep) < max_episode_steps:
         obsDataNew = obs.copy()
-
-        pdb.set_trace()
 
         objectPos = np.array(
             [
@@ -1434,8 +1439,10 @@ def generate_demos(obs, render, max_episode_steps, behavior):
         episodeObs.append(obs)
         episodeInfo.append(info)
         timeStep += 1
+        pbar.set_description("Wating")
+        pbar.update(1)
 
-    with open(args.data_path + "data.csv", "w", encoding="UTF8", newline="") as f:
+    with open(os.path.join(args.data_path, "data.csv"), "w", encoding="UTF8", newline="") as f:
         writer = csv.writer(f)
 
         # write the header
@@ -1465,6 +1472,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--max_steps", type=int, default=1000, help="maximum episode length"
     )
+    parser.add_argument(
+        "--n_views", type=int, default=20, help="Desired number of views (may be slightly lower in practice)"
+    )
     parser.add_argument("--fps", type=float)
     parser.add_argument("--once", action="store_true")
     parser.add_argument("--ignore_done", action="store_true")
@@ -1491,15 +1501,16 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if os.path.isdir(args.data_path):
-        if (
-            input(f"Path {args.data_path} already exists. Overwrite? [Y/n]").lower()
-            == "n"
-        ):
-            exit()
+        pass
+        # if (
+        #     input(f"Path {args.data_path} already exists. Overwrite? [Y/n]").lower()
+        #     == "n"
+        # ):
+        #     exit()
     else:
         os.makedirs(args.data_path)
 
-    env = RandomizedEnvWrapper(envs.make(args.env), seed=1)
+    env = RandomizedEnvWrapper(envs.make(args.env, data_path=args.data_path, n_views=args.n_views), seed=1)
     action_space = env.action_space
     mode = args.mode
     render = args.render
@@ -1510,7 +1521,6 @@ if __name__ == "__main__":
         args.max_steps = env.spec.tags["wrapper_config.TimeLimit.max_episode_steps"]
         print("max_steps = ", args.max_steps)
 
-    print("Press ESC to quit")
     reward = 0
     done = False
 
@@ -1537,14 +1547,14 @@ if __name__ == "__main__":
             random.uniform(-0.00001, 0.00001),
             random.uniform(-0.00001, 0.00001),
         ]
-        obs = env.reset()
-        if render:
-            image_output = env.render(mode=render_mode)
 
         print("Starting a new trajectory")
         max_episode_steps = args.max_steps
         traj_success = 0
         while len(actions) < numItr:
+            obs = env.reset()
+            if render:
+                image_output = env.render(mode=render_mode)  # default mode is human
             episodeAcs, episodeObs, episodeInfo = generate_demos(
                 obs, render, max_episode_steps, behavior
             )
@@ -1563,9 +1573,5 @@ if __name__ == "__main__":
                     "random",
                 ]
             )
-            obs = env.reset()
-            if render:
-                image_output = env.render(mode=render_mode)  # default mode is human
             infos.append(episodeInfo)
             summ = 0
-            print("ITERATION NUMBER ", len(actions))
