@@ -11,7 +11,7 @@ extras = {
   'box2d': ['box2d-py~=2.3.5'],
   'classic_control': [],
   'mujoco': ['mujoco_py>=1.50, <2.1', 'imageio'],
-  'robotics': ['mujoco_py>=1.50, <2.1', 'imageio'],
+  'robotics': ['mujoco_py>=1.50, <2.1', 'imageio', 'mujoco_utils'],
 }
 
 # Meta dependency groups.

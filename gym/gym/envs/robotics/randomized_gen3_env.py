@@ -12,6 +12,8 @@ import xml.etree.ElementTree as et
 
 import mujoco_py
 from mujoco_py.modder import TextureModder, MaterialModder, LightModder, CameraModder
+from mujoco_utils.mujoco_py import get_camera_transformation_matrix
+from mujoco_utils.views import get_angles_hemisphere
 import cv2
 import pdb
 from PIL import Image
@@ -1286,8 +1288,9 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             HEIGHT, WIDTH = 512, 512
 
             if self.angles is None:
-                self.angles = self._sample_hemisphere(
-                    cam_distance=self.viewer.cam.distance
+                self.angles = get_angles_hemisphere(
+                    radius=self.viewer.cam.distance,
+                    n_views=self.n_views,
                 )
 
             for view_id_int, (azimuth, elevation) in enumerate(self.angles, start=1):
@@ -1328,28 +1331,22 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                     depth_cv,
                 )
 
-                # Store camera parameters
+                # Store camera parameters if not done already
                 if not os.path.isfile(
                     os.path.join(self.data_path, view_id, "camera_params.txt")
                 ):
-                    with open(
-                        os.path.join(self.data_path, view_id, "camera_params.txt"), "w"
-                    ) as f:
-                        cam_name = "camera1"
-                        cam_id = self.sim.model.camera_name2id(cam_name)
-                        fov = self.sim.model.cam_fovy[cam_id]
-                        f.write(f"Fov {fov}\n")
-                        cam_pos = self.sim.data.get_camera_xpos(cam_name)
-                        f.write(f"Cam pos {cam_pos}\n")
-                        cam_ori = gym.envs.robotics.rotations.mat2euler(
-                            self.sim.data.get_camera_xmat(cam_name)
+                    cam_name = "camera1"
+                    cam_id = self.sim.model.camera_name2id(cam_name)
+                    vertical_fov = self.sim.model.cam_fovy[cam_id]
+                    np.savetxt(
+                        os.path.join(self.data_path, view_id, "camera_params.txt"),
+                        get_camera_transformation_matrix(
+                            width=WIDTH,
+                            height=HEIGHT,
+                            vertical_fov=vertical_fov,
+                            camera=self.viewer.cam,
                         )
-                        f.write(f"Cam xmat {self.sim.data.get_camera_xmat(cam_name)}\n")
-                        f.write(f"Cam ori {cam_ori}\n")
-                        f.write(f"Distance {self.viewer.cam.distance}\n")
-                        f.write(f"Look at {self.viewer.cam.lookat}\n")
-                        f.write(f"Azimuth {self.viewer.cam.azimuth}\n")
-                        f.write(f"Elevation {self.viewer.cam.elevation}\n")
+                    )
 
             # Common for all views
             if not os.path.isdir(os.path.join(self.data_path, "points")):
@@ -1720,27 +1717,3 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
     def render(self, mode="human", width=500, height=500):
         return super(RandomizedGen3Env, self).render(mode, width, height)
-
-    def _sample_hemisphere(self, cam_distance):
-        """
-        Return list of tuples of (azimuth, elevation) angles
-        """
-        # Algorithm from https://www.cmu.edu/biolphys/deserno/pdf/sphere_equi.pdf
-        # Use theta in [-\pi / 2, 0] (hemisphere) and phi [0, 2\pi]
-        n_count = 0
-        a = 4 * np.pi * cam_distance / (2 * self.n_views)
-        d = np.sqrt(a)
-        m_theta = int(np.round(np.pi / d))
-        d_theta = np.pi / m_theta
-        d_phi = a / d_theta
-
-        angles = []
-        for m in range(m_theta // 2):
-            theta = np.pi * (m + 0.5) / m_theta
-            m_phi = int(np.round(2 * np.pi * np.sin(theta) / d_phi))
-            for n in range(m_phi):
-                phi = 2 * np.pi * n / m_phi
-                angles.append((np.degrees(phi), np.degrees(-theta)))
-                n_count += 1
-        print(f"Created {n_count} / {self.n_views} views on the hemisphere surface")
-        return angles

@@ -7,6 +7,7 @@ conda activate cloth-manipulation
 conda install -c conda-forge patchelf
 git clone https://github.com/BOBaraki/cloth-manipulation
 pip install -e mujoco-py
+pip install -e mujoco_utils
 pip install -e gym
 ```
 
