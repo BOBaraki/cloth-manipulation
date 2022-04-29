@@ -12,10 +12,9 @@ import xml.etree.ElementTree as et
 
 import mujoco_py
 from mujoco_py.modder import TextureModder, MaterialModder, LightModder, CameraModder
-from mujoco_utils.mujoco_py import get_camera_transformation_matrix
+from mujoco_utils.mujoco_py import get_camera_transform_matrix
 from mujoco_utils.views import get_angles_hemisphere
 import cv2
-import pdb
 from PIL import Image
 
 DEBUG = False
@@ -1296,8 +1295,6 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             for view_id_int, (azimuth, elevation) in enumerate(self.angles, start=1):
                 view_id = f"view_{view_id_int}"
                 # Set camera parameters
-                import pdb; pdb.set_trace()
-        
                 self.viewer.cam.azimuth = azimuth
                 self.viewer.cam.elevation = elevation
 
@@ -1340,7 +1337,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                     vertical_fov = self.sim.model.cam_fovy[cam_id]
                     np.savetxt(
                         os.path.join(self.data_path, view_id, "camera_params.txt"),
-                        get_camera_transformation_matrix(
+                        get_camera_transform_matrix(
                             width=WIDTH,
                             height=HEIGHT,
                             vertical_fov=vertical_fov,
