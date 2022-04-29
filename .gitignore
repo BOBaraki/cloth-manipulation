@@ -33,3 +33,7 @@ MANIFEST
 # Generated files
 *.json
 *.mp4
+
+# PyCharm
+.idea/
+
