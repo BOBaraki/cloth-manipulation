@@ -9,6 +9,7 @@ git clone https://github.com/BOBaraki/cloth-manipulation
 pip install -e mujoco-py
 pip install -e mujoco_utils
 pip install -e gym
+pip install -r requirements.txt
 ```
 
 In the initial folder run after changing the following saving paths:
