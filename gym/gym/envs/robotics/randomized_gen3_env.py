@@ -11,7 +11,7 @@ import xml.etree.ElementTree as et
 
 import mujoco_py
 from mujoco_py.modder import TextureModder, MaterialModder, LightModder, CameraModder
-from mujoco_utils.mujoco_py import get_camera_transform_matrix
+from mujoco_utils.mujoco_py import get_camera_transform_matrices
 from mujoco_utils.views import get_angles_hemisphere
 import cv2
 from PIL import Image
@@ -1037,6 +1037,15 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         action = (
             action.copy()
         )  # ensure that we don't change the action outside of this scope
+
+        if not os.path.isdir(os.path.join(self.data_path, "actions")):
+            os.makedirs(os.path.join(self.data_path, "actions"))
+
+        np.savetxt(
+            os.path.join(self.data_path, "actions", f"{self.last_saved_step - 1}.txt"),
+            action,
+        )
+
         pos_ctrl, gripper_ctrl = action[:3], action[3]
         pos_ctrl_2, gripper_ctrl_2 = action[4:7], action[7]
 
@@ -1275,7 +1284,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             if self.angles is None:
                 if self.n_views == 1:
                     print("Using default camera angles")
-                    self.angles = (self.viewer.cam.azimuth, self.viewer.cam.elevation)
+                    self.angles = [(self.viewer.cam.azimuth, self.viewer.cam.elevation)]
                 else:
                     print(
                         "Computing equi-spaced camera angles on upper hemisphere surface"
@@ -1304,13 +1313,13 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                     depth[::-1, :], None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U
                 )
 
-                for subdir in ["RGB", "depth"]:
+                for subdir in ["rgb", "depth"]:
                     if not os.path.isdir(os.path.join(self.data_path, view_id, subdir)):
                         os.makedirs(os.path.join(self.data_path, view_id, subdir))
 
                 visual_data.save(
                     os.path.join(
-                        self.data_path, view_id, "RGB", f"{self.last_saved_step}.png"
+                        self.data_path, view_id, "rgb", f"{self.last_saved_step}.png"
                     )
                 )
 
@@ -1328,14 +1337,19 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                     cam_name = "camera1"
                     cam_id = self.sim.model.camera_name2id(cam_name)
                     vertical_fov = self.sim.model.cam_fovy[cam_id]
-                    np.savetxt(
-                        os.path.join(self.data_path, view_id, "camera_params.txt"),
-                        get_camera_transform_matrix(
+                    intrinsic_matrix, extrinsic_matrix = get_camera_transform_matrices(
                             width=WIDTH,
                             height=HEIGHT,
                             vertical_fov=vertical_fov,
                             camera=self.viewer.cam,
-                        ),
+                        )
+                    np.savetxt(
+                        os.path.join(self.data_path, view_id, "intrinsic_matrix.txt"),
+                        intrinsic_matrix,
+                    )
+                    np.savetxt(
+                        os.path.join(self.data_path, view_id, "extrinsic_matrix.txt"),
+                        extrinsic_matrix,
                     )
 
             # Common for all views
