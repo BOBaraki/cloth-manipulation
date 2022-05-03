@@ -4,7 +4,6 @@ import copy
 import csv
 
 from gym.envs.robotics import robot_env, utils
-import gym
 import math
 from random import randint
 
@@ -113,7 +112,6 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             1.10000000e01,
         ]
         if self.behavior == "lifting-middle":
-            # pdb.set_trace()
             self.vertex = np.random.randint(4, cloth_length - 3)
 
         # The number of n_actions need to change to 8 for a second agent
@@ -153,7 +151,6 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                     if os.path.isfile(os.path.join(self.data_path, name))
                 ]
             )
-            # pdb.set_trace()
 
     # Randomization methods
     # ----------------------------
@@ -236,7 +233,6 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             composite.set("flatinertia", "{:3f}".format(flatinertia))
 
     def _randomize_spacing(self):
-        # pdb.set_trace()
         if self.behavior == "onehand-lifting":
             # spacing = np.clip(self.dimensions[8].current_value, 0.025, 0.03)
             spacing = np.random.uniform(0.022, 0.023)
@@ -258,7 +254,6 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
     def _create_xml(self):
         # self._randomize_size()
-        # pdb.set_trace()
         self._randomize_mass()
         self._randomize_spacing()
         self._randomize_flatinertia()
@@ -325,7 +320,6 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             if len(achieved_goal.shape) == 1:
                 blocks_in_position = 0
                 for x in range(num_objects):
-                    # pdb.set_trace()
                     if (
                         goal_distance(
                             achieved_goal[x * 3 : x * 3 + 3], goal[x * 3 : x * 3 + 3]
@@ -339,7 +333,6 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                 reward = -(np.array(blocks_in_position != num_objects)).astype(
                     np.float32
                 )  # non positive rewards
-                # pdb.set_trace()
                 # raward = 1
                 return reward
             else:
@@ -362,7 +355,6 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                     reward[x] = -(np.array(blocks_in_position != num_objects)).astype(
                         np.float32
                     )
-                # pdb.set_trace()
                 # print(reward)
                 return reward
         elif self.behavior == "diagonally":
@@ -378,7 +370,6 @@ class RandomizedGen3Env(robot_env.RobotEnv):
     # ----------------------------
     def _gripper_sync(self):
         # move the left_spring_joint joint[14] and right_spring_joint(joint[10]) in the right angle
-        # pdb.set_trace()
         self.sim.data.qpos[10] = self._gripper_consistent(self.sim.data.qpos[7:10])
         self.sim.data.qpos[14] = self._gripper_consistent(self.sim.data.qpos[11:14])
         self.sim.data.qpos[25] = self._gripper_consistent(self.sim.data.qpos[22:25])
@@ -405,7 +396,6 @@ class RandomizedGen3Env(robot_env.RobotEnv):
     # gripper control
     def _step_callback(self):
         if self.block_gripper:
-            # pdb.set_trace()
             for j in range(3):
                 if (
                     self.behavior == "onehand"
@@ -721,7 +711,6 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
         cloth_points_pos = []
         # slice the cloth points according to the number of cloth length
-        # pdb.set_trace()
         cloth_points = cloth_points_all[: self.cloth_length, : self.cloth_length].copy()
         cloth_points = cloth_points.flatten()
 
@@ -1032,7 +1021,6 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         )
         cloth_points_pos = []
         # slice the cloth points according to the number of cloth length
-        # pdb.set_trace()
         cloth_points = cloth_points_all[: self.cloth_length, : self.cloth_length].copy()
         cloth_points = cloth_points.flatten()
         for point in cloth_points:
@@ -1081,7 +1069,6 @@ class RandomizedGen3Env(robot_env.RobotEnv):
         #     dist_closest = np.einsum(abs(self.grip_pos -\
         #       self.sim.data.get_body_xpos('CB' + str(self.vertex) + '_' + '0')))
         closest_2, dist_closest_2 = self.find_closest_indice(self.grip_pos_2)
-        # pdb.set_trace()
         # Only allow gripping if in proximity
         # pdb.set_trace()
 
@@ -1227,7 +1214,6 @@ class RandomizedGen3Env(robot_env.RobotEnv):
 
         else:
             object_pos = object_velp = np.zeros(0)
-            pdb.set_trace()
 
         # if not using a fake gripper
         # gripper_state = robot_qpos[-2:]
@@ -1287,10 +1273,17 @@ class RandomizedGen3Env(robot_env.RobotEnv):
             HEIGHT, WIDTH = 512, 512
 
             if self.angles is None:
-                self.angles = get_angles_hemisphere(
-                    radius=self.viewer.cam.distance,
-                    n_views=self.n_views,
-                )
+                if self.n_views == 1:
+                    print("Using default camera angles")
+                    self.angles = (self.viewer.cam.azimuth, self.viewer.cam.elevation)
+                else:
+                    print(
+                        "Computing equi-spaced camera angles on upper hemisphere surface"
+                    )
+                    self.angles = get_angles_hemisphere(
+                        radius=self.viewer.cam.distance,
+                        n_views=self.n_views,
+                    )
 
             for view_id_int, (azimuth, elevation) in enumerate(self.angles, start=1):
                 view_id = f"view_{view_id_int}"
@@ -1342,7 +1335,7 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                             height=HEIGHT,
                             vertical_fov=vertical_fov,
                             camera=self.viewer.cam,
-                        )
+                        ),
                     )
 
             # Common for all views
@@ -1623,7 +1616,6 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                 -0.15, 0.15, size=3
             )
             # goal = self.np_random.uniform(-0.15, 0.15, size=3)
-            pdb.set_trace()
         return goal.copy()
 
     def _is_success(self, achieved_goal, desired_goal):
