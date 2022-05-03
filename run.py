@@ -1473,7 +1473,7 @@ if __name__ == "__main__":
         "--max_steps", type=int, default=1000, help="maximum episode length"
     )
     parser.add_argument(
-        "--n_views", type=int, default=20, help="Desired number of views (may be slightly lower in practice)"
+        "--n_views", type=int, default=1, help="Desired number of views (may be slightly lower in practice)"
     )
     parser.add_argument("--fps", type=float)
     parser.add_argument("--once", action="store_true")
