@@ -5,9 +5,9 @@ A mujoco simulator using bi-manual and unimanual pinch grapsing kinowa arms for 
 conda create -n cloth-manipulation python=3.6 pip
 conda activate cloth-manipulation
 conda install -c conda-forge patchelf
-git clone https://github.com/BOBaraki/cloth-manipulation
+git clone --recurse-submodules https://github.com/BOBaraki/cloth-manipulation
 pip install -e mujoco-py
-pip install -e mujoco_utils
+pip install -e sim_utils
 pip install -e gym
 pip install -r requirements.txt
 ```

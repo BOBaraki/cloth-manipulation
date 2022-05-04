@@ -11,8 +11,8 @@ import xml.etree.ElementTree as et
 
 import mujoco_py
 from mujoco_py.modder import TextureModder, MaterialModder, LightModder, CameraModder
-from mujoco_utils.mujoco_py import get_camera_transform_matrices
-from mujoco_utils.views import get_angles_hemisphere
+from sim_utils.mujoco_py import get_camera_transform_matrices
+from sim_utils.views import get_angles_hemisphere
 import cv2
 from PIL import Image
 
