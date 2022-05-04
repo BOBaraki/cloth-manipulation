@@ -1473,6 +1473,9 @@ if __name__ == "__main__":
         "--max_steps", type=int, default=1000, help="maximum episode length"
     )
     parser.add_argument(
+        "--n_iterations", type=int, default=1, help="Number of iterations"
+    )
+    parser.add_argument(
         "--n_views", type=int, default=1, help="Desired number of views (may be slightly lower in practice)"
     )
     parser.add_argument("--fps", type=float)
@@ -1528,13 +1531,12 @@ if __name__ == "__main__":
         actions = []
         observations = []
         infos = []
-        numItr = 5
         fileName = (
             "data_mujoco"
             + "_"
             + "fold_sideways"
             + "_"
-            + str(numItr)
+            + str(args.n_iterations)
             + "_T_100_"
             + "L_11_"
             + "all_randomized_explicit"
@@ -1551,7 +1553,7 @@ if __name__ == "__main__":
         print("Starting a new trajectory")
         max_episode_steps = args.max_steps
         traj_success = 0
-        while len(actions) < numItr:
+        while len(actions) < args.n_iterations:
             obs = env.reset()
             if render:
                 image_output = env.render(mode=render_mode)  # default mode is human
