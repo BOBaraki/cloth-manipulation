@@ -1294,107 +1294,108 @@ class RandomizedGen3Env(robot_env.RobotEnv):
                         n_views=self.n_views,
                     )
 
-            for view_id_int, (azimuth, elevation) in enumerate(self.angles, start=1):
-                view_id = f"view_{view_id_int}"
-                # Set camera parameters
-                self.viewer.cam.azimuth = azimuth
-                self.viewer.cam.elevation = elevation
+            if self.last_saved_step > 0:
+                for view_id_int, (azimuth, elevation) in enumerate(self.angles, start=1):
+                    view_id = f"view_{view_id_int}"
+                    # Set camera parameters
+                    self.viewer.cam.azimuth = azimuth
+                    self.viewer.cam.elevation = elevation
 
-                # Render image internally and read pixels
-                self.viewer.render(HEIGHT, WIDTH)
-                visual_data_all = self.viewer.read_pixels(HEIGHT, WIDTH, depth=True)
+                    # Render image internally and read pixels
+                    self.viewer.render(HEIGHT, WIDTH)
+                    visual_data_all = self.viewer.read_pixels(HEIGHT, WIDTH, depth=True)
 
-                depth = visual_data_all[1]
-                visual_data = visual_data_all[0]
+                    depth = visual_data_all[1]
+                    visual_data = visual_data_all[0]
 
-                # original image is upside-down, so flip it
-                visual_data = Image.fromarray(visual_data[::-1, :, :], "RGB")
-                depth_cv = cv2.normalize(
-                    depth[::-1, :], None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U
-                )
-
-                for subdir in ["rgb", "depth"]:
-                    if not os.path.isdir(os.path.join(self.data_path, view_id, subdir)):
-                        os.makedirs(os.path.join(self.data_path, view_id, subdir))
-
-                visual_data.save(
-                    os.path.join(
-                        self.data_path, view_id, "rgb", f"{self.last_saved_step}.png"
+                    # original image is upside-down, so flip it
+                    visual_data = Image.fromarray(visual_data[::-1, :, :], "RGB")
+                    depth_cv = cv2.normalize(
+                        depth[::-1, :], None, 0, 255, cv2.NORM_MINMAX, cv2.CV_8U
                     )
-                )
 
-                cv2.imwrite(
-                    os.path.join(
-                        self.data_path, view_id, "depth", f"{self.last_saved_step}.tif"
-                    ),
-                    depth_cv,
-                )
+                    for subdir in ["rgb", "depth"]:
+                        if not os.path.isdir(os.path.join(self.data_path, view_id, subdir)):
+                            os.makedirs(os.path.join(self.data_path, view_id, subdir))
 
-                # Store camera parameters if not done already
-                if not os.path.isfile(
-                    os.path.join(self.data_path, view_id, "camera_params.txt")
-                ):
-                    cam_name = "camera1"
-                    cam_id = self.sim.model.camera_name2id(cam_name)
-                    vertical_fov = self.sim.model.cam_fovy[cam_id]
-                    intrinsic_matrix, extrinsic_matrix = get_camera_transform_matrices(
-                            width=WIDTH,
-                            height=HEIGHT,
-                            vertical_fov=vertical_fov,
-                            camera=self.viewer.cam,
+                    visual_data.save(
+                        os.path.join(
+                            self.data_path, view_id, "rgb", f"{self.last_saved_step}.png"
                         )
-                    np.savetxt(
-                        os.path.join(self.data_path, view_id, "intrinsic_matrix.txt"),
-                        intrinsic_matrix,
-                    )
-                    np.savetxt(
-                        os.path.join(self.data_path, view_id, "extrinsic_matrix.txt"),
-                        extrinsic_matrix,
                     )
 
-            # Common for all views
-            if not os.path.isdir(os.path.join(self.data_path, "points")):
-                os.makedirs(os.path.join(self.data_path, "points"))
-            dict = {"points": self.find_point_coordinates().copy()}
-            w = csv.writer(
-                open(
-                    os.path.join(
-                        self.data_path, "points", f"{self.last_saved_step}.csv"
-                    ),
-                    "w",
-                )
-            )
-            for key, val in dict["points"].items():
-                w.writerow([key, val])
+                    cv2.imwrite(
+                        os.path.join(
+                            self.data_path, view_id, "depth", f"{self.last_saved_step}.tif"
+                        ),
+                        depth_cv,
+                    )
 
-            # Grippers
-            for gripper_name, gripper_pos, gripper_state in zip(
-                ["gripper_1", "gripper_2"],
-                [grip_pos, grip_pos_2],
-                [gripper_state, gripper_state_2],
-            ):
-                if not os.path.isdir(os.path.join(self.data_path, gripper_name)):
-                    os.makedirs(os.path.join(self.data_path, gripper_name, "position"))
-                    os.makedirs(os.path.join(self.data_path, gripper_name, "state"))
+                    # Store camera parameters if not done already
+                    if not os.path.isfile(
+                        os.path.join(self.data_path, view_id, "camera_params.txt")
+                    ):
+                        cam_name = "camera1"
+                        cam_id = self.sim.model.camera_name2id(cam_name)
+                        vertical_fov = self.sim.model.cam_fovy[cam_id]
+                        intrinsic_matrix, extrinsic_matrix = get_camera_transform_matrices(
+                                width=WIDTH,
+                                height=HEIGHT,
+                                vertical_fov=vertical_fov,
+                                camera=self.viewer.cam,
+                            )
+                        np.savetxt(
+                            os.path.join(self.data_path, view_id, "intrinsic_matrix.txt"),
+                            intrinsic_matrix,
+                        )
+                        np.savetxt(
+                            os.path.join(self.data_path, view_id, "extrinsic_matrix.txt"),
+                            extrinsic_matrix,
+                        )
 
-                np.savetxt(
-                    os.path.join(
-                        self.data_path,
-                        gripper_name,
-                        "position",
-                        f"{self.last_saved_step}.txt",
-                    ),
-                    gripper_pos,
+                # Common for all views
+                if not os.path.isdir(os.path.join(self.data_path, "points")):
+                    os.makedirs(os.path.join(self.data_path, "points"))
+                dict = {"points": self.find_point_coordinates().copy()}
+                w = csv.writer(
+                    open(
+                        os.path.join(
+                            self.data_path, "points", f"{self.last_saved_step}.csv"
+                        ),
+                        "w",
+                    )
                 )
-                np.savetxt(
-                    os.path.join(
-                        self.data_path,
-                        gripper_name,
-                        "state",
-                        f"{self.last_saved_step}.txt",
-                    ),
-                    [gripper_state],
-                )
+                for key, val in dict["points"].items():
+                    w.writerow([key, val])
+
+                # Grippers
+                for gripper_name, gripper_pos, gripper_state in zip(
+                    ["gripper_1", "gripper_2"],
+                    [grip_pos, grip_pos_2],
+                    [gripper_state, gripper_state_2],
+                ):
+                    if not os.path.isdir(os.path.join(self.data_path, gripper_name)):
+                        os.makedirs(os.path.join(self.data_path, gripper_name, "position"))
+                        os.makedirs(os.path.join(self.data_path, gripper_name, "state"))
+
+                    np.savetxt(
+                        os.path.join(
+                            self.data_path,
+                            gripper_name,
+                            "position",
+                            f"{self.last_saved_step}.txt",
+                        ),
+                        gripper_pos,
+                    )
+                    np.savetxt(
+                        os.path.join(
+                            self.data_path,
+                            gripper_name,
+                            "state",
+                            f"{self.last_saved_step}.txt",
+                        ),
+                        [gripper_state],
+                    )
 
             # for point in label:
             #     cv2.circle(visual_data, (int(point[0]), int(point[1])), 2, (0, 0, 255), 2)
